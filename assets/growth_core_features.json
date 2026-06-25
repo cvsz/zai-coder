@@ -1,0 +1,43 @@
+{
+  "package": "zai-coder-control-plane-v3-growth-core",
+  "features": {
+    "members_system": [
+      "roles",
+      "permissions",
+      "members",
+      "invites",
+      "local SQLite storage",
+      "permission checks",
+      "team-ready schema",
+      "audit-friendly service"
+    ],
+    "update_system": [
+      "update manifests",
+      "dry-run update plan",
+      "safe path validation",
+      "blocked generated paths",
+      "blocked apps/zlms/**",
+      "apply only after review"
+    ],
+    "core_system": [
+      "feature registry",
+      "core health checks",
+      "addon registration",
+      "growth feature matrix"
+    ],
+    "marketing_shared": [
+      "campaign model",
+      "asset manifest",
+      "content calendar",
+      "channel planning",
+      "safe asset path validation"
+    ],
+    "social_media_core": [
+      "platform constraints",
+      "post composer",
+      "variant generator",
+      "dry-run scheduler",
+      "local schedule database"
+    ]
+  }
+}

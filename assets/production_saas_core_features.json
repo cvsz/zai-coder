@@ -1,0 +1,45 @@
+{
+  "package": "zai-coder-control-plane-v11-production-saas-core",
+  "features": {
+    "identity": [
+      "organizations",
+      "workspaces",
+      "users",
+      "invitations",
+      "memberships"
+    ],
+    "security": [
+      "role policy",
+      "API key enforcement facade",
+      "least privilege checks"
+    ],
+    "quota": [
+      "quota enforcement middleware",
+      "plan resource limits"
+    ],
+    "dashboards": [
+      "billing",
+      "usage",
+      "audit",
+      "settings"
+    ],
+    "ops": [
+      "migrations CLI",
+      "worker daemon facade",
+      "job retry policy"
+    ],
+    "audit": [
+      "integration audit log"
+    ],
+    "wizards": [
+      "first-run setup",
+      "deployment plan"
+    ]
+  },
+  "safety": [
+    "auth-first",
+    "quota-before-cost",
+    "audit external actions",
+    "dry-run integrations"
+  ]
+}

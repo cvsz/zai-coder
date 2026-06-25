@@ -1,0 +1,216 @@
+{
+  "active_blocking": false,
+  "alert_queue": {
+    "auto_blocking": false,
+    "count": 3,
+    "queue": [
+      {
+        "action": "create_incident_plan",
+        "id": "alert_mfa_review",
+        "review_required": true,
+        "severity": "high",
+        "title": "Access policy review required"
+      },
+      {
+        "action": "review",
+        "id": "alert_dependency_review",
+        "review_required": true,
+        "severity": "medium",
+        "title": "Dependency update review required"
+      },
+      {
+        "action": "notify_owner",
+        "id": "alert_config_snapshot",
+        "review_required": true,
+        "severity": "medium",
+        "title": "Configuration snapshot review due"
+      }
+    ],
+    "requires_human_review": true
+  },
+  "alerts": [
+    {
+      "action": "create_incident_plan",
+      "id": "alert_mfa_review",
+      "policy_id": "policy-access-review",
+      "severity": "high",
+      "status": "open",
+      "title": "Access policy review required"
+    },
+    {
+      "action": "review",
+      "id": "alert_dependency_review",
+      "policy_id": "policy-dependency-review",
+      "severity": "medium",
+      "status": "in_review",
+      "title": "Dependency update review required"
+    },
+    {
+      "action": "notify_owner",
+      "id": "alert_config_snapshot",
+      "policy_id": "policy-config-review",
+      "severity": "medium",
+      "status": "open",
+      "title": "Configuration snapshot review due"
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_type": "signal_summary",
+      "id": "ev_signal_summary",
+      "redacted": true,
+      "status": "ready",
+      "title": "Threat signal summary"
+    },
+    {
+      "evidence_type": "alert_summary",
+      "id": "ev_alert_summary",
+      "redacted": true,
+      "status": "ready",
+      "title": "Policy alert summary"
+    },
+    {
+      "evidence_type": "incident_plan",
+      "id": "ev_incident_plan",
+      "redacted": true,
+      "status": "review",
+      "title": "Incident workflow plan evidence"
+    }
+  ],
+  "external_publish": false,
+  "incidents": [
+    {
+      "created_at": "2026-06-25T12:09:57.511967+00:00",
+      "dry_run": true,
+      "id": "inc_access_review",
+      "incident_type": "access_review",
+      "severity": "high",
+      "status": "draft",
+      "title": "Access review workflow plan"
+    },
+    {
+      "created_at": "2026-06-25T12:09:57.511971+00:00",
+      "dry_run": true,
+      "id": "inc_policy_drift",
+      "incident_type": "policy_drift",
+      "severity": "high",
+      "status": "review",
+      "title": "Policy drift review workflow"
+    },
+    {
+      "created_at": "2026-06-25T12:09:57.511977+00:00",
+      "dry_run": true,
+      "id": "inc_availability",
+      "incident_type": "availability_review",
+      "severity": "medium",
+      "status": "draft",
+      "title": "Availability review workflow"
+    }
+  ],
+  "kind": "zai-security-ops-evidence",
+  "requires_review": true,
+  "risk": {
+    "alerts": 7,
+    "dry_run": true,
+    "incidents": 8,
+    "posture": "critical",
+    "score": 23,
+    "signals": 8
+  },
+  "signals": [
+    {
+      "created_at": "2026-06-25T12:09:57.511928+00:00",
+      "id": "sig_auth_review",
+      "severity": "medium",
+      "signal_type": "auth_anomaly",
+      "source": "local-auth-log",
+      "status": "open",
+      "title": "Unusual local auth retry pattern"
+    },
+    {
+      "created_at": "2026-06-25T12:09:57.511947+00:00",
+      "id": "sig_policy_drift",
+      "severity": "high",
+      "signal_type": "policy_drift",
+      "source": "config-snapshot",
+      "status": "triaged",
+      "title": "Cloud policy review requested"
+    },
+    {
+      "created_at": "2026-06-25T12:09:57.511953+00:00",
+      "id": "sig_dependency",
+      "severity": "medium",
+      "signal_type": "dependency_alert",
+      "source": "local-dependency-index",
+      "status": "monitoring",
+      "title": "Dependency review advisory"
+    },
+    {
+      "created_at": "2026-06-25T12:09:57.511955+00:00",
+      "id": "sig_availability",
+      "severity": "low",
+      "signal_type": "availability",
+      "source": "local-health-summary",
+      "status": "open",
+      "title": "Service health variance"
+    }
+  ],
+  "validation": {
+    "ok": true,
+    "reports": [
+      {
+        "id": "sig_auth_review",
+        "issues": []
+      },
+      {
+        "id": "sig_policy_drift",
+        "issues": []
+      },
+      {
+        "id": "sig_dependency",
+        "issues": []
+      },
+      {
+        "id": "sig_availability",
+        "issues": []
+      },
+      {
+        "id": "alert_mfa_review",
+        "issues": []
+      },
+      {
+        "id": "alert_dependency_review",
+        "issues": []
+      },
+      {
+        "id": "alert_config_snapshot",
+        "issues": []
+      },
+      {
+        "id": "inc_access_review",
+        "issues": []
+      },
+      {
+        "id": "inc_policy_drift",
+        "issues": []
+      },
+      {
+        "id": "inc_availability",
+        "issues": []
+      },
+      {
+        "id": "ev_signal_summary",
+        "issues": []
+      },
+      {
+        "id": "ev_alert_summary",
+        "issues": []
+      },
+      {
+        "id": "ev_incident_plan",
+        "issues": []
+      }
+    ]
+  },
+  "version": "1.0"
+}

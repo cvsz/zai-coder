@@ -1,0 +1,25 @@
+{
+  "package": "zai-coder-control-plane-v46-security-operations-and-threat-monitoring",
+  "features": [
+    "security dashboard",
+    "threat signals",
+    "policy alerts",
+    "incident workflow planner",
+    "risk scorecard",
+    "security evidence"
+  ],
+  "routes": [
+    "/api/security-ops/status",
+    "/security-ops",
+    "/security-ops/signals",
+    "/security-ops/alerts",
+    "/security-ops/incidents",
+    "/security-ops/evidence"
+  ],
+  "safety": [
+    "no secret leakage",
+    "no active blocking by default",
+    "plan-only incident workflows",
+    "APPLY=1 for demo writes"
+  ]
+}

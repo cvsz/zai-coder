@@ -1,0 +1,8 @@
+{
+  "name": "self-doctor",
+  "description": "Run local self-diagnostics.",
+  "tags": [
+    "self",
+    "diagnostics"
+  ]
+}

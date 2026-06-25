@@ -1,0 +1,32 @@
+{
+  "package": "zai-coder-control-plane-v17-real-provider-adapters",
+  "features": {
+    "providers": [
+      "github",
+      "cloudflare",
+      "docker",
+      "postgres"
+    ],
+    "controls": [
+      "env validation",
+      "permission checks",
+      "approval guard",
+      "dry-run/apply switch"
+    ],
+    "audit": [
+      "provider audit log",
+      "blocked operation audit"
+    ],
+    "routes": [
+      "/api/providers/status",
+      "/providers",
+      "/providers/audit"
+    ]
+  },
+  "safety": [
+    "dry-run-first",
+    "approval required for apply",
+    "env validation",
+    "audit every operation"
+  ]
+}

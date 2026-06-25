@@ -1,0 +1,30 @@
+# syntax=docker/dockerfile:1.7
+FROM python:3.11-slim AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    ZAI_ENV=production
+
+WORKDIR /app
+
+RUN addgroup --system zai && adduser --system --ingroup zai zai \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates curl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements-production.txt requirements-production.txt
+RUN python -m pip install --no-cache-dir --upgrade pip \
+    && python -m pip install --no-cache-dir -r requirements-production.txt
+
+COPY . /app
+
+RUN mkdir -p /app/data /app/logs /app/storage \
+    && chown -R zai:zai /app
+
+USER zai
+
+EXPOSE 8765
+
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8765/healthz')"
+
+CMD ["uvicorn", "zai_coder.production_hardening_core.server.asgi:app", "--host", "127.0.0.1", "--port", "8765", "--proxy-headers"]

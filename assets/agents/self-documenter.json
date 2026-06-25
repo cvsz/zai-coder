@@ -1,0 +1,9 @@
+{
+  "name": "self-documenter",
+  "description": "Generates requirement docs, runbooks, and feature matrices.",
+  "tags": [
+    "self",
+    "docs",
+    "requirements"
+  ]
+}

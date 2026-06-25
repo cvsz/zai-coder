@@ -1,0 +1,44 @@
+{
+  "package": "zai-coder-control-plane-v38-template-and-content-studio",
+  "features": {
+    "templates": [
+      "template registry",
+      "visibility filtering",
+      "template validation"
+    ],
+    "rendering": [
+      "variable extraction",
+      "schema validation",
+      "safe local rendering"
+    ],
+    "brand": [
+      "tone guard",
+      "brand rules",
+      "content safety gate"
+    ],
+    "workflow": [
+      "content brief",
+      "approval workflow",
+      "audit log"
+    ],
+    "exports": [
+      "content library export",
+      "rendered content export",
+      "report"
+    ],
+    "routes": [
+      "/api/content-studio/status",
+      "/content-studio",
+      "/content-studio/templates",
+      "/content-studio/render",
+      "/content-studio/brand",
+      "/content-studio/library"
+    ]
+  },
+  "safety": [
+    "local-only",
+    "no external publishing",
+    "no provider generation",
+    "APPLY=1 for demo writes"
+  ]
+}

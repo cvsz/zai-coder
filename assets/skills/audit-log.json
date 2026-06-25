@@ -1,0 +1,7 @@
+{
+  "name": "audit-log",
+  "description": "Append redacted audit events for commands, patches, and API calls.",
+  "tags": [
+    "audit"
+  ]
+}

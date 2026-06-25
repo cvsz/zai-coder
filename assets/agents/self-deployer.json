@@ -1,0 +1,9 @@
+{
+  "name": "self-deployer",
+  "description": "Creates deployment checklists for local/server environments.",
+  "tags": [
+    "self",
+    "deploy",
+    "ops"
+  ]
+}

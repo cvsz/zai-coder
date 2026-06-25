@@ -1,0 +1,7 @@
+{
+  "name": "tester",
+  "description": "Creates validation strategy and test commands.",
+  "tags": [
+    "test"
+  ]
+}

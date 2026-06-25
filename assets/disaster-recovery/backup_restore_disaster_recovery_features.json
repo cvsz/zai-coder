@@ -1,0 +1,25 @@
+{
+  "package": "zai-coder-control-plane-v45-backup-restore-and-disaster-recovery",
+  "features": [
+    "backup plan registry",
+    "restore drill preview",
+    "RPO/RTO targets",
+    "DR scenarios",
+    "readiness gate",
+    "recovery evidence"
+  ],
+  "routes": [
+    "/api/dr/status",
+    "/dr",
+    "/dr/backups",
+    "/dr/restore-drills",
+    "/dr/rpo-rto",
+    "/dr/evidence"
+  ],
+  "safety": [
+    "preview-only restore",
+    "no direct production restore",
+    "local evidence export",
+    "APPLY=1 for demo writes"
+  ]
+}

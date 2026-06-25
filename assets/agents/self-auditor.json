@@ -1,0 +1,9 @@
+{
+  "name": "self-auditor",
+  "description": "Summarizes audit events and governance risks.",
+  "tags": [
+    "self",
+    "audit",
+    "governance"
+  ]
+}

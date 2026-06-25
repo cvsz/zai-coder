@@ -1,0 +1,34 @@
+name: Release Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pytest -q
+      - run: make repo-check
+      - run: make secret-scan
+      - run: make stage-manifest-check
+      - run: make release-build APPLY=1 NAME="zai-coder-control-plane-${{ inputs.version }}"
+      - run: make release-checksums
+      - run: make release-sbom
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zai-coder-control-plane-${{ inputs.version }}
+          path: |
+            release/*.zip
+            release/*.json

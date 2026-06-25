@@ -1,0 +1,34 @@
+{
+  "package": "zai-coder-control-plane-v18-execution-runner",
+  "features": {
+    "runner": [
+      "approved command runner",
+      "no shell",
+      "stdout/stderr capture",
+      "timeout policy"
+    ],
+    "queue": [
+      "provider operation queue",
+      "run-next route"
+    ],
+    "journal": [
+      "apply execution journal",
+      "execution timeline"
+    ],
+    "safety": [
+      "allowlist",
+      "blocked patterns",
+      "approval id gate"
+    ],
+    "recovery": [
+      "rollback hook registry",
+      "failed-operation recovery plan",
+      "retry policy"
+    ]
+  },
+  "routes": [
+    "/api/execution/status",
+    "/execution/approval",
+    "/execution/timeline"
+  ]
+}

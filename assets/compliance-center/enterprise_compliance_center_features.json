@@ -1,0 +1,47 @@
+{
+  "package": "zai-coder-control-plane-v31-enterprise-compliance-center",
+  "features": {
+    "frameworks": [
+      "SOC 2",
+      "ISO 27001",
+      "GDPR",
+      "Thailand PDPA"
+    ],
+    "controls": [
+      "control library",
+      "evidence requirements",
+      "owner/status"
+    ],
+    "evidence": [
+      "safe evidence mapper",
+      "gap report",
+      "inventory export"
+    ],
+    "data": [
+      "processing register",
+      "retention summary",
+      "legal hold guard"
+    ],
+    "risk": [
+      "risk/control matrix",
+      "risk acceptance gate"
+    ],
+    "attestations": [
+      "policy catalog",
+      "attestation gap report"
+    ],
+    "routes": [
+      "/api/compliance/status",
+      "/compliance",
+      "/compliance/frameworks",
+      "/compliance/controls",
+      "/compliance/risks"
+    ]
+  },
+  "safety": [
+    "no certification claim",
+    "secret path blocking",
+    "legal hold guard",
+    "approval gates"
+  ]
+}

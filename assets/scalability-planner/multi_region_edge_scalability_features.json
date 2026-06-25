@@ -1,0 +1,26 @@
+{
+  "package": "zai-coder-control-plane-v48-multi-region-edge-and-scalability-planner",
+  "features": [
+    "region topology",
+    "edge routing plans",
+    "capacity models",
+    "latency budgets",
+    "scaling scenarios",
+    "readiness checklist",
+    "evidence export"
+  ],
+  "routes": [
+    "/api/scalability/status",
+    "/scalability",
+    "/scalability/regions",
+    "/scalability/edge-routing",
+    "/scalability/capacity",
+    "/scalability/scenarios"
+  ],
+  "safety": [
+    "planning-only",
+    "no infra apply",
+    "no production routing changes",
+    "APPLY=1 for demo writes"
+  ]
+}

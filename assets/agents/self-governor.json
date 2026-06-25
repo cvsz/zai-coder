@@ -1,0 +1,9 @@
+{
+  "name": "self-governor",
+  "description": "Enforces policy profiles and approval gates.",
+  "tags": [
+    "self",
+    "policy",
+    "safety"
+  ]
+}

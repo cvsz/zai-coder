@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+python3 - <<'PY'
+from zai_coder.final_enterprise_release_pack.routes import route_final_docs_index
+print(route_final_docs_index())
+PY

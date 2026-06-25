@@ -1,0 +1,8 @@
+{
+  "name": "self-benchmark",
+  "description": "Benchmark agent/model latency and safety adherence.",
+  "tags": [
+    "self",
+    "benchmark"
+  ]
+}

@@ -1,0 +1,8 @@
+/opt/zai-coder-control-plane/logs/*.log {
+  daily
+  rotate 14
+  compress
+  missingok
+  notifempty
+  copytruncate
+}

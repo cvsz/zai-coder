@@ -1,0 +1,49 @@
+{
+  "package": "zai-coder-control-plane-v28-plugin-connector-hub",
+  "features": {
+    "catalog": [
+      "connector catalog",
+      "search"
+    ],
+    "validation": [
+      "manifest validator",
+      "security report"
+    ],
+    "security": [
+      "env guard",
+      "secret redaction",
+      "live secret blocking"
+    ],
+    "policy": [
+      "install policy",
+      "enable policy",
+      "tenant permissions"
+    ],
+    "plans": [
+      "dry-run sync plans",
+      "adapter plans",
+      "webhook scaffold"
+    ],
+    "store": [
+      "installations",
+      "audit events"
+    ],
+    "offline": [
+      "connector bundle export",
+      "import validation"
+    ],
+    "routes": [
+      "/api/connectors/status",
+      "/connectors",
+      "/connectors/catalog",
+      "/connectors/policy",
+      "/connectors/sync"
+    ]
+  },
+  "safety": [
+    "local-first",
+    "no external API calls",
+    "APPLY=1 for demo mutation",
+    "secrets redacted"
+  ]
+}

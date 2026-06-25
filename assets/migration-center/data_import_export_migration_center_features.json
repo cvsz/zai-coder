@@ -1,0 +1,27 @@
+{
+  "package": "zai-coder-control-plane-v44-data-import-export-and-migration-center",
+  "features": [
+    "data source catalog",
+    "import plan",
+    "export plan",
+    "migration jobs",
+    "schema checks",
+    "mapping catalog",
+    "rollback preview",
+    "evidence export"
+  ],
+  "routes": [
+    "/api/migration/status",
+    "/migration",
+    "/migration/import",
+    "/migration/export",
+    "/migration/schema",
+    "/migration/rollback"
+  ],
+  "safety": [
+    "dry-run migration planning",
+    "no production DB access",
+    "rollback preview only",
+    "APPLY=1 for demo writes"
+  ]
+}

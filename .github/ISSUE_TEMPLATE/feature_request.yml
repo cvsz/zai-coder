@@ -1,0 +1,11 @@
+name: Feature request
+description: Propose a useful improvement
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+    validations:
+      required: true

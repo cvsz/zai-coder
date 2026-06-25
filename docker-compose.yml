@@ -1,0 +1,12 @@
+services:
+  zai-coder:
+    build: .
+    container_name: zai-coder-app-studio
+    working_dir: /app
+    command: ["python", "-m", "pytest", "-q"]
+    environment:
+      ZAI_ENV: local
+    ports:
+      - "127.0.0.1:8765:8765"
+    volumes:
+      - ./:/app

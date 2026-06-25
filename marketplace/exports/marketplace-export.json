@@ -1,0 +1,227 @@
+{
+  "checklist": {
+    "external_publish": false,
+    "items": [
+      {
+        "done": true,
+        "id": "metadata",
+        "title": "Metadata reviewed"
+      },
+      {
+        "done": true,
+        "id": "compatibility",
+        "title": "Compatibility matrix reviewed"
+      },
+      {
+        "done": true,
+        "id": "license",
+        "title": "License and attribution reviewed"
+      },
+      {
+        "done": true,
+        "id": "security",
+        "title": "No secrets in package metadata"
+      },
+      {
+        "done": false,
+        "id": "approval",
+        "title": "Human review before publishing"
+      }
+    ],
+    "package_id": "pkg-market-v42",
+    "requires_review": true
+  },
+  "compatibility": [
+    {
+      "id": "compat-team",
+      "max_version": "",
+      "min_version": "v40.0.0",
+      "package_id": "pkg-team-v40",
+      "runtime": "zai-control-plane",
+      "status": "compatible"
+    },
+    {
+      "id": "compat-dev",
+      "max_version": "",
+      "min_version": "v41.0.0",
+      "package_id": "pkg-dev-v41",
+      "runtime": "zai-control-plane",
+      "status": "compatible"
+    },
+    {
+      "id": "compat-market",
+      "max_version": "",
+      "min_version": "v42.0.0",
+      "package_id": "pkg-market-v42",
+      "runtime": "zai-control-plane",
+      "status": "needs_review"
+    }
+  ],
+  "draft_submission": {
+    "allowed": true,
+    "blocked": [],
+    "dry_run": true,
+    "external_publish": false,
+    "policy": {
+      "allowed": true,
+      "blocked": [],
+      "compatibility": [
+        {
+          "id": "compat-market",
+          "max_version": "",
+          "min_version": "v42.0.0",
+          "package_id": "pkg-market-v42",
+          "runtime": "zai-control-plane",
+          "status": "needs_review"
+        }
+      ],
+      "licenses": [
+        {
+          "attribution": "Generated local-first ZAI package.",
+          "id": "lic-market",
+          "license_id": "MIT",
+          "package_id": "pkg-market-v42",
+          "review_status": "pending"
+        }
+      ],
+      "package": {
+        "created_at": "2026-06-25T12:09:57.293467+00:00",
+        "description": "Internal package registry and draft-only marketplace publishing workflows.",
+        "id": "pkg-market-v42",
+        "license_id": "MIT",
+        "name": "Package Registry and Marketplace Publishing",
+        "package_type": "bundle",
+        "status": "review",
+        "version": "v42.0.0",
+        "visibility": "private"
+      }
+    },
+    "submission": {
+      "created_at": "2026-06-25T12:09:58.953051+00:00",
+      "dry_run": true,
+      "id": "sub_770403cccb11",
+      "notes": "Draft-only submission. No external publishing.",
+      "package_id": "pkg-market-v42",
+      "status": "draft",
+      "target": "internal-marketplace"
+    }
+  },
+  "external_publish": false,
+  "kind": "zai-package-registry-marketplace-export",
+  "licenses": [
+    {
+      "attribution": "Generated local-first ZAI package.",
+      "id": "lic-team",
+      "license_id": "MIT",
+      "package_id": "pkg-team-v40",
+      "review_status": "approved"
+    },
+    {
+      "attribution": "Generated local-first ZAI package.",
+      "id": "lic-dev",
+      "license_id": "MIT",
+      "package_id": "pkg-dev-v41",
+      "review_status": "approved"
+    },
+    {
+      "attribution": "Generated local-first ZAI package.",
+      "id": "lic-market",
+      "license_id": "MIT",
+      "package_id": "pkg-market-v42",
+      "review_status": "pending"
+    }
+  ],
+  "packages": [
+    {
+      "created_at": "2026-06-25T12:09:57.293444+00:00",
+      "description": "Team workspace registry, review queues, and local collaboration workflows.",
+      "id": "pkg-team-v40",
+      "license_id": "MIT",
+      "name": "Team Collaboration and Workspaces",
+      "package_type": "bundle",
+      "status": "approved",
+      "version": "v40.0.0",
+      "visibility": "workspace"
+    },
+    {
+      "created_at": "2026-06-25T12:09:57.293463+00:00",
+      "description": "Developer portal, API reference, OpenAPI export, and SDK snippets.",
+      "id": "pkg-dev-v41",
+      "license_id": "MIT",
+      "name": "Developer Portal and API Docs",
+      "package_type": "bundle",
+      "status": "approved",
+      "version": "v41.0.0",
+      "visibility": "workspace"
+    },
+    {
+      "created_at": "2026-06-25T12:09:57.293467+00:00",
+      "description": "Internal package registry and draft-only marketplace publishing workflows.",
+      "id": "pkg-market-v42",
+      "license_id": "MIT",
+      "name": "Package Registry and Marketplace Publishing",
+      "package_type": "bundle",
+      "status": "review",
+      "version": "v42.0.0",
+      "visibility": "private"
+    },
+    {
+      "created_at": "2026-06-25T12:09:57.293470+00:00",
+      "description": "Local help center and support deflection suggestions.",
+      "id": "pkg-help-center",
+      "license_id": "MIT",
+      "name": "Knowledge Base and Help Center",
+      "package_type": "plugin",
+      "status": "approved",
+      "version": "v37.0.0",
+      "visibility": "workspace"
+    }
+  ],
+  "requires_review": true,
+  "validation": {
+    "ok": true,
+    "reports": [
+      {
+        "id": "pkg-team-v40",
+        "issues": []
+      },
+      {
+        "id": "pkg-dev-v41",
+        "issues": []
+      },
+      {
+        "id": "pkg-market-v42",
+        "issues": []
+      },
+      {
+        "id": "pkg-help-center",
+        "issues": []
+      },
+      {
+        "id": "compat-team",
+        "issues": []
+      },
+      {
+        "id": "compat-dev",
+        "issues": []
+      },
+      {
+        "id": "compat-market",
+        "issues": []
+      },
+      {
+        "id": "lic-team",
+        "issues": []
+      },
+      {
+        "id": "lic-dev",
+        "issues": []
+      },
+      {
+        "id": "lic-market",
+        "issues": []
+      }
+    ]
+  },
+  "version": "1.0"
+}

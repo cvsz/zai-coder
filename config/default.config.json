@@ -1,0 +1,12 @@
+{
+  "provider": "ollama",
+  "base_url": "http://127.0.0.1:11434/v1",
+  "model": "zcode-turbo-safe",
+  "fallback_models": ["zcode-fast-safe", "zcode-qwen25-coder:14b-tiny"],
+  "workspace": ".",
+  "max_tokens": 2048,
+  "temperature": 0.05,
+  "safe_mode": true,
+  "allow_apps_zlms": false,
+  "tool_timeout_seconds": 180
+}

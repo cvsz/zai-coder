@@ -1,0 +1,41 @@
+{
+  "package": "zai-coder-control-plane-v33-enterprise-admin-console",
+  "features": {
+    "directory": [
+      "tenants",
+      "workspaces",
+      "users"
+    ],
+    "security": [
+      "RBAC",
+      "support access guard",
+      "secret redaction"
+    ],
+    "operations": [
+      "service control plans",
+      "audit explorer"
+    ],
+    "configuration": [
+      "feature flags",
+      "config registry"
+    ],
+    "exports": [
+      "admin export bundle",
+      "dashboard export"
+    ],
+    "routes": [
+      "/api/admin/status",
+      "/admin",
+      "/admin/tenants",
+      "/admin/users",
+      "/admin/flags",
+      "/admin/services"
+    ]
+  },
+  "safety": [
+    "read-only default",
+    "APPLY=1 for demo writes",
+    "dry-run service plans",
+    "support approval required"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "files",
+  "description": "Safe workspace file read/write",
+  "tags": [
+    "filesystem",
+    "safe-write"
+  ]
+}

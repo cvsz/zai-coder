@@ -1,0 +1,7 @@
+{
+  "name": "debugger",
+  "description": "Finds root cause from logs and failing commands.",
+  "tags": [
+    "debug"
+  ]
+}

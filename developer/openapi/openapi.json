@@ -1,0 +1,115 @@
+{
+  "components": {
+    "securitySchemes": {
+      "localAuth": {
+        "description": "Use local non-production token only.",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "title": "ZAI Coder Control Plane Local API",
+    "version": "v41"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/content-studio/status": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "localAuth": []
+          }
+        ],
+        "summary": "Read template content studio status.",
+        "tags": [
+          "content"
+        ],
+        "x-stability": "stable"
+      }
+    },
+    "/api/help/status": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "localAuth": []
+          }
+        ],
+        "summary": "Read help center status.",
+        "tags": [
+          "help"
+        ],
+        "x-stability": "stable"
+      }
+    },
+    "/api/notifications/status": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "localAuth": []
+          }
+        ],
+        "summary": "Read notification center status.",
+        "tags": [
+          "notifications"
+        ],
+        "x-stability": "stable"
+      }
+    },
+    "/api/status": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [],
+        "summary": "Read local control-plane status.",
+        "tags": [
+          "core"
+        ],
+        "x-stability": "stable"
+      }
+    },
+    "/api/team/status": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "localAuth": []
+          }
+        ],
+        "summary": "Read team collaboration status.",
+        "tags": [
+          "team"
+        ],
+        "x-stability": "stable"
+      }
+    }
+  },
+  "servers": [
+    {
+      "description": "local development",
+      "url": "http://localhost:8080"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "package": "zai-coder-control-plane-v34-customer-portal-and-onboarding",
+  "features": {
+    "portal": [
+      "customer dashboard",
+      "account directory",
+      "feature matrix"
+    ],
+    "onboarding": [
+      "welcome checklist",
+      "workspace setup plan",
+      "go-live readiness"
+    ],
+    "billing": [
+      "draft billing handoff",
+      "upgrade request plan",
+      "no real charge"
+    ],
+    "support": [
+      "local tickets",
+      "support policy"
+    ],
+    "exports": [
+      "redacted customer export",
+      "audit log"
+    ],
+    "routes": [
+      "/api/customer/status",
+      "/customer",
+      "/customer/accounts",
+      "/customer/onboarding",
+      "/customer/features",
+      "/customer/support"
+    ]
+  },
+  "safety": [
+    "dry-run-first",
+    "no emails",
+    "no payments",
+    "no provisioning",
+    "redacted exports"
+  ]
+}

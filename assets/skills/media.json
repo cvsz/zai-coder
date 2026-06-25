@@ -1,0 +1,9 @@
+{
+  "name": "media",
+  "description": "Offline media artifact generation",
+  "tags": [
+    "svg",
+    "wav",
+    "storyboard"
+  ]
+}

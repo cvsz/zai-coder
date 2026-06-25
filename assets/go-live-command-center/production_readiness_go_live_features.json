@@ -1,0 +1,26 @@
+{
+  "package": "zai-coder-control-plane-v49-production-readiness-and-go-live-command-center",
+  "features": [
+    "readiness gates",
+    "go-live checklist",
+    "launch command center",
+    "manual approval gates",
+    "rollback plans",
+    "launch evidence",
+    "release scorecard"
+  ],
+  "routes": [
+    "/api/go-live/status",
+    "/go-live",
+    "/go-live/gates",
+    "/go-live/checklist",
+    "/go-live/command-center",
+    "/go-live/rollback"
+  ],
+  "safety": [
+    "manual approval required",
+    "no automatic launch",
+    "no production mutation",
+    "APPLY=1 for demo writes"
+  ]
+}

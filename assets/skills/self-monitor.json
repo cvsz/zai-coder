@@ -1,0 +1,8 @@
+{
+  "name": "self-monitor",
+  "description": "Read local health signals for observability.",
+  "tags": [
+    "self",
+    "observability"
+  ]
+}

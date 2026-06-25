@@ -1,0 +1,37 @@
+{
+  "package": "zai-coder-control-plane-v16-cloudflare-go-live",
+  "features": {
+    "tunnel": [
+      "installer plan",
+      "config generator",
+      "ingress validation commands"
+    ],
+    "access": [
+      "policy checklist",
+      "go-live gate"
+    ],
+    "dns": [
+      "record planner",
+      "rollback plan"
+    ],
+    "verification": [
+      "hostname validator",
+      "exposure scan",
+      "public health plan"
+    ],
+    "ui": [
+      "/cloudflare",
+      "/cloudflare/access",
+      "/cloudflare/dns",
+      "/cloudflare/rollback",
+      "/cloudflare/public-health"
+    ]
+  },
+  "safety": [
+    "localhost-first",
+    "Cloudflare Access before DNS",
+    "credentials outside git",
+    "rollback before go-live",
+    "public API protected"
+  ]
+}

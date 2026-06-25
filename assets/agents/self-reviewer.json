@@ -1,0 +1,9 @@
+{
+  "name": "self-reviewer",
+  "description": "Reviews generated patches, plans, and safety compliance.",
+  "tags": [
+    "self",
+    "review",
+    "quality"
+  ]
+}

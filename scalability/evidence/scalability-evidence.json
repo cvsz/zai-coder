@@ -1,0 +1,290 @@
+{
+  "capacity": {
+    "dry_run": true,
+    "models": [
+      {
+        "headroom_percent": 40,
+        "id": "cap_api",
+        "peak_rps": 500,
+        "required_rps": 700,
+        "service": "api-gateway",
+        "status": "review"
+      },
+      {
+        "headroom_percent": 50,
+        "id": "cap_workers",
+        "peak_rps": 250,
+        "required_rps": 375,
+        "service": "worker-orchestration",
+        "status": "draft"
+      },
+      {
+        "headroom_percent": 30,
+        "id": "cap_docs",
+        "peak_rps": 150,
+        "required_rps": 195,
+        "service": "developer-portal",
+        "status": "review"
+      }
+    ],
+    "requires_review": true
+  },
+  "external_apply": false,
+  "kind": "zai-multi-region-edge-scalability-evidence",
+  "latency": {
+    "at_risk": [
+      {
+        "delta_ms": 10,
+        "id": "lat_eu",
+        "p95_ms": 260,
+        "status": "at_risk",
+        "target_ms": 250,
+        "user_region": "EU",
+        "within_budget": false
+      }
+    ],
+    "budgets": [
+      {
+        "delta_ms": -25,
+        "id": "lat_th",
+        "p95_ms": 95,
+        "status": "met",
+        "target_ms": 120,
+        "user_region": "Thailand",
+        "within_budget": true
+      },
+      {
+        "delta_ms": -40,
+        "id": "lat_sg",
+        "p95_ms": 80,
+        "status": "met",
+        "target_ms": 120,
+        "user_region": "Singapore",
+        "within_budget": true
+      },
+      {
+        "delta_ms": -15,
+        "id": "lat_jp",
+        "p95_ms": 165,
+        "status": "planned",
+        "target_ms": 180,
+        "user_region": "Japan",
+        "within_budget": true
+      },
+      {
+        "delta_ms": 10,
+        "id": "lat_eu",
+        "p95_ms": 260,
+        "status": "at_risk",
+        "target_ms": 250,
+        "user_region": "EU",
+        "within_budget": false
+      }
+    ],
+    "dry_run": true
+  },
+  "readiness": {
+    "apply_changes": false,
+    "dry_run": true,
+    "items": [
+      {
+        "done": true,
+        "id": "dns",
+        "title": "DNS routing plan reviewed"
+      },
+      {
+        "done": true,
+        "id": "health",
+        "title": "Health checks designed"
+      },
+      {
+        "done": true,
+        "id": "capacity",
+        "title": "Capacity forecast reviewed"
+      },
+      {
+        "done": false,
+        "id": "residency",
+        "title": "Data residency reviewed"
+      },
+      {
+        "done": false,
+        "id": "manual-approval",
+        "title": "Manual approval before infra changes"
+      }
+    ],
+    "ready": false
+  },
+  "regions": [
+    {
+      "data_residency": "allowed",
+      "id": "reg_bkk",
+      "name": "Bangkok Primary",
+      "region_code": "ap-southeast-th",
+      "role": "primary",
+      "status": "review"
+    },
+    {
+      "data_residency": "allowed",
+      "id": "reg_sgp",
+      "name": "Singapore Secondary",
+      "region_code": "ap-southeast-1",
+      "role": "secondary",
+      "status": "review"
+    },
+    {
+      "data_residency": "review",
+      "id": "reg_tok",
+      "name": "Tokyo Edge",
+      "region_code": "ap-northeast-1",
+      "role": "edge",
+      "status": "planned"
+    },
+    {
+      "data_residency": "restricted",
+      "id": "reg_eu",
+      "name": "EU Standby",
+      "region_code": "eu-west-1",
+      "role": "standby",
+      "status": "planned"
+    }
+  ],
+  "requires_review": true,
+  "routes": [
+    {
+      "dry_run": true,
+      "fallback_region": "reg_sgp",
+      "hostname": "www.zeaz.dev",
+      "id": "route_www",
+      "primary_region": "reg_bkk",
+      "status": "review",
+      "strategy": "latency"
+    },
+    {
+      "dry_run": true,
+      "fallback_region": "reg_sgp",
+      "hostname": "api.zeaz.dev",
+      "id": "route_api",
+      "primary_region": "reg_bkk",
+      "status": "review",
+      "strategy": "failover"
+    },
+    {
+      "dry_run": true,
+      "fallback_region": "reg_tok",
+      "hostname": "docs.zeaz.dev",
+      "id": "route_docs",
+      "primary_region": "reg_sgp",
+      "status": "draft",
+      "strategy": "geo"
+    }
+  ],
+  "scenarios": [
+    {
+      "dry_run": true,
+      "id": "scale_spike",
+      "scenario_type": "traffic_spike",
+      "severity": "high",
+      "title": "Traffic spike during launch"
+    },
+    {
+      "dry_run": true,
+      "id": "scale_failover",
+      "scenario_type": "region_failover",
+      "severity": "critical",
+      "title": "Primary region failover drill"
+    },
+    {
+      "dry_run": true,
+      "id": "scale_cache",
+      "scenario_type": "edge_cache_pressure",
+      "severity": "medium",
+      "title": "Edge cache pressure review"
+    },
+    {
+      "dry_run": true,
+      "id": "scale_queue",
+      "scenario_type": "queue_backlog",
+      "severity": "high",
+      "title": "Queue backlog recovery plan"
+    }
+  ],
+  "validation": {
+    "ok": true,
+    "reports": [
+      {
+        "id": "reg_bkk",
+        "issues": []
+      },
+      {
+        "id": "reg_sgp",
+        "issues": []
+      },
+      {
+        "id": "reg_tok",
+        "issues": []
+      },
+      {
+        "id": "reg_eu",
+        "issues": []
+      },
+      {
+        "id": "route_www",
+        "issues": []
+      },
+      {
+        "id": "route_api",
+        "issues": []
+      },
+      {
+        "id": "route_docs",
+        "issues": []
+      },
+      {
+        "id": "cap_api",
+        "issues": []
+      },
+      {
+        "id": "cap_workers",
+        "issues": []
+      },
+      {
+        "id": "cap_docs",
+        "issues": []
+      },
+      {
+        "id": "lat_th",
+        "issues": []
+      },
+      {
+        "id": "lat_sg",
+        "issues": []
+      },
+      {
+        "id": "lat_jp",
+        "issues": []
+      },
+      {
+        "id": "lat_eu",
+        "issues": []
+      },
+      {
+        "id": "scale_spike",
+        "issues": []
+      },
+      {
+        "id": "scale_failover",
+        "issues": []
+      },
+      {
+        "id": "scale_cache",
+        "issues": []
+      },
+      {
+        "id": "scale_queue",
+        "issues": []
+      }
+    ]
+  },
+  "version": "1.0"
+}

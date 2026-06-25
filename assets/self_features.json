@@ -1,0 +1,521 @@
+[
+  {
+    "name": "self-doctor",
+    "category": "diagnostics",
+    "maturity": "ready",
+    "mutation": false,
+    "description": "Run local health checks for Python, package files, config, Ollama, disk, and safe command policy.",
+    "commands": [
+      "./zai-coder self doctor",
+      "make self-doctor"
+    ],
+    "outputs": [
+      "terminal report",
+      "audit event"
+    ],
+    "safety": [
+      "read-only",
+      "no network required"
+    ]
+  },
+  {
+    "name": "self-test",
+    "category": "quality",
+    "maturity": "ready",
+    "mutation": false,
+    "description": "Run unit tests and summarize failures without modifying source files.",
+    "commands": [
+      "make test",
+      "python3 -m pytest -q"
+    ],
+    "outputs": [
+      "pytest report"
+    ],
+    "safety": [
+      "dry-run by default through Makefile"
+    ]
+  },
+  {
+    "name": "self-lint",
+    "category": "quality",
+    "maturity": "planned",
+    "mutation": false,
+    "description": "Run lightweight syntax and style checks with compileall and optional linters when installed.",
+    "commands": [
+      "make compile",
+      "./zai-coder self runbook self-lint"
+    ],
+    "outputs": [
+      "lint report"
+    ],
+    "safety": [
+      "read-only"
+    ]
+  },
+  {
+    "name": "self-scan",
+    "category": "intelligence",
+    "maturity": "ready",
+    "mutation": false,
+    "description": "Scan project structure while ignoring generated and protected paths.",
+    "commands": [
+      "./zai-coder scan",
+      "make scan"
+    ],
+    "outputs": [
+      "project markdown/json summary"
+    ],
+    "safety": [
+      "blocks apps/zlms/** by default",
+      "ignores generated artifacts"
+    ]
+  },
+  {
+    "name": "self-index",
+    "category": "intelligence",
+    "maturity": "next",
+    "mutation": false,
+    "description": "Build a local file and symbol index for fast project navigation.",
+    "commands": [
+      "./zai-coder index build"
+    ],
+    "outputs": [
+      "SQLite file index",
+      "symbol table"
+    ],
+    "safety": [
+      "no generated paths",
+      "no secrets indexing"
+    ]
+  },
+  {
+    "name": "self-rag",
+    "category": "intelligence",
+    "maturity": "next",
+    "mutation": false,
+    "description": "Build local retrieval context from project chunks and memory.",
+    "commands": [
+      "./zai-coder rag build",
+      "./zai-coder ask --with-rag ..."
+    ],
+    "outputs": [
+      "chunk table",
+      "retrieval results"
+    ],
+    "safety": [
+      "local-first",
+      "redact secrets before storing chunks"
+    ]
+  },
+  {
+    "name": "self-plan",
+    "category": "orchestration",
+    "maturity": "ready",
+    "mutation": false,
+    "description": "Generate a safe implementation plan before edits.",
+    "commands": [
+      "./zai-coder self plan",
+      "./zai-coder plan --task ..."
+    ],
+    "outputs": [
+      "markdown plan"
+    ],
+    "safety": [
+      "no mutation"
+    ]
+  },
+  {
+    "name": "self-orchestrate",
+    "category": "orchestration",
+    "maturity": "next",
+    "mutation": false,
+    "description": "Coordinate planner, coder, reviewer, tester, security, and docs agents.",
+    "commands": [
+      "./zai-coder task create --agent supervisor"
+    ],
+    "outputs": [
+      "task graph",
+      "agent logs"
+    ],
+    "safety": [
+      "approval required before writes"
+    ]
+  },
+  {
+    "name": "self-queue",
+    "category": "orchestration",
+    "maturity": "next",
+    "mutation": true,
+    "description": "Persist tasks with queued/running/completed/failed/cancelled states.",
+    "commands": [
+      "./zai-coder task list",
+      "./zai-coder task logs TASK_ID"
+    ],
+    "outputs": [
+      "SQLite queue",
+      "run logs"
+    ],
+    "safety": [
+      "bounded workers",
+      "cancel support"
+    ]
+  },
+  {
+    "name": "self-heal",
+    "category": "repair",
+    "maturity": "next",
+    "mutation": true,
+    "description": "Detect failed tests or broken commands, propose minimal patches, and require approval before apply.",
+    "commands": [
+      "./zai-coder self heal --check"
+    ],
+    "outputs": [
+      "fix plan",
+      "candidate patch"
+    ],
+    "safety": [
+      "dry-run first",
+      "checkpoint before apply",
+      "no destructive commands"
+    ]
+  },
+  {
+    "name": "self-repair",
+    "category": "repair",
+    "maturity": "next",
+    "mutation": true,
+    "description": "Apply verified patches through git apply after safety checks.",
+    "commands": [
+      "./zai-coder patch fix.diff --check",
+      "make patch-apply PATCH=fix.diff APPLY=1"
+    ],
+    "outputs": [
+      "checkpoint",
+      "audit entry"
+    ],
+    "safety": [
+      "APPLY=1 required",
+      "patch check before apply"
+    ]
+  },
+  {
+    "name": "self-review",
+    "category": "quality",
+    "maturity": "ready",
+    "mutation": false,
+    "description": "Review plans or diffs for risks, test coverage, and repo safety rules.",
+    "commands": [
+      "./zai-coder ask 'review this diff' --agent reviewer"
+    ],
+    "outputs": [
+      "review checklist"
+    ],
+    "safety": [
+      "read-only"
+    ]
+  },
+  {
+    "name": "self-audit",
+    "category": "governance",
+    "maturity": "ready",
+    "mutation": false,
+    "description": "Record and inspect audit events for agent, HTTP, patch, and command activity.",
+    "commands": [
+      "./zai-coder audit --limit 50"
+    ],
+    "outputs": [
+      "JSONL audit log"
+    ],
+    "safety": [
+      "redacted output",
+      "append-only"
+    ]
+  },
+  {
+    "name": "self-govern",
+    "category": "governance",
+    "maturity": "next",
+    "mutation": true,
+    "description": "Apply policy profiles for command allowlists, protected paths, and approval modes.",
+    "commands": [
+      "./zai-coder policy check"
+    ],
+    "outputs": [
+      "policy decision"
+    ],
+    "safety": [
+      "deny by default for high-risk actions"
+    ]
+  },
+  {
+    "name": "self-secure",
+    "category": "security",
+    "maturity": "ready",
+    "mutation": false,
+    "description": "Scan commands and paths for secrets, bypass flags, broad deletes, and generated artifacts.",
+    "commands": [
+      "./scripts/safety-check.sh .",
+      "make safety-check"
+    ],
+    "outputs": [
+      "safety report"
+    ],
+    "safety": [
+      "blocks git add .",
+      "blocks --no-verify",
+      "blocks secrets"
+    ]
+  },
+  {
+    "name": "self-redact",
+    "category": "security",
+    "maturity": "next",
+    "mutation": false,
+    "description": "Redact tokens, API keys, and private paths before model or log storage.",
+    "commands": [
+      "./zai-coder redact FILE"
+    ],
+    "outputs": [
+      "redacted text"
+    ],
+    "safety": [
+      "never print raw secrets"
+    ]
+  },
+  {
+    "name": "self-backup",
+    "category": "resilience",
+    "maturity": "ready",
+    "mutation": true,
+    "description": "Create local checkpoints before patch or risky mutations.",
+    "commands": [
+      "./zai-coder checkpoint create"
+    ],
+    "outputs": [
+      "checkpoint directory"
+    ],
+    "safety": [
+      "APPLY=1 for mutation",
+      "bounded checkpoint size"
+    ]
+  },
+  {
+    "name": "self-rollback",
+    "category": "resilience",
+    "maturity": "next",
+    "mutation": true,
+    "description": "Restore a previous checkpoint and audit the rollback.",
+    "commands": [
+      "./zai-coder checkpoint restore CHECKPOINT_ID"
+    ],
+    "outputs": [
+      "restored files",
+      "audit entry"
+    ],
+    "safety": [
+      "explicit checkpoint id",
+      "confirmation required"
+    ]
+  },
+  {
+    "name": "self-monitor",
+    "category": "observability",
+    "maturity": "next",
+    "mutation": false,
+    "description": "Monitor local CPU, RAM, disk, Ollama status, queue health, and recent failures.",
+    "commands": [
+      "./zai-coder self monitor"
+    ],
+    "outputs": [
+      "health report"
+    ],
+    "safety": [
+      "read-only"
+    ]
+  },
+  {
+    "name": "self-benchmark",
+    "category": "quality",
+    "maturity": "next",
+    "mutation": false,
+    "description": "Benchmark model latency, prompt quality, and safety-rule adherence.",
+    "commands": [
+      "./zai-coder bench models"
+    ],
+    "outputs": [
+      "benchmark report"
+    ],
+    "safety": [
+      "small prompts by default"
+    ]
+  },
+  {
+    "name": "self-evaluate",
+    "category": "quality",
+    "maturity": "next",
+    "mutation": false,
+    "description": "Evaluate agents against regression prompts and expected safety outcomes.",
+    "commands": [
+      "./zai-coder eval run"
+    ],
+    "outputs": [
+      "eval scores"
+    ],
+    "safety": [
+      "no source mutation"
+    ]
+  },
+  {
+    "name": "self-document",
+    "category": "docs",
+    "maturity": "ready",
+    "mutation": true,
+    "description": "Generate or update requirement docs, feature matrix, and operator runbooks.",
+    "commands": [
+      "./zai-coder self requirement-next --out docs/requirements/NEXT_SELF_REQUIREMENTS.md"
+    ],
+    "outputs": [
+      "markdown docs"
+    ],
+    "safety": [
+      "explicit output path",
+      "safe path check"
+    ]
+  },
+  {
+    "name": "self-explain",
+    "category": "docs",
+    "maturity": "ready",
+    "mutation": false,
+    "description": "Explain package capabilities, commands, and next roadmap.",
+    "commands": [
+      "./zai-coder self list"
+    ],
+    "outputs": [
+      "feature list"
+    ],
+    "safety": [
+      "read-only"
+    ]
+  },
+  {
+    "name": "self-update",
+    "category": "maintenance",
+    "maturity": "next",
+    "mutation": true,
+    "description": "Update package scaffolds through safe patch bundles, never curl-pipe shell.",
+    "commands": [
+      "./zai-coder update check"
+    ],
+    "outputs": [
+      "update plan",
+      "patch bundle"
+    ],
+    "safety": [
+      "dry-run first",
+      "no auto-update from remote scripts"
+    ]
+  },
+  {
+    "name": "self-upgrade",
+    "category": "maintenance",
+    "maturity": "next",
+    "mutation": true,
+    "description": "Apply versioned migrations for config, memory, and task queue schemas.",
+    "commands": [
+      "./zai-coder migrate"
+    ],
+    "outputs": [
+      "migration report"
+    ],
+    "safety": [
+      "backup before migration"
+    ]
+  },
+  {
+    "name": "self-host",
+    "category": "deployment",
+    "maturity": "ready",
+    "mutation": true,
+    "description": "Run local API/web UI on localhost by default.",
+    "commands": [
+      "./zai-coder serve --host 127.0.0.1 --port 8765",
+      "make serve APPLY=1"
+    ],
+    "outputs": [
+      "local web UI"
+    ],
+    "safety": [
+      "localhost default",
+      "remote bind requires auth in next phase"
+    ]
+  },
+  {
+    "name": "self-deploy",
+    "category": "deployment",
+    "maturity": "next",
+    "mutation": true,
+    "description": "Generate deploy plans for systemd, Docker, and reverse proxy without mutating production by default.",
+    "commands": [
+      "./zai-coder deploy plan"
+    ],
+    "outputs": [
+      "deployment checklist"
+    ],
+    "safety": [
+      "operator approval required"
+    ]
+  },
+  {
+    "name": "self-package",
+    "category": "release",
+    "maturity": "ready",
+    "mutation": true,
+    "description": "Build a release ZIP after tests and safety checks.",
+    "commands": [
+      "make package APPLY=1",
+      "./scripts/package.sh zai-coder-release"
+    ],
+    "outputs": [
+      "release zip"
+    ],
+    "safety": [
+      "test before package",
+      "no secrets"
+    ]
+  },
+  {
+    "name": "self-clean",
+    "category": "maintenance",
+    "maturity": "ready",
+    "mutation": true,
+    "description": "Remove only local Python/test cache files.",
+    "commands": [
+      "make clean-preview",
+      "make clean-safe APPLY=1"
+    ],
+    "outputs": [
+      "cache cleanup report"
+    ],
+    "safety": [
+      "no project source deletion"
+    ]
+  },
+  {
+    "name": "self-media",
+    "category": "media",
+    "maturity": "ready",
+    "mutation": true,
+    "description": "Generate local SVG/WAV/storyboard artifacts for image, voice, music, animation, and video planning.",
+    "commands": [
+      "./zai-coder media image --prompt ...",
+      "./zai-coder media voice --text ..."
+    ],
+    "outputs": [
+      "media artifacts"
+    ],
+    "safety": [
+      "local fallback generators"
+    ]
+  }
+]

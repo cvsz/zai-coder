@@ -1,0 +1,452 @@
+{
+  "artifacts": [
+    {
+      "artifact_type": "installer",
+      "id": "art_installer",
+      "name": "Enterprise installer manifest",
+      "path": "install.sh",
+      "required": true,
+      "status": "ready"
+    },
+    {
+      "artifact_type": "docs",
+      "id": "art_docs",
+      "name": "Full documentation index",
+      "path": "docs/final-release/FINAL_DOCUMENTATION_INDEX.md",
+      "required": true,
+      "status": "ready"
+    },
+    {
+      "artifact_type": "dashboard",
+      "id": "art_dashboards",
+      "name": "Dashboard route index",
+      "path": "docs/final-release/DASHBOARD_ROUTE_INDEX.md",
+      "required": true,
+      "status": "ready"
+    },
+    {
+      "artifact_type": "test_report",
+      "id": "art_tests",
+      "name": "Final test report",
+      "path": "BUILD_REPORT_V50_FINAL_ENTERPRISE_RELEASE_PACK.txt",
+      "required": true,
+      "status": "ready"
+    },
+    {
+      "artifact_type": "security_report",
+      "id": "art_security",
+      "name": "Security summary",
+      "path": "docs/final-release/SECURITY_PRIVACY_COMPLIANCE_SUMMARY.md",
+      "required": true,
+      "status": "ready"
+    },
+    {
+      "artifact_type": "privacy_report",
+      "id": "art_privacy",
+      "name": "Privacy summary",
+      "path": "docs/final-release/SECURITY_PRIVACY_COMPLIANCE_SUMMARY.md",
+      "required": true,
+      "status": "ready"
+    },
+    {
+      "artifact_type": "compliance_report",
+      "id": "art_compliance",
+      "name": "Compliance summary",
+      "path": "docs/final-release/SECURITY_PRIVACY_COMPLIANCE_SUMMARY.md",
+      "required": true,
+      "status": "ready"
+    },
+    {
+      "artifact_type": "migration_guide",
+      "id": "art_migration",
+      "name": "Migration guide",
+      "path": "docs/final-release/MIGRATION_GUIDE.md",
+      "required": true,
+      "status": "ready"
+    },
+    {
+      "artifact_type": "rollback_guide",
+      "id": "art_rollback",
+      "name": "Rollback guide",
+      "path": "docs/final-release/ROLLBACK_GUIDE.md",
+      "required": true,
+      "status": "ready"
+    },
+    {
+      "artifact_type": "release_notes",
+      "id": "art_notes",
+      "name": "Release notes",
+      "path": "docs/final-release/RELEASE_NOTES_V50.md",
+      "required": true,
+      "status": "ready"
+    },
+    {
+      "artifact_type": "validation_report",
+      "id": "art_validation",
+      "name": "Final enterprise validation report",
+      "path": "final-release/reports/final-validation-report.md",
+      "required": true,
+      "status": "ready"
+    },
+    {
+      "artifact_type": "hermes_alignment",
+      "id": "art_hermes",
+      "name": "Hermes Agent alignment notes",
+      "path": "docs/hermes-agent-alignment/HERMES_AGENT_ALIGNMENT.md",
+      "required": true,
+      "status": "ready"
+    }
+  ],
+  "automatic_production_launch": false,
+  "dashboard_routes": {
+    "core": [
+      "/",
+      "/api/status"
+    ],
+    "developer": [
+      "/developer",
+      "/api/developer/status"
+    ],
+    "dr": [
+      "/dr",
+      "/api/dr/status"
+    ],
+    "final_release": [
+      "/final-release",
+      "/api/final-release/status"
+    ],
+    "go_live": [
+      "/go-live",
+      "/api/go-live/status"
+    ],
+    "identity": [
+      "/identity",
+      "/api/identity/status"
+    ],
+    "marketplace": [
+      "/marketplace",
+      "/api/marketplace/status"
+    ],
+    "migration": [
+      "/migration",
+      "/api/migration/status"
+    ],
+    "qa": [
+      "/qa",
+      "/api/qa/status"
+    ],
+    "scalability": [
+      "/scalability",
+      "/api/scalability/status"
+    ],
+    "security": [
+      "/security-ops",
+      "/api/security-ops/status"
+    ],
+    "team": [
+      "/team",
+      "/api/team/status"
+    ]
+  },
+  "gates": [
+    {
+      "category": "install",
+      "id": "gate_install",
+      "required": true,
+      "status": "passed",
+      "title": "Installer and local bootstrap workflow included"
+    },
+    {
+      "category": "test",
+      "id": "gate_tests",
+      "required": true,
+      "status": "passed",
+      "title": "Full test suite passes"
+    },
+    {
+      "category": "security",
+      "id": "gate_security",
+      "required": true,
+      "status": "passed",
+      "title": "Security summary included"
+    },
+    {
+      "category": "privacy",
+      "id": "gate_privacy",
+      "required": true,
+      "status": "passed",
+      "title": "Privacy summary included"
+    },
+    {
+      "category": "compliance",
+      "id": "gate_compliance",
+      "required": true,
+      "status": "passed",
+      "title": "Compliance summary included"
+    },
+    {
+      "category": "docs",
+      "id": "gate_docs",
+      "required": true,
+      "status": "passed",
+      "title": "Operator developer customer admin docs indexed"
+    },
+    {
+      "category": "go_live",
+      "id": "gate_go_live",
+      "required": true,
+      "status": "passed",
+      "title": "Go-live checklist included"
+    },
+    {
+      "category": "rollback",
+      "id": "gate_rollback",
+      "required": true,
+      "status": "passed",
+      "title": "Rollback guide included"
+    },
+    {
+      "category": "hermes_alignment",
+      "id": "gate_hermes",
+      "required": true,
+      "status": "passed",
+      "title": "Hermes-inspired agent runtime alignment included"
+    }
+  ],
+  "hermes_alignment": [
+    {
+      "adopted": true,
+      "id": "ha_learning_loop",
+      "pattern": "learning_loop",
+      "safety_note": "skill/memory changes are local and review-first",
+      "title": "Closed learning loop"
+    },
+    {
+      "adopted": true,
+      "id": "ha_memory",
+      "pattern": "memory",
+      "safety_note": "no sensitive memory export by default",
+      "title": "Persistent memory model"
+    },
+    {
+      "adopted": true,
+      "id": "ha_skills",
+      "pattern": "skills",
+      "safety_note": "skills are documented and reviewable",
+      "title": "Portable skills system"
+    },
+    {
+      "adopted": true,
+      "id": "ha_context",
+      "pattern": "context_files",
+      "safety_note": "context injection is explicit and source-controlled",
+      "title": "Project context files"
+    },
+    {
+      "adopted": true,
+      "id": "ha_mcp",
+      "pattern": "mcp_toolsets",
+      "safety_note": "tools are allowlisted and dry-run-first",
+      "title": "MCP and toolset filtering"
+    },
+    {
+      "adopted": true,
+      "id": "ha_backends",
+      "pattern": "terminal_backends",
+      "safety_note": "local/docker/ssh plans are isolated",
+      "title": "Multiple terminal backends"
+    },
+    {
+      "adopted": true,
+      "id": "ha_checkpoint",
+      "pattern": "checkpoints_rollback",
+      "safety_note": "destructive operations require checkpoint planning",
+      "title": "Checkpoints and rollback"
+    },
+    {
+      "adopted": true,
+      "id": "ha_security",
+      "pattern": "security_approvals",
+      "safety_note": "human approval required for production actions",
+      "title": "Command approvals and authorization"
+    },
+    {
+      "adopted": true,
+      "id": "ha_gateway",
+      "pattern": "messaging_gateway",
+      "safety_note": "notifications remain draft/local unless configured",
+      "title": "Messaging gateway pattern"
+    },
+    {
+      "adopted": true,
+      "id": "ha_delegation",
+      "pattern": "delegation",
+      "safety_note": "delegated work is scoped and audited",
+      "title": "Delegation and parallel workstreams"
+    }
+  ],
+  "installer": {
+    "entrypoints": [
+      "install.sh",
+      "run.sh",
+      "Makefile"
+    ],
+    "install_modes": [
+      "local",
+      "docker-plan",
+      "ssh-plan"
+    ],
+    "package": "zai-coder-control-plane-v50-final-enterprise-release-pack",
+    "post_install_checks": [
+      "make final-release-status",
+      "make final-validation-report",
+      "make final-go-live-checklist"
+    ],
+    "safe_defaults": {
+      "apply_requires": "APPLY=1",
+      "dry_run": true,
+      "production_launch": false
+    }
+  },
+  "kind": "zai-final-enterprise-release-pack",
+  "requires_review": true,
+  "scorecard": {
+    "manual_release_review_required": true,
+    "missing_artifacts": [],
+    "passed_gates": 9,
+    "ready": true,
+    "required_gates": 9,
+    "score": 100.0
+  },
+  "secrets_included": false,
+  "validation": {
+    "ok": true,
+    "reports": [
+      {
+        "id": "art_installer",
+        "issues": []
+      },
+      {
+        "id": "art_docs",
+        "issues": []
+      },
+      {
+        "id": "art_dashboards",
+        "issues": []
+      },
+      {
+        "id": "art_tests",
+        "issues": []
+      },
+      {
+        "id": "art_security",
+        "issues": []
+      },
+      {
+        "id": "art_privacy",
+        "issues": []
+      },
+      {
+        "id": "art_compliance",
+        "issues": []
+      },
+      {
+        "id": "art_migration",
+        "issues": []
+      },
+      {
+        "id": "art_rollback",
+        "issues": []
+      },
+      {
+        "id": "art_notes",
+        "issues": []
+      },
+      {
+        "id": "art_validation",
+        "issues": []
+      },
+      {
+        "id": "art_hermes",
+        "issues": []
+      },
+      {
+        "id": "gate_install",
+        "issues": []
+      },
+      {
+        "id": "gate_tests",
+        "issues": []
+      },
+      {
+        "id": "gate_security",
+        "issues": []
+      },
+      {
+        "id": "gate_privacy",
+        "issues": []
+      },
+      {
+        "id": "gate_compliance",
+        "issues": []
+      },
+      {
+        "id": "gate_docs",
+        "issues": []
+      },
+      {
+        "id": "gate_go_live",
+        "issues": []
+      },
+      {
+        "id": "gate_rollback",
+        "issues": []
+      },
+      {
+        "id": "gate_hermes",
+        "issues": []
+      },
+      {
+        "id": "ha_learning_loop",
+        "issues": []
+      },
+      {
+        "id": "ha_memory",
+        "issues": []
+      },
+      {
+        "id": "ha_skills",
+        "issues": []
+      },
+      {
+        "id": "ha_context",
+        "issues": []
+      },
+      {
+        "id": "ha_mcp",
+        "issues": []
+      },
+      {
+        "id": "ha_backends",
+        "issues": []
+      },
+      {
+        "id": "ha_checkpoint",
+        "issues": []
+      },
+      {
+        "id": "ha_security",
+        "issues": []
+      },
+      {
+        "id": "ha_gateway",
+        "issues": []
+      },
+      {
+        "id": "ha_delegation",
+        "issues": []
+      }
+    ]
+  },
+  "version": "v50"
+}

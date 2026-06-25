@@ -1,0 +1,39 @@
+{
+  "package": "zai-coder-control-plane-v26-agent-runtime-supervisor",
+  "features": {
+    "runtime": [
+      "agent registry",
+      "lifecycle supervisor",
+      "heartbeat monitor"
+    ],
+    "policy": [
+      "sandbox profiles",
+      "budget guard",
+      "permission guard"
+    ],
+    "tasks": [
+      "task assignment",
+      "worker bridge"
+    ],
+    "recovery": [
+      "crash recovery plan",
+      "restart budget"
+    ],
+    "audit": [
+      "agent audit log"
+    ],
+    "routes": [
+      "/api/agents/status",
+      "/agents",
+      "/agents/sandbox",
+      "/agents/lifecycle",
+      "/agents/policy"
+    ]
+  },
+  "safety": [
+    "no direct arbitrary process launch",
+    "APPLY=1 for demo mutation",
+    "blocked secret/repo paths",
+    "worker bridge only"
+  ]
+}

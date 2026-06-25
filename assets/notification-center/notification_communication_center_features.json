@@ -1,0 +1,44 @@
+{
+  "package": "zai-coder-control-plane-v39-notification-and-communication-center",
+  "features": {
+    "channels": [
+      "channel policy registry",
+      "external channel disablement"
+    ],
+    "templates": [
+      "notification template registry",
+      "safe variable rendering"
+    ],
+    "preferences": [
+      "customer preferences",
+      "topic/frequency decisions"
+    ],
+    "delivery": [
+      "delivery gate",
+      "digest plan",
+      "schedule plan"
+    ],
+    "inbox": [
+      "portal inbox",
+      "communication thread builder"
+    ],
+    "exports": [
+      "notification export bundle",
+      "notification report"
+    ],
+    "routes": [
+      "/api/notifications/status",
+      "/notifications",
+      "/notifications/channels",
+      "/notifications/templates",
+      "/notifications/preferences",
+      "/notifications/drafts"
+    ]
+  },
+  "safety": [
+    "draft-only",
+    "no external send",
+    "APPLY=1 for demo writes",
+    "sensitive content blocked"
+  ]
+}

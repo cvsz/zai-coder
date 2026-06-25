@@ -1,0 +1,5 @@
+{
+  "name": "safe-code-review",
+  "agents": ["planner", "coder", "reviewer"],
+  "task": "Inspect repo state, identify safe fixes, and produce validation commands without editing files."
+}

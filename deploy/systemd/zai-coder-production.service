@@ -1,0 +1,22 @@
+[Unit]
+Description=ZAI Coder App Studio Production
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=zeazdev
+WorkingDirectory=/opt/zai-coder-control-plane
+Environment=ZAI_ENV=production
+Environment=ZAI_HOST=127.0.0.1
+Environment=ZAI_PORT=8765
+ExecStart=/usr/bin/bash scripts/deploy/serve-local.sh
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/opt/zai-coder-control-plane/data /opt/zai-coder-control-plane/logs /opt/zai-coder-control-plane/backups
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,167 @@
+{
+  "external_publish": false,
+  "fixtures": [
+    {
+      "fixture_type": "json",
+      "id": "fx-demo-json",
+      "name": "Demo JSON payloads",
+      "safe": true,
+      "scope": "test"
+    },
+    {
+      "fixture_type": "sqlite",
+      "id": "fx-local-sqlite",
+      "name": "Local SQLite sandbox",
+      "safe": true,
+      "scope": "local"
+    },
+    {
+      "fixture_type": "file_tree",
+      "id": "fx-file-tree",
+      "name": "Synthetic file tree",
+      "safe": true,
+      "scope": "demo"
+    }
+  ],
+  "kind": "zai-qa-evidence-bundle",
+  "quality_gates": {
+    "dry_run": true,
+    "metrics": {
+      "coverage": 0.8,
+      "critical_failures": 0.0,
+      "lint_errors": 0.0,
+      "security_findings": 0.0,
+      "tests_passed": 1.0
+    },
+    "ok": true,
+    "results": [
+      {
+        "gate": {
+          "id": "gate-tests",
+          "metric": "tests_passed",
+          "name": "All tests pass",
+          "required": true,
+          "threshold": 1.0
+        },
+        "passed": true,
+        "value": 1.0
+      },
+      {
+        "gate": {
+          "id": "gate-critical",
+          "metric": "critical_failures",
+          "name": "No critical failures",
+          "required": true,
+          "threshold": 0.0
+        },
+        "passed": true,
+        "value": 0.0
+      },
+      {
+        "gate": {
+          "id": "gate-lint",
+          "metric": "lint_errors",
+          "name": "No lint errors in generated docs",
+          "required": false,
+          "threshold": 0.0
+        },
+        "passed": true,
+        "value": 0.0
+      }
+    ]
+  },
+  "regression": {
+    "blocked": 0,
+    "critical": 1,
+    "external_publish": false,
+    "kind": "zai-qa-regression-report",
+    "ready": 4,
+    "status": "ready",
+    "total": 4
+  },
+  "requires_review": true,
+  "test_matrix": [
+    {
+      "command": "python -m pytest -q",
+      "id": "tc-core-unit",
+      "name": "Core unit suite",
+      "priority": "critical",
+      "status": "ready",
+      "suite": "core",
+      "test_type": "unit"
+    },
+    {
+      "command": "python -m pytest tests/test_routes.py -q",
+      "id": "tc-routes-smoke",
+      "name": "Route smoke suite",
+      "priority": "high",
+      "status": "ready",
+      "suite": "routes",
+      "test_type": "smoke"
+    },
+    {
+      "command": "python -m pytest tests/test_package_registry_marketplace_publishing_v42.py -q",
+      "id": "tc-market-regression",
+      "name": "Marketplace regression suite",
+      "priority": "high",
+      "status": "ready",
+      "suite": "marketplace",
+      "test_type": "regression"
+    },
+    {
+      "command": "python -m pytest tests/test_team_collaboration_workspaces_v40.py -q",
+      "id": "tc-team-contract",
+      "name": "Team contract checks",
+      "priority": "normal",
+      "status": "ready",
+      "suite": "team",
+      "test_type": "contract"
+    }
+  ],
+  "validation": {
+    "ok": true,
+    "reports": [
+      {
+        "id": "tc-core-unit",
+        "issues": []
+      },
+      {
+        "id": "tc-routes-smoke",
+        "issues": []
+      },
+      {
+        "id": "tc-market-regression",
+        "issues": []
+      },
+      {
+        "id": "tc-team-contract",
+        "issues": []
+      },
+      {
+        "id": "fx-demo-json",
+        "issues": []
+      },
+      {
+        "id": "fx-local-sqlite",
+        "issues": []
+      },
+      {
+        "id": "fx-file-tree",
+        "issues": []
+      },
+      {
+        "id": "gate-tests",
+        "issues": []
+      },
+      {
+        "id": "gate-critical",
+        "issues": []
+      },
+      {
+        "id": "gate-lint",
+        "issues": []
+      }
+    ]
+  },
+  "version": "1.0"
+}

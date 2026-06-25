@@ -1,0 +1,40 @@
+{
+  "package": "zai-coder-control-plane-v7-monetization-core",
+  "features": {
+    "billing": [
+      "plan catalog",
+      "subscription states",
+      "sandbox checkout plan"
+    ],
+    "quota": [
+      "reservation",
+      "commit",
+      "release",
+      "idempotency"
+    ],
+    "credits": [
+      "append-only ledger",
+      "integer credit units",
+      "balance"
+    ],
+    "usage": [
+      "usage events",
+      "totals",
+      "resource accounting"
+    ],
+    "rate_limits": [
+      "local token bucket"
+    ],
+    "reconciliation": [
+      "ledger/usage reconciliation"
+    ],
+    "admin": [
+      "static monetization dashboard"
+    ],
+    "safety": [
+      "no live payment calls",
+      "dry-run-first",
+      "no secret storage"
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "self-healer",
+  "description": "Diagnoses failures and proposes dry-run-first repair plans.",
+  "tags": [
+    "self",
+    "repair",
+    "tests"
+  ]
+}

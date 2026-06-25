@@ -1,0 +1,7 @@
+{
+  "name": "devops",
+  "description": "Handles Docker, CI/CD, systemd, Cloudflare, and deploys.",
+  "tags": [
+    "devops"
+  ]
+}

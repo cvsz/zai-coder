@@ -1,0 +1,45 @@
+{
+  "package": "zai-coder-control-plane-v36-feedback-and-roadmap-center",
+  "features": {
+    "feedback": [
+      "feedback inbox",
+      "triage",
+      "sensitive text guard"
+    ],
+    "roadmap": [
+      "roadmap registry",
+      "visibility views",
+      "horizon views"
+    ],
+    "prioritization": [
+      "RICE scoring",
+      "matrix"
+    ],
+    "linking": [
+      "feedback-roadmap links",
+      "release link plan"
+    ],
+    "loop": [
+      "changelog feedback prompt",
+      "summary"
+    ],
+    "exports": [
+      "roadmap report",
+      "customer export"
+    ],
+    "routes": [
+      "/api/roadmap/status",
+      "/roadmap",
+      "/roadmap/feedback",
+      "/roadmap/items",
+      "/roadmap/customer-view",
+      "/roadmap/prioritization"
+    ]
+  },
+  "safety": [
+    "local-only",
+    "no external publishing",
+    "private roadmap filtering",
+    "APPLY=1 for demo writes"
+  ]
+}

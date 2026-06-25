@@ -1,0 +1,21 @@
+[Unit]
+Description=ZAI Coder Control Plane
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=zai
+WorkingDirectory=/opt/zai-coder-control-plane
+EnvironmentFile=/opt/zai-coder-control-plane/.env
+ExecStart=/opt/zai-coder-control-plane/.venv/bin/uvicorn zai_coder.production_hardening_core.server.asgi:app --host 127.0.0.1 --port 8765 --proxy-headers
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/opt/zai-coder-control-plane/data /opt/zai-coder-control-plane/logs /opt/zai-coder-control-plane/storage /opt/zai-coder-control-plane/backups
+
+[Install]
+WantedBy=multi-user.target

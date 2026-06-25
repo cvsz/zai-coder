@@ -1,0 +1,4 @@
+# Core runtime has no mandatory third-party dependencies.
+# Optional server mode dependencies:
+# fastapi
+# uvicorn

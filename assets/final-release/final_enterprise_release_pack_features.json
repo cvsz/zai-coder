@@ -1,0 +1,29 @@
+{
+  "package": "zai-coder-control-plane-v50-final-enterprise-release-pack",
+  "features": [
+    "installer manifest",
+    "docs index",
+    "dashboard route index",
+    "final validation report",
+    "security privacy compliance summary",
+    "migration guide",
+    "rollback guide",
+    "release notes",
+    "go-live checklist",
+    "Hermes Agent alignment"
+  ],
+  "routes": [
+    "/api/final-release/status",
+    "/final-release",
+    "/final-release/docs",
+    "/final-release/dashboards",
+    "/final-release/validation",
+    "/final-release/go-live"
+  ],
+  "safety": [
+    "review-first",
+    "no automatic launch",
+    "no secrets",
+    "APPLY=1 for export writes"
+  ]
+}

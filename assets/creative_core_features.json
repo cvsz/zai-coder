@@ -1,0 +1,38 @@
+{
+  "package": "zai-coder-control-plane-v4-creative-core",
+  "features": {
+    "game_core_system": [
+      "game project model",
+      "scene model",
+      "asset model",
+      "game design doc",
+      "mechanic validator",
+      "safe game asset paths"
+    ],
+    "document_core_system": [
+      "document project model",
+      "sections",
+      "technical spec template",
+      "runbook template",
+      "markdown renderer",
+      "HTML renderer",
+      "safe document paths"
+    ],
+    "movie_system": [
+      "movie project model",
+      "characters",
+      "scene outline",
+      "treatment renderer",
+      "storyboard shots",
+      "shotlist renderer",
+      "production task planner"
+    ]
+  },
+  "safety": [
+    "original-content first",
+    "no unsafe paths",
+    "no apps/zlms/**",
+    "no generated caches",
+    "dry-run-first compatible"
+  ]
+}

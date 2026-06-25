@@ -1,0 +1,50 @@
+{
+  "package": "zai-coder-control-plane-v5-creative-automation",
+  "features": {
+    "creative_dashboard": [
+      "static dashboard renderer",
+      "project table",
+      "asset table"
+    ],
+    "asset_library": [
+      "safe path validation",
+      "asset manifest",
+      "project-linked assets"
+    ],
+    "approval_workflow": [
+      "draft",
+      "review",
+      "approved",
+      "active",
+      "archived"
+    ],
+    "game_exporters": [
+      "Phaser plan",
+      "Godot scaffold plan"
+    ],
+    "document_exporters": [
+      "Markdown export",
+      "HTML export",
+      "DOCX/PDF placeholders"
+    ],
+    "movie_exporters": [
+      "treatment export",
+      "storyboard JSON",
+      "subtitle stub",
+      "FFmpeg/Remotion plan"
+    ],
+    "api_foundation": [
+      "status route",
+      "assets route",
+      "export-plan route"
+    ]
+  },
+  "safety": [
+    "dry-run-first",
+    "no external posting",
+    "no external rendering",
+    "no unsafe paths",
+    "no apps/zlms/**",
+    "original content only"
+  ]
+}

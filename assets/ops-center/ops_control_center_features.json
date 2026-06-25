@@ -1,0 +1,38 @@
+{
+  "package": "zai-coder-control-plane-v15-operations-control-center",
+  "features": {
+    "ui": [
+      "operations shell",
+      "overview",
+      "service status",
+      "health",
+      "backup",
+      "upgrade"
+    ],
+    "logs": [
+      "safe relative log viewer",
+      "tail plan"
+    ],
+    "actions": [
+      "status plan",
+      "restart plan",
+      "backup plan",
+      "upgrade plan",
+      "rollback plan"
+    ],
+    "routes": [
+      "/api/ops/status",
+      "/ops",
+      "/ops/services",
+      "/ops/health",
+      "/ops/backup",
+      "/ops/upgrade"
+    ]
+  },
+  "safety": [
+    "read-only dashboards",
+    "dry-run action plans",
+    "safe log paths",
+    "backup before mutation"
+  ]
+}

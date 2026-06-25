@@ -1,0 +1,7 @@
+{
+  "name": "memory",
+  "description": "Store project notes and run history in SQLite.",
+  "tags": [
+    "memory"
+  ]
+}

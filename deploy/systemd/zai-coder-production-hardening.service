@@ -1,0 +1,23 @@
+[Unit]
+Description=ZAI Coder Production Hardening Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=zeazdev
+WorkingDirectory=/opt/zai-coder-control-plane
+Environment=ZAI_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=8765
+ExecStart=/usr/bin/bash scripts/production/serve-fastapi.sh
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/opt/zai-coder-control-plane/data /opt/zai-coder-control-plane/logs /opt/zai-coder-control-plane/storage /opt/zai-coder-control-plane/backups
+
+[Install]
+WantedBy=multi-user.target

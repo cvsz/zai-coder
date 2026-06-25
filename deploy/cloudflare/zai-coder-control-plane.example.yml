@@ -1,0 +1,8 @@
+# Example Cloudflare Tunnel config. Do not commit credentials.
+tunnel: zai-coder-control-plane
+credentials-file: /etc/cloudflared/zai-coder-control-plane.json
+
+ingress:
+  - hostname: zai.example.com
+    service: http://127.0.0.1:8765
+  - service: http_status:404

@@ -1,0 +1,44 @@
+{
+  "package": "zai-coder-control-plane-v8-app-studio",
+  "features": {
+    "unified_dashboard": [
+      "projects",
+      "members",
+      "plans",
+      "runs",
+      "audit"
+    ],
+    "api_auth": [
+      "hashed API keys",
+      "revoke",
+      "verify",
+      "no raw key storage"
+    ],
+    "migrations": [
+      "schema_migrations",
+      "dry-run plan",
+      "apply mode"
+    ],
+    "worker": [
+      "SQLite job queue",
+      "handler registry",
+      "run_one"
+    ],
+    "streaming": [
+      "run event buffer",
+      "SSE serialization"
+    ],
+    "deployment": [
+      "Dockerfile",
+      "docker-compose",
+      "systemd service",
+      "Cloudflare checklist"
+    ]
+  },
+  "safety": [
+    "localhost-first",
+    "dry-run-first",
+    "APPLY=1 for deploy mutation",
+    "no secrets"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "reviewer",
+  "description": "Reviews changes for safety, correctness, and validation gaps",
+  "tags": [
+    "review",
+    "security",
+    "tests"
+  ]
+}

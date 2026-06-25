@@ -1,0 +1,8 @@
+{
+  "name": "multi-agent",
+  "description": "Planner/coder/reviewer orchestration",
+  "tags": [
+    "orchestration",
+    "agents"
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "package": "zai-coder-control-plane-v10-integration-core",
+  "features": {
+    "github": [
+      "repo status plan",
+      "exact path publish plan",
+      "PR summary plan",
+      "release draft plan"
+    ],
+    "cloudflare": [
+      "tunnel validate plan",
+      "DNS plan",
+      "Pages deploy plan"
+    ],
+    "docker": [
+      "status plan",
+      "compose config check",
+      "image build plan",
+      "safe cleanup plan"
+    ],
+    "huggingface": [
+      "dataset upload plan",
+      "model publish plan",
+      "Space scaffold plan",
+      "model card generator"
+    ],
+    "social": [
+      "X draft",
+      "LinkedIn draft",
+      "Facebook draft",
+      "Instagram draft",
+      "TikTok draft",
+      "YouTube draft"
+    ],
+    "storage": [
+      "local storage",
+      "S3 plan",
+      "R2 plan"
+    ],
+    "notifications": [
+      "email draft",
+      "Slack payload",
+      "Discord payload",
+      "Telegram payload"
+    ],
+    "openapi": [
+      "schema export",
+      "integration route registry"
+    ]
+  },
+  "safety": [
+    "dry-run-first",
+    "no credentials",
+    "no external mutation",
+    "no git add .",
+    "no docker volume deletion"
+  ]
+}

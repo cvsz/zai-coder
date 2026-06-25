@@ -1,0 +1,7 @@
+{
+  "name": "security",
+  "description": "Audits secrets, auth, commands, and supply-chain risk.",
+  "tags": [
+    "security"
+  ]
+}

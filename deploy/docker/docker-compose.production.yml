@@ -1,0 +1,23 @@
+services:
+  zai-coder:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    container_name: zai-coder-app-studio
+    restart: unless-stopped
+    command: ["bash", "scripts/deploy/serve-local.sh"]
+    environment:
+      ZAI_ENV: production
+      HOST: 127.0.0.1
+      PORT: 8765
+    ports:
+      - "127.0.0.1:8765:8765"
+    volumes:
+      - ../../data:/app/data
+      - ../../logs:/app/logs
+      - ../../backups:/app/backups
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8765/healthz')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

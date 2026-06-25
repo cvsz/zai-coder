@@ -1,0 +1,45 @@
+{
+  "package": "zai-coder-control-plane-v20-enterprise-governance",
+  "features": {
+    "policy": [
+      "dry-run first",
+      "approval required",
+      "secret scan",
+      "Cloudflare Access"
+    ],
+    "roles": [
+      "owner",
+      "admin",
+      "operator",
+      "auditor",
+      "viewer"
+    ],
+    "compliance": [
+      "checklist",
+      "evidence collector",
+      "release gate"
+    ],
+    "risk": [
+      "risk register",
+      "risk summary"
+    ],
+    "data": [
+      "data retention policy",
+      "tenant isolation policy"
+    ],
+    "routes": [
+      "/api/governance/status",
+      "/governance",
+      "/governance/policies",
+      "/governance/roles",
+      "/governance/risks",
+      "/governance/release"
+    ]
+  },
+  "safety": [
+    "release gate",
+    "local evidence",
+    "Access before public exposure",
+    "approval before apply"
+  ]
+}

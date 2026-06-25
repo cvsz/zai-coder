@@ -1,0 +1,25 @@
+{
+  "package": "zai-coder-control-plane-v47-enterprise-sso-and-identity-center",
+  "features": [
+    "SSO config planner",
+    "SCIM mapping drafts",
+    "org policy registry",
+    "access review queue",
+    "role assignment review",
+    "identity evidence"
+  ],
+  "routes": [
+    "/api/identity/status",
+    "/identity",
+    "/identity/sso",
+    "/identity/scim",
+    "/identity/policies",
+    "/identity/access-review"
+  ],
+  "safety": [
+    "no IdP secrets",
+    "no live provider mutation",
+    "review-only access changes",
+    "APPLY=1 for demo writes"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "package": "zai-coder-control-plane-v9-deployment-core",
+  "features": {
+    "server": [
+      "stdlib HTTP server",
+      "healthz",
+      "status",
+      "dashboard"
+    ],
+    "auth": [
+      "localhost detection",
+      "API key middleware foundation"
+    ],
+    "backup": [
+      "backup plan",
+      "tar.gz archive",
+      "safe restore plan"
+    ],
+    "admin": [
+      "admin bootstrap",
+      "API key creation"
+    ],
+    "cloudflare": [
+      "tunnel config generator",
+      "localhost service guard"
+    ],
+    "release": [
+      "release zip builder",
+      "checksums",
+      "minimal SBOM"
+    ],
+    "deploy": [
+      "systemd production service",
+      "docker compose production",
+      "logrotate"
+    ]
+  },
+  "safety": [
+    "localhost-first",
+    "dry-run-first",
+    "APPLY=1 for mutation",
+    "no secrets",
+    "no apps/zlms/**"
+  ]
+}

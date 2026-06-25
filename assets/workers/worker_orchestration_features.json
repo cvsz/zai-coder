@@ -1,0 +1,41 @@
+{
+  "package": "zai-coder-control-plane-v25-worker-orchestration",
+  "features": {
+    "registry": [
+      "worker nodes",
+      "heartbeat",
+      "status"
+    ],
+    "queue": [
+      "job queue",
+      "lease support",
+      "priority"
+    ],
+    "scheduler": [
+      "schedule manifest",
+      "fire plans"
+    ],
+    "safety": [
+      "tenant worker guard",
+      "execution-runner bridge",
+      "APPLY=1 for demo mutations"
+    ],
+    "reliability": [
+      "retry policy",
+      "dead-letter policy",
+      "concurrency limits"
+    ],
+    "routes": [
+      "/api/workers/status",
+      "/workers",
+      "/workers/schedules",
+      "/workers/policy"
+    ]
+  },
+  "safety": [
+    "no direct shell execution",
+    "tenant guard",
+    "approved execution bridge",
+    "local SQLite"
+  ]
+}

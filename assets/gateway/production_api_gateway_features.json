@@ -1,0 +1,41 @@
+{
+  "package": "zai-coder-control-plane-v24-production-api-gateway",
+  "features": {
+    "routing": [
+      "gateway router",
+      "route manifest",
+      "upstream registry"
+    ],
+    "security": [
+      "tenant-aware auth",
+      "API-key/session guard",
+      "CORS/security headers"
+    ],
+    "limits": [
+      "standard",
+      "strict",
+      "admin"
+    ],
+    "schema": [
+      "OpenAPI gateway manifest"
+    ],
+    "audit": [
+      "gateway audit log",
+      "redacted headers"
+    ],
+    "routes": [
+      "/api/gateway/status",
+      "/gateway",
+      "/gateway/routes",
+      "/gateway/upstreams",
+      "/gateway/security",
+      "/gateway/openapi.json"
+    ]
+  },
+  "safety": [
+    "localhost-first upstreams",
+    "auth by default",
+    "tenant context by default",
+    "Cloudflare Access expected before public exposure"
+  ]
+}

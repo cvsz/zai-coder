@@ -1,0 +1,11 @@
+{
+  "name": "media",
+  "description": "Plans and generates image, voice, music, animation, and video artifacts",
+  "tags": [
+    "image",
+    "voice",
+    "music",
+    "animation",
+    "video"
+  ]
+}

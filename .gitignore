@@ -1,0 +1,32 @@
+# Build artifacts and dependencies
+out/
+.env
+.env.example
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.dylib
+*.dll
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# System files and IDE
+.DS_Store
+.vscode/
+.idea/
+.log
+*.log
+
+# Sensitive info (safety first)
+.ssh/
+keys/
+secrets/
+*.pem
+*.key
+*.age

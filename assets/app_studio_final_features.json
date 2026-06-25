@@ -1,0 +1,45 @@
+{
+  "package": "zai-coder-control-plane-v12-app-studio-final",
+  "features": {
+    "ui": [
+      "admin shell",
+      "navigation",
+      "dashboard pages"
+    ],
+    "marketplace": [
+      "plugin registry",
+      "plugin cards"
+    ],
+    "generator": [
+      "app generator wizard",
+      "dry-run file plan"
+    ],
+    "workflow": [
+      "workflow builder model",
+      "safe release workflow"
+    ],
+    "models": [
+      "model router UI model",
+      "local-first defaults"
+    ],
+    "deployment": [
+      "deployment control center",
+      "targets/checks"
+    ],
+    "security": [
+      "API key UI helper",
+      "approval queue"
+    ],
+    "audit": [
+      "audit search"
+    ],
+    "archive": [
+      "project export/import archive"
+    ],
+    "api": [
+      "final route registry",
+      "full OpenAPI export"
+    ]
+  },
+  "status": "end-project scaffold complete"
+}

@@ -1,0 +1,40 @@
+{
+  "package": "zai-coder-control-plane-v37-knowledge-base-and-help-center",
+  "features": {
+    "content": [
+      "article registry",
+      "FAQ catalog",
+      "customer/admin views"
+    ],
+    "search": [
+      "local deterministic search",
+      "search validation"
+    ],
+    "support": [
+      "deflection suggestions",
+      "no auto-reply"
+    ],
+    "feedback": [
+      "article helpfulness feedback",
+      "feedback summary"
+    ],
+    "exports": [
+      "help export bundle",
+      "help center report"
+    ],
+    "routes": [
+      "/api/help/status",
+      "/help",
+      "/help/articles",
+      "/help/faq",
+      "/help/search",
+      "/help/admin"
+    ]
+  },
+  "safety": [
+    "local-only",
+    "no external publishing",
+    "private article filtering",
+    "APPLY=1 for demo writes"
+  ]
+}

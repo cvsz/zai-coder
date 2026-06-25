@@ -1,0 +1,9 @@
+# Example only. Generate with:
+# TUNNEL_NAME=zai-coder HOSTNAME=zai.zeaz.dev scripts/deploy/cloudflare-generate-config.sh
+tunnel: zai-coder
+credentials-file: /etc/cloudflared/zai-coder.json
+
+ingress:
+  - hostname: zai.zeaz.dev
+    service: http://127.0.0.1:8765
+  - service: http_status:404

@@ -1,0 +1,8 @@
+{
+  "name": "self-rollback",
+  "description": "Restore from checkpoints with audit trail.",
+  "tags": [
+    "self",
+    "resilience"
+  ]
+}

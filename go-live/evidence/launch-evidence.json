@@ -1,0 +1,345 @@
+{
+  "actions": [
+    {
+      "action_type": "deploy_review",
+      "dry_run": true,
+      "id": "act_release_review",
+      "status": "ready",
+      "title": "Review final release bundle"
+    },
+    {
+      "action_type": "traffic_review",
+      "dry_run": true,
+      "id": "act_traffic_review",
+      "status": "planned",
+      "title": "Review traffic routing plan"
+    },
+    {
+      "action_type": "monitor",
+      "dry_run": true,
+      "id": "act_monitor",
+      "status": "planned",
+      "title": "Start launch monitoring plan"
+    },
+    {
+      "action_type": "handoff",
+      "dry_run": true,
+      "id": "act_handoff",
+      "status": "planned",
+      "title": "Operator handoff briefing"
+    }
+  ],
+  "approval_gate": {
+    "allowed": false,
+    "apply_approval": false,
+    "approver": "release-owner",
+    "blocked": [
+      "readiness scorecard is not complete"
+    ],
+    "dry_run": true
+  },
+  "automatic_launch": false,
+  "checklist": [
+    {
+      "done": true,
+      "id": "gl_preflight",
+      "manual_approval": true,
+      "owner": "release-owner",
+      "phase": "preflight",
+      "title": "Run final preflight checks"
+    },
+    {
+      "done": true,
+      "id": "gl_artifacts",
+      "manual_approval": true,
+      "owner": "release-owner",
+      "phase": "preflight",
+      "title": "Verify release artifacts and checksums"
+    },
+    {
+      "done": false,
+      "id": "gl_comms",
+      "manual_approval": true,
+      "owner": "customer-success",
+      "phase": "launch",
+      "title": "Prepare launch communication"
+    },
+    {
+      "done": false,
+      "id": "gl_monitoring",
+      "manual_approval": true,
+      "owner": "ops-owner",
+      "phase": "monitoring",
+      "title": "Confirm monitoring owner rotation"
+    },
+    {
+      "done": false,
+      "id": "gl_rollback",
+      "manual_approval": true,
+      "owner": "incident-owner",
+      "phase": "rollback",
+      "title": "Confirm rollback decision path"
+    }
+  ],
+  "command_center": {
+    "actions": [
+      {
+        "action_type": "deploy_review",
+        "dry_run": true,
+        "id": "act_release_review",
+        "status": "ready",
+        "title": "Review final release bundle"
+      },
+      {
+        "action_type": "traffic_review",
+        "dry_run": true,
+        "id": "act_traffic_review",
+        "status": "planned",
+        "title": "Review traffic routing plan"
+      },
+      {
+        "action_type": "monitor",
+        "dry_run": true,
+        "id": "act_monitor",
+        "status": "planned",
+        "title": "Start launch monitoring plan"
+      },
+      {
+        "action_type": "handoff",
+        "dry_run": true,
+        "id": "act_handoff",
+        "status": "planned",
+        "title": "Operator handoff briefing"
+      }
+    ],
+    "checklist": [
+      {
+        "done": true,
+        "id": "gl_preflight",
+        "manual_approval": true,
+        "owner": "release-owner",
+        "phase": "preflight",
+        "title": "Run final preflight checks"
+      },
+      {
+        "done": true,
+        "id": "gl_artifacts",
+        "manual_approval": true,
+        "owner": "release-owner",
+        "phase": "preflight",
+        "title": "Verify release artifacts and checksums"
+      },
+      {
+        "done": false,
+        "id": "gl_comms",
+        "manual_approval": true,
+        "owner": "customer-success",
+        "phase": "launch",
+        "title": "Prepare launch communication"
+      },
+      {
+        "done": false,
+        "id": "gl_monitoring",
+        "manual_approval": true,
+        "owner": "ops-owner",
+        "phase": "monitoring",
+        "title": "Confirm monitoring owner rotation"
+      },
+      {
+        "done": false,
+        "id": "gl_rollback",
+        "manual_approval": true,
+        "owner": "incident-owner",
+        "phase": "rollback",
+        "title": "Confirm rollback decision path"
+      }
+    ],
+    "dry_run": true,
+    "execute_launch": false,
+    "requires_manual_approval": true,
+    "scorecard": {
+      "blocked": [],
+      "manual_approval_required": true,
+      "passed": 5,
+      "pending": 2,
+      "ready": false,
+      "required": 7,
+      "score": 71.43
+    }
+  },
+  "kind": "zai-production-readiness-go-live-evidence",
+  "production_mutation": false,
+  "readiness_gates": [
+    {
+      "category": "qa",
+      "evidence_ref": "BUILD_REPORT_V48",
+      "id": "gate_qa",
+      "required": true,
+      "status": "passed",
+      "title": "QA test suite passed"
+    },
+    {
+      "category": "security",
+      "evidence_ref": "security/evidence",
+      "id": "gate_security",
+      "required": true,
+      "status": "passed",
+      "title": "Security review complete"
+    },
+    {
+      "category": "identity",
+      "evidence_ref": "identity/evidence",
+      "id": "gate_identity",
+      "required": true,
+      "status": "passed",
+      "title": "Identity access review complete"
+    },
+    {
+      "category": "scalability",
+      "evidence_ref": "scalability/evidence",
+      "id": "gate_scalability",
+      "required": true,
+      "status": "passed",
+      "title": "Scalability plan reviewed"
+    },
+    {
+      "category": "docs",
+      "evidence_ref": "docs/",
+      "id": "gate_docs",
+      "required": true,
+      "status": "passed",
+      "title": "Operator and developer docs ready"
+    },
+    {
+      "category": "rollback",
+      "evidence_ref": "go-live/rollback",
+      "id": "gate_rollback",
+      "required": true,
+      "status": "pending",
+      "title": "Rollback plan reviewed"
+    },
+    {
+      "category": "approval",
+      "evidence_ref": "go-live/approval",
+      "id": "gate_manual",
+      "required": true,
+      "status": "pending",
+      "title": "Final human go-live approval"
+    }
+  ],
+  "requires_review": true,
+  "rollback_plans": [
+    {
+      "dry_run": true,
+      "id": "rb_release",
+      "status": "review",
+      "title": "Release rollback plan",
+      "trigger": "quality gate failed"
+    },
+    {
+      "dry_run": true,
+      "id": "rb_traffic",
+      "status": "review",
+      "title": "Traffic rollback plan",
+      "trigger": "latency budget exceeded"
+    },
+    {
+      "dry_run": true,
+      "id": "rb_security",
+      "status": "draft",
+      "title": "Security hold plan",
+      "trigger": "critical security review finding"
+    }
+  ],
+  "scorecard": {
+    "blocked": [],
+    "manual_approval_required": true,
+    "passed": 5,
+    "pending": 2,
+    "ready": false,
+    "required": 7,
+    "score": 71.43
+  },
+  "validation": {
+    "ok": true,
+    "reports": [
+      {
+        "id": "gate_qa",
+        "issues": []
+      },
+      {
+        "id": "gate_security",
+        "issues": []
+      },
+      {
+        "id": "gate_identity",
+        "issues": []
+      },
+      {
+        "id": "gate_scalability",
+        "issues": []
+      },
+      {
+        "id": "gate_docs",
+        "issues": []
+      },
+      {
+        "id": "gate_rollback",
+        "issues": []
+      },
+      {
+        "id": "gate_manual",
+        "issues": []
+      },
+      {
+        "id": "gl_preflight",
+        "issues": []
+      },
+      {
+        "id": "gl_artifacts",
+        "issues": []
+      },
+      {
+        "id": "gl_comms",
+        "issues": []
+      },
+      {
+        "id": "gl_monitoring",
+        "issues": []
+      },
+      {
+        "id": "gl_rollback",
+        "issues": []
+      },
+      {
+        "id": "act_release_review",
+        "issues": []
+      },
+      {
+        "id": "act_traffic_review",
+        "issues": []
+      },
+      {
+        "id": "act_monitor",
+        "issues": []
+      },
+      {
+        "id": "act_handoff",
+        "issues": []
+      },
+      {
+        "id": "rb_release",
+        "issues": []
+      },
+      {
+        "id": "rb_traffic",
+        "issues": []
+      },
+      {
+        "id": "rb_security",
+        "issues": []
+      }
+    ]
+  },
+  "version": "1.0"
+}

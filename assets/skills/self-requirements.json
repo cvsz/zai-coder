@@ -1,0 +1,8 @@
+{
+  "name": "self-requirements",
+  "description": "Generate next self-* requirements docs.",
+  "tags": [
+    "self",
+    "requirements"
+  ]
+}

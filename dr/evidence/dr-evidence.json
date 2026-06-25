@@ -1,0 +1,208 @@
+{
+  "backup_plans": [
+    {
+      "cadence": "daily",
+      "dry_run": true,
+      "id": "bp_config",
+      "name": "Configuration backup plan",
+      "retention_days": 14,
+      "status": "review",
+      "target": "local/config"
+    },
+    {
+      "cadence": "daily",
+      "dry_run": true,
+      "id": "bp_sqlite",
+      "name": "Local SQLite backup plan",
+      "retention_days": 7,
+      "status": "review",
+      "target": "data/*.sqlite"
+    },
+    {
+      "cadence": "weekly",
+      "dry_run": true,
+      "id": "bp_exports",
+      "name": "Evidence export backup plan",
+      "retention_days": 30,
+      "status": "draft",
+      "target": "exports/"
+    }
+  ],
+  "external_upload": false,
+  "kind": "zai-backup-restore-dr-evidence",
+  "readiness_gate": {
+    "dry_run": true,
+    "ok": true,
+    "results": [
+      {
+        "id": "backup-plans",
+        "passed": true,
+        "value": 3
+      },
+      {
+        "id": "restore-drills",
+        "passed": true,
+        "value": 3
+      },
+      {
+        "id": "critical-rto",
+        "passed": true,
+        "value": 1
+      },
+      {
+        "id": "blocked-drills",
+        "passed": true,
+        "value": 0
+      }
+    ]
+  },
+  "recovery_targets": [
+    {
+      "id": "rto_control",
+      "priority": "critical",
+      "rpo_minutes": 15,
+      "rto_minutes": 60,
+      "service": "control-plane"
+    },
+    {
+      "id": "rto_docs",
+      "priority": "normal",
+      "rpo_minutes": 240,
+      "rto_minutes": 480,
+      "service": "developer-docs"
+    },
+    {
+      "id": "rto_exports",
+      "priority": "high",
+      "rpo_minutes": 60,
+      "rto_minutes": 240,
+      "service": "evidence-exports"
+    }
+  ],
+  "requires_review": true,
+  "restore_drills": [
+    {
+      "backup_plan_id": "bp_config",
+      "drill_type": "preview",
+      "dry_run": true,
+      "id": "drill_config_preview",
+      "scenario_id": "dr_operator_error",
+      "status": "planned"
+    },
+    {
+      "backup_plan_id": "bp_sqlite",
+      "drill_type": "tabletop",
+      "dry_run": true,
+      "id": "drill_sqlite_tabletop",
+      "scenario_id": "dr_deploy_regression",
+      "status": "planned"
+    },
+    {
+      "backup_plan_id": "bp_exports",
+      "drill_type": "verification",
+      "dry_run": true,
+      "id": "drill_exports_verify",
+      "scenario_id": "dr_dependency_failure",
+      "status": "planned"
+    }
+  ],
+  "restore_preview": {
+    "drill": {
+      "backup_plan_id": "bp_config",
+      "drill_type": "preview",
+      "dry_run": true,
+      "id": "drill_config_preview",
+      "scenario_id": "dr_operator_error",
+      "status": "planned"
+    },
+    "dry_run": true,
+    "perform_restore": false,
+    "scenario": {
+      "id": "dr_operator_error",
+      "scenario_type": "operator_error",
+      "severity": "medium",
+      "title": "Operator error recovery"
+    },
+    "steps": [
+      "load backup manifest",
+      "verify target sandbox",
+      "simulate restore",
+      "compare checksums",
+      "write evidence"
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "dr_operator_error",
+      "scenario_type": "operator_error",
+      "severity": "medium",
+      "title": "Operator error recovery"
+    },
+    {
+      "id": "dr_deploy_regression",
+      "scenario_type": "deployment_regression",
+      "severity": "high",
+      "title": "Deployment regression rollback"
+    },
+    {
+      "id": "dr_dependency_failure",
+      "scenario_type": "dependency_failure",
+      "severity": "high",
+      "title": "Dependency failure continuity"
+    }
+  ],
+  "validation": {
+    "ok": true,
+    "reports": [
+      {
+        "id": "bp_config",
+        "issues": []
+      },
+      {
+        "id": "bp_sqlite",
+        "issues": []
+      },
+      {
+        "id": "bp_exports",
+        "issues": []
+      },
+      {
+        "id": "dr_operator_error",
+        "issues": []
+      },
+      {
+        "id": "dr_deploy_regression",
+        "issues": []
+      },
+      {
+        "id": "dr_dependency_failure",
+        "issues": []
+      },
+      {
+        "id": "rto_control",
+        "issues": []
+      },
+      {
+        "id": "rto_docs",
+        "issues": []
+      },
+      {
+        "id": "rto_exports",
+        "issues": []
+      },
+      {
+        "id": "drill_config_preview",
+        "issues": []
+      },
+      {
+        "id": "drill_sqlite_tabletop",
+        "issues": []
+      },
+      {
+        "id": "drill_exports_verify",
+        "issues": []
+      }
+    ]
+  },
+  "version": "1.0"
+}

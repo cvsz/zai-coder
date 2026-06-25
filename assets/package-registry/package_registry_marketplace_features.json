@@ -1,0 +1,25 @@
+{
+  "package": "zai-coder-control-plane-v42-package-registry-and-marketplace-publishing",
+  "features": [
+    "package registry",
+    "submission drafts",
+    "publishing checklist",
+    "validation policy",
+    "compatibility matrix",
+    "license attribution"
+  ],
+  "routes": [
+    "/api/marketplace/status",
+    "/marketplace",
+    "/marketplace/packages",
+    "/marketplace/submissions",
+    "/marketplace/validation",
+    "/marketplace/checklist"
+  ],
+  "safety": [
+    "draft-only",
+    "no external publishing",
+    "license review required",
+    "APPLY=1 for demo writes"
+  ]
+}

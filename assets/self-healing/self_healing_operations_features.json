@@ -1,0 +1,41 @@
+{
+  "package": "zai-coder-control-plane-v30-self-healing-operations",
+  "features": {
+    "signals": [
+      "health signal monitor",
+      "threshold classification",
+      "signal summary"
+    ],
+    "incidents": [
+      "incident detector",
+      "triage plan"
+    ],
+    "healing": [
+      "playbook catalog",
+      "safe auto-heal planner",
+      "rollback guard"
+    ],
+    "policy": [
+      "maintenance window",
+      "escalation policy",
+      "approval gate"
+    ],
+    "reporting": [
+      "postmortem generator",
+      "healing audit log"
+    ],
+    "routes": [
+      "/api/self-healing/status",
+      "/self-healing",
+      "/self-healing/incidents",
+      "/self-healing/playbooks",
+      "/self-healing/policy"
+    ]
+  },
+  "safety": [
+    "dry-run-first",
+    "no automatic destructive remediation",
+    "approval gates",
+    "rollback required"
+  ]
+}

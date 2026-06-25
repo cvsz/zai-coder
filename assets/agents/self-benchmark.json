@@ -1,0 +1,9 @@
+{
+  "name": "self-benchmark",
+  "description": "Designs and runs model/agent benchmark plans.",
+  "tags": [
+    "self",
+    "eval",
+    "benchmark"
+  ]
+}

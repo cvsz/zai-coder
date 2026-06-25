@@ -1,0 +1,44 @@
+{
+  "package": "zai-coder-control-plane-v19-observability-suite",
+  "features": {
+    "metrics": [
+      "registry",
+      "Prometheus-style endpoint",
+      "metrics export"
+    ],
+    "events": [
+      "structured event bus"
+    ],
+    "alerts": [
+      "default alert rules",
+      "evaluation"
+    ],
+    "health": [
+      "trend snapshots",
+      "dashboard"
+    ],
+    "logs": [
+      "retention policy"
+    ],
+    "incidents": [
+      "incident report generator"
+    ],
+    "slo_sla": [
+      "SLO templates",
+      "SLA template"
+    ],
+    "uptime": [
+      "local checks",
+      "public checks",
+      "Access expectation"
+    ]
+  },
+  "routes": [
+    "/api/observability/status",
+    "/metrics",
+    "/observability",
+    "/observability/metrics",
+    "/observability/alerts",
+    "/observability/health"
+  ]
+}

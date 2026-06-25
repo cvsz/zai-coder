@@ -1,0 +1,9 @@
+{
+  "name": "self-monitor",
+  "description": "Checks local health, services, disk, memory, and model readiness.",
+  "tags": [
+    "self",
+    "monitor",
+    "observability"
+  ]
+}

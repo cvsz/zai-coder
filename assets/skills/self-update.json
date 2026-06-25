@@ -1,0 +1,8 @@
+{
+  "name": "self-update",
+  "description": "Plan package updates through safe patch bundles.",
+  "tags": [
+    "self",
+    "maintenance"
+  ]
+}

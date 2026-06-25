@@ -1,0 +1,9 @@
+{
+  "name": "coder",
+  "description": "Creates implementation plans and minimal patch guidance",
+  "tags": [
+    "coding",
+    "patches",
+    "cli"
+  ]
+}

@@ -1,0 +1,131 @@
+== MERGE zai-coder-standalone.zip root=zai-coder-standalone ==
+same: scripts/package.sh
+same: scripts/create_ollama_models.sh
+same: config/default.config.json
+same: zai_coder/__init__.py
+same: zai_coder/__main__.py
+same: zai_coder/config.py
+overwrite-dir-or-special: zai_coder/core by zai-coder-standalone.zip
+same: zai_coder/core/messages.py
+same: zai_coder/core/safety.py
+same: zai_coder/core/models.py
+same: zai_coder/core/tools.py
+same: zai_coder/core/session.py
+same: zai_coder/core/registry.py
+same: zai_coder/core/orchestrator.py
+overwrite-dir-or-special: zai_coder/agents by zai-coder-standalone.zip
+same: zai_coder/agents/__init__.py
+same: zai_coder/agents/base.py
+same: zai_coder/agents/planner.py
+same: zai_coder/agents/coder.py
+same: zai_coder/agents/reviewer.py
+same: zai_coder/agents/media.py
+same: zai_coder/agents/registry.py
+overwrite-dir-or-special: zai_coder/skills by zai-coder-standalone.zip
+same: zai_coder/skills/__init__.py
+same: zai_coder/skills/base.py
+same: zai_coder/skills/files.py
+same: zai_coder/skills/shell.py
+same: zai_coder/skills/git.py
+same: zai_coder/skills/media.py
+overwrite-dir-or-special: zai_coder/media by zai-coder-standalone.zip
+same: zai_coder/media/__init__.py
+same: zai_coder/media/common.py
+same: zai_coder/media/image.py
+same: zai_coder/media/music.py
+same: zai_coder/media/voice.py
+same: zai_coder/media/animation.py
+same: zai_coder/media/video.py
+same: zai_coder/cli.py
+overwrite-dir-or-special: assets/agents by zai-coder-standalone.zip
+same: assets/agents/planner.json
+same: assets/agents/coder.json
+same: assets/agents/reviewer.json
+same: assets/agents/media.json
+overwrite-dir-or-special: assets/skills by zai-coder-standalone.zip
+same: assets/skills/files.json
+same: assets/skills/shell.json
+same: assets/skills/git.json
+same: assets/skills/media.json
+same: assets/skills/multi-agent.json
+overwrite-dir-or-special: assets/prompts by zai-coder-standalone.zip
+same: assets/prompts/system.md
+same: examples/workflow.safe-code-review.json
+same: examples/media-pack.sh
+same: tests/test_safety.py
+same: tests/test_media.py
+same: out/test.svg
+== MERGE zai-coder-enterprise-addon.zip root=zai-coder-enterprise-addon ==
+overwrite: README.md by zai-coder-enterprise-addon.zip
+same: LICENSE
+same: pyproject.toml
+same: requirements.txt
+same: install.sh
+same: zai-coder
+same: run.sh
+overwrite-dir-or-special: scripts by zai-coder-enterprise-addon.zip
+overwrite: scripts/package.sh by zai-coder-enterprise-addon.zip
+overwrite: scripts/create_ollama_models.sh by zai-coder-enterprise-addon.zip
+overwrite-dir-or-special: config by zai-coder-enterprise-addon.zip
+overwrite: config/default.config.json by zai-coder-enterprise-addon.zip
+overwrite-dir-or-special: zai_coder by zai-coder-enterprise-addon.zip
+same: zai_coder/__init__.py
+same: zai_coder/__main__.py
+overwrite: zai_coder/config.py by zai-coder-enterprise-addon.zip
+overwrite-dir-or-special: zai_coder/core by zai-coder-enterprise-addon.zip
+same: zai_coder/core/messages.py
+overwrite: zai_coder/core/safety.py by zai-coder-enterprise-addon.zip
+same: zai_coder/core/models.py
+overwrite: zai_coder/core/tools.py by zai-coder-enterprise-addon.zip
+same: zai_coder/core/session.py
+same: zai_coder/core/registry.py
+same: zai_coder/core/orchestrator.py
+overwrite-dir-or-special: zai_coder/agents by zai-coder-enterprise-addon.zip
+overwrite: zai_coder/agents/__init__.py by zai-coder-enterprise-addon.zip
+same: zai_coder/agents/base.py
+same: zai_coder/agents/planner.py
+same: zai_coder/agents/coder.py
+same: zai_coder/agents/reviewer.py
+same: zai_coder/agents/media.py
+overwrite: zai_coder/agents/registry.py by zai-coder-enterprise-addon.zip
+overwrite-dir-or-special: zai_coder/skills by zai-coder-enterprise-addon.zip
+same: zai_coder/skills/__init__.py
+same: zai_coder/skills/base.py
+same: zai_coder/skills/files.py
+same: zai_coder/skills/shell.py
+same: zai_coder/skills/git.py
+same: zai_coder/skills/media.py
+overwrite-dir-or-special: zai_coder/media by zai-coder-enterprise-addon.zip
+same: zai_coder/media/__init__.py
+same: zai_coder/media/common.py
+same: zai_coder/media/image.py
+same: zai_coder/media/music.py
+same: zai_coder/media/voice.py
+same: zai_coder/media/animation.py
+same: zai_coder/media/video.py
+overwrite: zai_coder/cli.py by zai-coder-enterprise-addon.zip
+overwrite-dir-or-special: assets by zai-coder-enterprise-addon.zip
+overwrite-dir-or-special: assets/agents by zai-coder-enterprise-addon.zip
+overwrite: assets/agents/planner.json by zai-coder-enterprise-addon.zip
+overwrite: assets/agents/coder.json by zai-coder-enterprise-addon.zip
+overwrite: assets/agents/reviewer.json by zai-coder-enterprise-addon.zip
+overwrite: assets/agents/media.json by zai-coder-enterprise-addon.zip
+overwrite-dir-or-special: assets/skills by zai-coder-enterprise-addon.zip
+overwrite: assets/skills/files.json by zai-coder-enterprise-addon.zip
+overwrite: assets/skills/shell.json by zai-coder-enterprise-addon.zip
+overwrite: assets/skills/git.json by zai-coder-enterprise-addon.zip
+overwrite: assets/skills/media.json by zai-coder-enterprise-addon.zip
+overwrite: assets/skills/multi-agent.json by zai-coder-enterprise-addon.zip
+overwrite-dir-or-special: assets/prompts by zai-coder-enterprise-addon.zip
+same: assets/prompts/system.md
+overwrite-dir-or-special: examples by zai-coder-enterprise-addon.zip
+same: examples/workflow.safe-code-review.json
+same: examples/media-pack.sh
+overwrite-dir-or-special: tests by zai-coder-enterprise-addon.zip
+same: tests/test_safety.py
+same: tests/test_media.py
+overwrite-dir-or-special: out by zai-coder-enterprise-addon.zip
+same: out/test.svg
+same: web/index.html
+same: web/styles.css
+same: web/app.js

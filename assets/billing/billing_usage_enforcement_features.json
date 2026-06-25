@@ -1,0 +1,43 @@
+{
+  "package": "zai-coder-control-plane-v22-billing-usage-enforcement",
+  "features": {
+    "accounts": [
+      "tenant billing account"
+    ],
+    "plans": [
+      "trial",
+      "free",
+      "pro",
+      "enterprise"
+    ],
+    "usage": [
+      "event ledger",
+      "workspace aggregation",
+      "org aggregation"
+    ],
+    "enforcement": [
+      "quota-to-plan enforcement",
+      "action enforcement"
+    ],
+    "billing": [
+      "invoice draft generator",
+      "overage alerts"
+    ],
+    "audit": [
+      "billing audit trail"
+    ],
+    "routes": [
+      "/api/billing/status",
+      "/billing",
+      "/billing/plans",
+      "/billing/usage",
+      "/billing/invoice"
+    ]
+  },
+  "safety": [
+    "draft-only invoices",
+    "no payment capture",
+    "APPLY=1 for demo mutation",
+    "tenant-scoped billing audit"
+  ]
+}

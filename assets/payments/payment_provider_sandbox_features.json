@@ -1,0 +1,44 @@
+{
+  "package": "zai-coder-control-plane-v23-payment-provider-sandbox",
+  "features": {
+    "provider": [
+      "sandbox adapter",
+      "env validation",
+      "no-real-charge gate"
+    ],
+    "checkout": [
+      "checkout session draft",
+      "localhost-first URLs"
+    ],
+    "subscription": [
+      "lifecycle model",
+      "plan upgrade/downgrade workflow"
+    ],
+    "webhooks": [
+      "webhook draft",
+      "HMAC scaffold",
+      "event policy"
+    ],
+    "audit": [
+      "payment audit log"
+    ],
+    "templates": [
+      "checkout_created",
+      "subscription_updated",
+      "payment_failed"
+    ],
+    "routes": [
+      "/api/payments/status",
+      "/payments",
+      "/payments/checkout",
+      "/payments/subscription",
+      "/payments/webhooks"
+    ]
+  },
+  "safety": [
+    "sandbox only",
+    "no real charge",
+    "live env keys rejected",
+    "local audit only"
+  ]
+}

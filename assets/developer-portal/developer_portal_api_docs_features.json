@@ -1,0 +1,24 @@
+{
+  "package": "zai-coder-control-plane-v41-developer-portal-and-api-docs",
+  "features": [
+    "developer portal",
+    "api reference",
+    "openapi export",
+    "sdk snippets",
+    "quickstarts",
+    "docs export"
+  ],
+  "routes": [
+    "/api/developer/status",
+    "/developer",
+    "/developer/api",
+    "/developer/openapi",
+    "/developer/snippets",
+    "/developer/quickstarts"
+  ],
+  "safety": [
+    "no secret examples",
+    "local-only",
+    "APPLY=1 for demo writes"
+  ]
+}

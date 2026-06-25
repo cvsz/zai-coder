@@ -1,0 +1,40 @@
+{
+  "package": "zai-coder-control-plane-v35-usage-analytics-and-insights",
+  "features": {
+    "events": [
+      "usage event ledger",
+      "privacy gate",
+      "demo event seeding"
+    ],
+    "metrics": [
+      "aggregation",
+      "customer breakdown",
+      "metric snapshots"
+    ],
+    "insights": [
+      "adoption funnel",
+      "activation score",
+      "anomaly detection",
+      "insight generator"
+    ],
+    "reports": [
+      "markdown report",
+      "json report",
+      "aggregate export bundle"
+    ],
+    "routes": [
+      "/api/analytics/status",
+      "/analytics",
+      "/analytics/metrics",
+      "/analytics/insights",
+      "/analytics/funnel",
+      "/analytics/privacy"
+    ]
+  },
+  "safety": [
+    "local-only",
+    "no external telemetry",
+    "PII metadata blocked",
+    "raw events excluded from exports"
+  ]
+}

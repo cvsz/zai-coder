@@ -1,0 +1,43 @@
+{
+  "package": "zai-coder-control-plane-v27-agent-marketplace-and-skills",
+  "features": {
+    "catalog": [
+      "agent catalog",
+      "skill catalog",
+      "search"
+    ],
+    "validation": [
+      "skill manifest validator",
+      "security report"
+    ],
+    "policy": [
+      "install policy",
+      "enable policy",
+      "tenant permissions",
+      "compatibility checks"
+    ],
+    "store": [
+      "installations",
+      "audit events",
+      "reviews"
+    ],
+    "offline": [
+      "marketplace export",
+      "import validation",
+      "skill pack builder"
+    ],
+    "routes": [
+      "/api/marketplace/status",
+      "/marketplace",
+      "/marketplace/skills",
+      "/marketplace/agents",
+      "/marketplace/policy"
+    ]
+  },
+  "safety": [
+    "offline/local-first",
+    "APPLY=1 for demo mutation",
+    "enable approval",
+    "sensitive permission flagging"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "package": "zai-coder-control-plane-v32-enterprise-reporting-and-board-pack",
+  "features": {
+    "kpis": [
+      "executive KPI snapshot",
+      "scorecard",
+      "target attainment"
+    ],
+    "narratives": [
+      "executive summary",
+      "investor update",
+      "operations update",
+      "compliance update"
+    ],
+    "pack": [
+      "quarterly board pack builder",
+      "markdown export",
+      "json export",
+      "bundle manifest"
+    ],
+    "registers": [
+      "decision register",
+      "risk register",
+      "action summary"
+    ],
+    "safety": [
+      "dry-run export",
+      "external publish disabled",
+      "review gate"
+    ],
+    "routes": [
+      "/api/board-pack/status",
+      "/board-pack",
+      "/board-pack/kpis",
+      "/board-pack/decisions",
+      "/board-pack/risks"
+    ]
+  },
+  "safety": [
+    "no certification claim",
+    "no audited financial claim",
+    "local exports only"
+  ]
+}

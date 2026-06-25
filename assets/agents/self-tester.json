@@ -1,0 +1,9 @@
+{
+  "name": "self-tester",
+  "description": "Plans and runs validation suites without source mutation.",
+  "tags": [
+    "self",
+    "test",
+    "quality"
+  ]
+}

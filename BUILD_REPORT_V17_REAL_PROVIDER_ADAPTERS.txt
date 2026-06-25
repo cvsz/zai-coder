@@ -1,0 +1,26 @@
+Package: zai-coder-control-plane-v17-real-provider-adapters
+Created: 2026-06-25 03:15:08
+Base ZIP: zai-coder-control-plane-v16-cloudflare-go-live.zip
+
+Added:
+- real GitHub adapter wrapper
+- real Cloudflare adapter wrapper
+- real Docker adapter wrapper
+- real PostgreSQL runtime adapter
+- provider env validation
+- provider permission checks
+- provider dry-run/apply switch
+- provider approval guard
+- audit log for every provider operation
+- provider UI pages/routes
+- scripts
+- docs
+- assets
+- tests
+
+Test output:
+........................................................................ [ 49%]
+........................................................................ [ 98%]
+..                                                                       [100%]
+146 passed in 6.19s
+

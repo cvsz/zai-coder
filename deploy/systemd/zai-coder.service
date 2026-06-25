@@ -1,0 +1,13 @@
+[Unit]
+Description=ZAI Coder App Studio
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/zai-coder-control-plane
+ExecStart=/usr/bin/python3 -m pytest -q
+Restart=on-failure
+Environment=ZAI_ENV=local
+
+[Install]
+WantedBy=multi-user.target

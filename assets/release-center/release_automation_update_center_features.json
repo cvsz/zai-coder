@@ -1,0 +1,41 @@
+{
+  "package": "zai-coder-control-plane-v29-release-automation-and-update-center",
+  "features": {
+    "release": [
+      "release planner",
+      "channel policy",
+      "version plan",
+      "changelog generator"
+    ],
+    "updates": [
+      "update manifest",
+      "dry-run updater",
+      "checksum verifier"
+    ],
+    "safety": [
+      "migration gate",
+      "rollback gate",
+      "approval gate"
+    ],
+    "publishing": [
+      "GitHub release draft",
+      "manual command plan"
+    ],
+    "audit": [
+      "release audit log"
+    ],
+    "routes": [
+      "/api/release-center/status",
+      "/release-center",
+      "/release-center/plan",
+      "/release-center/updates",
+      "/release-center/channels"
+    ]
+  },
+  "safety": [
+    "dry-run-first",
+    "no GitHub API call",
+    "no push",
+    "backup/approval/checksum/rollback required"
+  ]
+}

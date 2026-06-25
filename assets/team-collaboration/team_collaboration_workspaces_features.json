@@ -1,0 +1,17 @@
+{
+  "package": "zai-coder-control-plane-v40-team-collaboration-and-workspaces",
+  "features": [
+    "workspace registry",
+    "member roles",
+    "shared review queue",
+    "activity feed",
+    "invitation plans",
+    "export bundle"
+  ],
+  "safety": [
+    "local-only",
+    "role-gated",
+    "no external invites",
+    "APPLY=1 for demo writes"
+  ]
+}

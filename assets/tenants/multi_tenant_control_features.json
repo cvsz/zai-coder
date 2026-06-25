@@ -1,0 +1,46 @@
+{
+  "package": "zai-coder-control-plane-v21-multi-tenant-control",
+  "features": {
+    "tenant": [
+      "orgs",
+      "workspaces",
+      "memberships",
+      "runtime isolation"
+    ],
+    "keys": [
+      "tenant-scoped API keys",
+      "hashed token storage",
+      "scope verification"
+    ],
+    "audit": [
+      "tenant-scoped audit logs",
+      "scope filter"
+    ],
+    "quotas": [
+      "monthly runs",
+      "storage MB",
+      "provider apply limit"
+    ],
+    "providers": [
+      "per-tenant provider permission checks"
+    ],
+    "operations": [
+      "backup/export policy",
+      "onboarding wizard",
+      "migration plan"
+    ],
+    "routes": [
+      "/api/tenants/status",
+      "/tenants",
+      "/tenants/onboarding",
+      "/tenants/backup",
+      "/tenants/migration"
+    ]
+  },
+  "safety": [
+    "deny cross-tenant access",
+    "hash tokens",
+    "exclude secrets from exports",
+    "APPLY=1 for demo mutation"
+  ]
+}

@@ -1,0 +1,29 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, system-ui, sans-serif;
+}
+body {
+  margin: 0;
+  background: #020617;
+  color: #e2e8f0;
+}
+main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px;
+}
+.card {
+  border: 1px solid #334155;
+  background: #0f172a;
+  border-radius: 16px;
+  padding: 20px;
+  margin: 16px 0;
+}
+.badge {
+  display: inline-block;
+  border: 1px solid #38bdf8;
+  color: #7dd3fc;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+}

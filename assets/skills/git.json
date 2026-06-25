@@ -1,0 +1,9 @@
+{
+  "name": "git",
+  "description": "Safe git inspection and exact-path staging guidance",
+  "tags": [
+    "git",
+    "review",
+    "commit"
+  ]
+}

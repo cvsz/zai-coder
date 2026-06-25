@@ -1,0 +1,7 @@
+{
+  "name": "apply-patch",
+  "description": "Apply unified diffs with safety path checks and checkpoints.",
+  "tags": [
+    "patch"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "self-runbooks",
+  "description": "Generate per-feature operator runbooks.",
+  "tags": [
+    "self",
+    "docs"
+  ]
+}

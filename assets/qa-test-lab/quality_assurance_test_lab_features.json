@@ -1,0 +1,26 @@
+{
+  "package": "zai-coder-control-plane-v43-quality-assurance-and-test-lab",
+  "features": [
+    "qa dashboard",
+    "test matrix",
+    "regression report",
+    "fixture catalog",
+    "smoke plan",
+    "quality gates",
+    "evidence export"
+  ],
+  "routes": [
+    "/api/qa/status",
+    "/qa",
+    "/qa/matrix",
+    "/qa/regression",
+    "/qa/fixtures",
+    "/qa/gates"
+  ],
+  "safety": [
+    "deterministic tests",
+    "no bypass flags",
+    "local evidence export",
+    "APPLY=1 for demo writes"
+  ]
+}

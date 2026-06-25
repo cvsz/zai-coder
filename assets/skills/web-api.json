@@ -1,0 +1,7 @@
+{
+  "name": "web-api",
+  "description": "Expose local HTTP API and dashboard.",
+  "tags": [
+    "web"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "name": "docs",
+  "description": "Writes README, runbooks, operator guides, and changelogs.",
+  "tags": [
+    "docs"
+  ]
+}

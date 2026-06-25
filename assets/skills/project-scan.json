@@ -1,0 +1,7 @@
+{
+  "name": "project-scan",
+  "description": "Scan files, languages, notable files, and git status.",
+  "tags": [
+    "scan"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "shell",
+  "description": "Guarded shell command execution",
+  "tags": [
+    "terminal",
+    "commands",
+    "guardrails"
+  ]
+}

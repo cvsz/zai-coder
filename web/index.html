@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ZAI Coder</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <p class="eyebrow">Local-first AI workbench</p>
+        <h1>ZAI Coder</h1>
+      </div>
+      <span id="health" class="badge">checking</span>
+    </header>
+
+    <section class="grid">
+      <article class="card wide">
+        <h2>Ask agent</h2>
+        <div class="row">
+          <select id="agent"></select>
+          <button id="askBtn">Run</button>
+        </div>
+        <textarea id="prompt" placeholder="Inspect this repo and produce a safe fix plan..."></textarea>
+        <pre id="answer"></pre>
+      </article>
+
+      <article class="card">
+        <h2>Project scan</h2>
+        <button id="scanBtn">Scan</button>
+        <pre id="scan"></pre>
+      </article>
+
+      <article class="card">
+        <h2>Memory</h2>
+        <div class="row"><input id="memKey" placeholder="key"/><input id="memValue" placeholder="value"/><button id="memSave">Save</button></div>
+        <pre id="memory"></pre>
+      </article>
+
+      <article class="card wide">
+        <h2>Recent runs</h2>
+        <pre id="runs"></pre>
+      </article>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

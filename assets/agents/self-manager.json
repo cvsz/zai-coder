@@ -1,0 +1,9 @@
+{
+  "name": "self-manager",
+  "description": "Coordinates self-* features and safe improvement loops.",
+  "tags": [
+    "self",
+    "manager",
+    "orchestration"
+  ]
+}

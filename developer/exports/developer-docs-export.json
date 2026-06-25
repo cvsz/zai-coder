@@ -1,0 +1,284 @@
+{
+  "endpoints": [
+    {
+      "auth_required": false,
+      "id": "status",
+      "method": "GET",
+      "path": "/api/status",
+      "stability": "stable",
+      "summary": "Read local control-plane status.",
+      "tag": "core"
+    },
+    {
+      "auth_required": true,
+      "id": "team-status",
+      "method": "GET",
+      "path": "/api/team/status",
+      "stability": "stable",
+      "summary": "Read team collaboration status.",
+      "tag": "team"
+    },
+    {
+      "auth_required": true,
+      "id": "notifications-status",
+      "method": "GET",
+      "path": "/api/notifications/status",
+      "stability": "stable",
+      "summary": "Read notification center status.",
+      "tag": "notifications"
+    },
+    {
+      "auth_required": true,
+      "id": "help-status",
+      "method": "GET",
+      "path": "/api/help/status",
+      "stability": "stable",
+      "summary": "Read help center status.",
+      "tag": "help"
+    },
+    {
+      "auth_required": true,
+      "id": "content-status",
+      "method": "GET",
+      "path": "/api/content-studio/status",
+      "stability": "stable",
+      "summary": "Read template content studio status.",
+      "tag": "content"
+    }
+  ],
+  "external_publish": false,
+  "kind": "zai-developer-portal-export",
+  "openapi": {
+    "components": {
+      "securitySchemes": {
+        "localAuth": {
+          "description": "Use local non-production token only.",
+          "scheme": "bearer",
+          "type": "http"
+        }
+      }
+    },
+    "info": {
+      "title": "ZAI Coder Control Plane Local API",
+      "version": "v41"
+    },
+    "openapi": "3.1.0",
+    "paths": {
+      "/api/content-studio/status": {
+        "get": {
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "security": [
+            {
+              "localAuth": []
+            }
+          ],
+          "summary": "Read template content studio status.",
+          "tags": [
+            "content"
+          ],
+          "x-stability": "stable"
+        }
+      },
+      "/api/help/status": {
+        "get": {
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "security": [
+            {
+              "localAuth": []
+            }
+          ],
+          "summary": "Read help center status.",
+          "tags": [
+            "help"
+          ],
+          "x-stability": "stable"
+        }
+      },
+      "/api/notifications/status": {
+        "get": {
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "security": [
+            {
+              "localAuth": []
+            }
+          ],
+          "summary": "Read notification center status.",
+          "tags": [
+            "notifications"
+          ],
+          "x-stability": "stable"
+        }
+      },
+      "/api/status": {
+        "get": {
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "security": [],
+          "summary": "Read local control-plane status.",
+          "tags": [
+            "core"
+          ],
+          "x-stability": "stable"
+        }
+      },
+      "/api/team/status": {
+        "get": {
+          "responses": {
+            "200": {
+              "description": "OK"
+            }
+          },
+          "security": [
+            {
+              "localAuth": []
+            }
+          ],
+          "summary": "Read team collaboration status.",
+          "tags": [
+            "team"
+          ],
+          "x-stability": "stable"
+        }
+      }
+    },
+    "servers": [
+      {
+        "description": "local development",
+        "url": "http://localhost:8080"
+      }
+    ]
+  },
+  "quickstarts": [
+    {
+      "audience": "developer",
+      "id": "quickstart-local",
+      "status": "published",
+      "steps": [
+        "install package",
+        "run local server",
+        "open /developer",
+        "review API docs"
+      ],
+      "title": "Start local developer portal"
+    },
+    {
+      "audience": "developer",
+      "id": "quickstart-openapi",
+      "status": "published",
+      "steps": [
+        "run make openapi-export",
+        "inspect developer/openapi/openapi.json",
+        "review before sharing"
+      ],
+      "title": "Export OpenAPI locally"
+    },
+    {
+      "audience": "developer",
+      "id": "quickstart-snippets",
+      "status": "published",
+      "steps": [
+        "copy non-production snippet",
+        "replace localhost only as needed",
+        "never paste secrets into docs"
+      ],
+      "title": "Use examples safely"
+    }
+  ],
+  "requires_review": true,
+  "safety": [
+    "no secret examples",
+    "local server examples",
+    "review before sharing"
+  ],
+  "snippets": [
+    {
+      "code": "curl http://localhost:8080/api/status",
+      "endpoint_id": "status",
+      "id": "curl-status",
+      "language": "bash",
+      "safety_note": "Example only. Use non-production credentials.",
+      "title": "Check status with curl"
+    },
+    {
+      "code": "import urllib.request\nprint(urllib.request.urlopen('http://localhost:8080/api/team/status').read().decode())",
+      "endpoint_id": "team-status",
+      "id": "python-team",
+      "language": "python",
+      "safety_note": "Example only. Use non-production credentials.",
+      "title": "Read team status"
+    },
+    {
+      "code": "fetch('/api/notifications/status').then(r => r.json()).then(console.log)",
+      "endpoint_id": "notifications-status",
+      "id": "js-notifications",
+      "language": "javascript",
+      "safety_note": "Example only. Use non-production credentials.",
+      "title": "Read notification status"
+    }
+  ],
+  "validation": {
+    "ok": true,
+    "reports": [
+      {
+        "id": "status",
+        "issues": []
+      },
+      {
+        "id": "team-status",
+        "issues": []
+      },
+      {
+        "id": "notifications-status",
+        "issues": []
+      },
+      {
+        "id": "help-status",
+        "issues": []
+      },
+      {
+        "id": "content-status",
+        "issues": []
+      },
+      {
+        "id": "curl-status",
+        "issues": []
+      },
+      {
+        "id": "python-team",
+        "issues": []
+      },
+      {
+        "id": "js-notifications",
+        "issues": []
+      },
+      {
+        "id": "quickstart-local",
+        "issues": []
+      },
+      {
+        "id": "quickstart-openapi",
+        "issues": []
+      },
+      {
+        "id": "quickstart-snippets",
+        "issues": []
+      }
+    ]
+  },
+  "version": "1.0"
+}
