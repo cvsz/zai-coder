@@ -15,6 +15,9 @@ dependencies = []
 [project.scripts]
 zai-coder = "zai_coder.cli:main"
 
+[project.optional-dependencies]
+tui = ["textual>=0.80"]
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["zai_coder*"]

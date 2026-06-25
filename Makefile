@@ -12,7 +12,7 @@ PATCH ?=
 PACKAGE_NAME ?= zai-coder-clean-release
 SAFETY := ./scripts/safety-dry-run.sh --apply $(APPLY) --
 
-.PHONY: help dry-run doctor install install-dry-run uninstall post-install-check test compile safety-check scan ask chat serve run-command patch-check patch-apply package clean-preview clean-safe models status final-release-status gpg-commit gpg-push gpg-tag gpg-doctor gpg-list-keys gpg-loopback
+.PHONY: help dry-run doctor install install-dry-run uninstall post-install-check test compile safety-check scan ask chat serve run-command patch-check patch-apply package clean-preview clean-safe models status final-release-status tui tui-dry-run tui-check tui-command-center tui-agent-hub tui-flow-stream tui-architect-tree tui-creative-canvas tui-operation-gate gpg-commit gpg-push gpg-tag gpg-doctor gpg-list-keys gpg-loopback
 
 help:
 	@printf '%s\n' 'ZAI Coder Makefile targets:'
@@ -33,6 +33,8 @@ help:
 	@printf '%s\n' '  make clean-safe APPLY=1     Remove only safe cache files'
 	@printf '%s\n' '  make package APPLY=1        Build clean release TGZ + SHA256'
 	@printf '%s\n' '  make final-release-status   Preview final release status'
+	@printf '%s\n' '  make tui                    Launch optional Textual TUI'
+	@printf '%s\n' '  make tui-check              Validate all TUI dry-run routes'
 	@printf '%s\n' '  make gpg-commit             Safe GPG signed commit (APPLY=1)'
 	@printf '%s\n' '  make gpg-push               Safe GPG signed push'
 	@printf '%s\n' '  make gpg-tag                Safe GPG signed tag (APPLY=1)'
@@ -110,6 +112,40 @@ package:
 
 final-release-status:
 	$(SAFETY) ./scripts/final-release/final-release-status.sh
+
+tui:
+	./run.sh tui
+
+tui-dry-run:
+	./run.sh tui --dry-run
+
+tui-check:
+	./run.sh tui --print-config
+	./run.sh tui --list-templates
+	./run.sh tui --template command-center --dry-run
+	./run.sh tui --template agent-hub --dry-run
+	./run.sh tui --template flow-stream --dry-run
+	./run.sh tui --template architect-tree --dry-run
+	./run.sh tui --template creative-canvas --dry-run
+	./run.sh tui --template operation-gate --dry-run
+
+tui-command-center:
+	./run.sh tui --template command-center --dry-run
+
+tui-agent-hub:
+	./run.sh tui --template agent-hub --dry-run
+
+tui-flow-stream:
+	./run.sh tui --template flow-stream --dry-run
+
+tui-architect-tree:
+	./run.sh tui --template architect-tree --dry-run
+
+tui-creative-canvas:
+	./run.sh tui --template creative-canvas --dry-run
+
+tui-operation-gate:
+	./run.sh tui --template operation-gate --dry-run
 
 clean-preview:
 	@echo 'Safe cleanup preview:'

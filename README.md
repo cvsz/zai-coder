@@ -13,6 +13,7 @@ It includes:
 - chat sessions
 - coding planner/reviewer agents
 - offline fallback media generators for images, voice, music, animation, and video storyboards
+- optional Textual TUI template system for local operator workflows
 - self-tests
 
 > This package does **not** include model weights. Use it with Ollama models such as `zcode-turbo-safe`, `zcode-fast-safe`, or any OpenAI-compatible endpoint.
@@ -89,6 +90,37 @@ ollama run zcode-qwen25-coder:14b-tiny
 ./zai-coder media animation --prompt "agent workflow" --out out/animation.svg
 ./zai-coder media video --prompt "demo launch" --out out/video_storyboard.json
 ```
+
+## TUI Template System
+
+The TUI is optional. Non-TUI CLI commands work without Textual installed.
+
+```bash
+./run.sh tui --dry-run
+./run.sh tui --print-config
+./run.sh tui --list-templates
+./run.sh tui --template command-center --dry-run
+./run.sh tui --template agent-hub --dry-run
+./run.sh tui --template flow-stream --dry-run
+./run.sh tui --template architect-tree --dry-run
+./run.sh tui --template creative-canvas --dry-run
+./run.sh tui --template operation-gate --dry-run
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[tui]"
+./run.sh tui
+```
+
+Templates:
+
+- `tui-template-01` / `command-center`
+- `tui-template-02` / `agent-hub`
+- `tui-template-03` / `flow-stream`
+- `tui-template-04` / `architect-tree`
+- `tui-template-05` / `creative-canvas`
+- `tui-template-06` / `operation-gate`
+
+The terminal design uses layered panels, soft borders, dim/bright contrast, status chips, a command palette, and non-blocking refresh. It does not rely on web-only backdrop blur.
 
 ## Safety defaults
 

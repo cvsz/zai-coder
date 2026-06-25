@@ -6,10 +6,7 @@ APPLY="${APPLY:-0}"
 BIN_DIR="${HOME}/.local/bin"
 LAUNCHER="${BIN_DIR}/zai-coder"
 
-echo "==/zai-coder}"
-APPLY="${APPLY:-0}"
-BIN_DIR="${HOME}/.local/bin"
-LAUNCHER="${BIN_DIR}/ ZAI Coder Install Plan =="
+echo "== ZAI Coder Install Plan =="
 echo "PREFIX: ${PREFIX}"
 echo "APPLY:  ${APPLY}"
 
@@ -24,6 +21,7 @@ mkdir -p "${BIN_DIR}"
 rsync -a \
   --exclude='.git/' \
   --exclude='.env' \
+  --exclude='.zai-coder/' \
   --exclude='__pycache__/' \
   --exclude='.pytest_cache/' \
   --exclude='*.pyc' \

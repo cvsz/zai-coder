@@ -225,8 +225,20 @@ def cmd_media(args) -> int:
     print(out)
     return 0
 
+def cmd_tui(args) -> int:
+    from .tui.app import describe_templates, run_tui
+    from .tui.config import load_tui_config
+
+    if args.list_templates:
+        print(describe_templates())
+        return 0
+    if args.print_config:
+        print(json.dumps(load_tui_config(), indent=2))
+        return 0
+    return run_tui(args.template, args.dry_run, args.no_textual)
 
 def build_parser() -> argparse.ArgumentParser:
+
     p = argparse.ArgumentParser(prog="zai-coder", description="Standalone local-first AI coding and media-agent CLI")
     p.add_argument("--config", default=None, help="Path to config JSON")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -307,6 +319,14 @@ def build_parser() -> argparse.ArgumentParser:
     media.add_argument("--text", default="")
     media.add_argument("--out", default="out/artifact")
     media.set_defaults(func=cmd_media)
+
+    tui = sub.add_parser("tui")
+    tui.add_argument("--template", help="Template name")
+    tui.add_argument("--dry-run", action="store_true")
+    tui.add_argument("--no-textual", action="store_true")
+    tui.add_argument("--print-config", action="store_true")
+    tui.add_argument("--list-templates", action="store_true")
+    tui.set_defaults(func=cmd_tui)
 
     return p
 
