@@ -1,0 +1,35 @@
+
+== Config ==
+{
+  "provider": "ollama",
+  "base_url": "http://127.0.0.1:11434/v1",
+  "model": "zcode-turbo-safe",
+  "fallback_models": [
+    "zcode-fast-safe",
+    "zcode-qwen25-coder:14b-tiny"
+  ],
+  "workspace": ".",
+  "max_tokens": 2048,
+  "temperature": 0.05,
+  "safe_mode": true,
+  "allow_apps_zlms": false,
+  "tool_timeout_seconds": 180
+}
+
+== Python ==
+3.12.3
+
+== Workspace ==
+/home/zeazdev/zai-coder
+
+== Ollama ==
+/usr/local/bin/ollama
+NAME                           ID              SIZE      MODIFIED     
+qwen2.5-coder:7b               dae161e27b0e    4.7 GB    30 hours ago    
+zcode-fast-safe:latest         2ff07659db49    4.7 GB    30 hours ago    
+zcode-turbo:latest             bc419a184e8c    1.9 GB    32 hours ago    
+qwen2.5-coder:3b               f72c60cabf62    1.9 GB    32 hours ago    
+zcode:latest                   296e20a3f742    9.0 GB    33 hours ago    
+zcode-qwen25-coder:14b-tiny    468ca9b145ca    9.0 GB    33 hours ago    
+qwen2.5-coder:14b              9ec8897f747e    9.0 GB    33 hours ago    
+

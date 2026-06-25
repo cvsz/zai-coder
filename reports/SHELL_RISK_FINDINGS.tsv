@@ -1,0 +1,5 @@
+File	Command	Risk_Level	Gating_Instruction
+merge-zai-zips.sh	rm -rf "$OUT"	High	manual-only; review output directory before use
+Makefile	clean-safe rm -rf cache cleanup	Medium	requires APPLY=1; allowed local-only for Python/test caches
+scripts/safety-dry-run.sh	rm -rf policy matcher	High	disabled by default; blocks broad rm -rf patterns
+Makefile	gpg-push	High	manual-only; disabled by default in Makefile

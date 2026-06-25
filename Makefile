@@ -9,10 +9,10 @@ AGENT ?= coder
 PROMPT ?= Inspect this repo and produce a safe fix plan.
 COMMAND ?= git status --short
 PATCH ?=
-PACKAGE_NAME ?= zai-coder-final
+PACKAGE_NAME ?= zai-coder-clean-release
 SAFETY := ./scripts/safety-dry-run.sh --apply $(APPLY) --
 
-.PHONY: help dry-run doctor install test compile safety-check scan ask chat serve run-command patch-check patch-apply package clean-preview clean-safe models status
+.PHONY: help dry-run doctor install test compile safety-check scan ask chat serve run-command patch-check patch-apply package clean-preview clean-safe models status final-release-status gpg-commit gpg-push gpg-tag gpg-doctor gpg-list-keys gpg-loopback
 
 help:
 	@printf '%s\n' 'ZAI Coder Makefile targets:'
@@ -28,7 +28,14 @@ help:
 	@printf '%s\n' '  make serve APPLY=1          Start local web UI'
 	@printf '%s\n' '  make install APPLY=1        Run installer'
 	@printf '%s\n' '  make clean-safe APPLY=1     Remove only safe cache files'
-	@printf '%s\n' '  make package APPLY=1        Build release ZIP'
+	@printf '%s\n' '  make package APPLY=1        Build clean release TGZ + SHA256'
+	@printf '%s\n' '  make final-release-status   Preview final release status'
+	@printf '%s\n' '  make gpg-commit             Safe GPG signed commit (APPLY=1)'
+	@printf '%s\n' '  make gpg-push               Safe GPG signed push'
+	@printf '%s\n' '  make gpg-tag                Safe GPG signed tag (APPLY=1)'
+	@printf '%s\n' '  make gpg-doctor             GPG setup doctor'
+	@printf '%s\n' '  make gpg-list-keys          List GPG keys'
+	@printf '%s\n' '  make gpg-loopback           GPG loopback check'
 	@printf '%s\n' ''
 	@printf '%s\n' 'Safety: APPLY defaults to 0. Commands are printed, not executed, until APPLY=1.'
 	@printf '%s\n' 'Blocked: git add ., git add -A, --no-verify, force push, broad rm -rf, apps/zlms/**, secrets/generated artifacts.'
@@ -51,7 +58,7 @@ install:
 	$(SAFETY) ./install.sh
 
 test:
-	$(SAFETY) $(PYTHON) -m pytest -q
+	$(SAFETY) PYTHONPATH=. $(PYTHON) -m pytest -q --import-mode=importlib
 
 compile:
 	$(SAFETY) $(PYTHON) -m compileall -q zai_coder
@@ -89,6 +96,9 @@ models:
 package:
 	$(SAFETY) ./scripts/package.sh "$(PACKAGE_NAME)"
 
+final-release-status:
+	$(SAFETY) ./scripts/final-release/final-release-status.sh
+
 clean-preview:
 	@echo 'Safe cleanup preview:'
 	@find . -type d \( -name __pycache__ -o -name .pytest_cache \) -print
@@ -105,3 +115,22 @@ clean-safe:
 	  find . -type f \( -name '*.pyc' -o -name '*.pyo' \) -delete; \
 	  echo 'Safe cache cleanup complete.'; \
 	fi
+
+gpg-commit:
+	$(SAFETY) ./scripts/git/gpg-commit-safe.sh "$(COMMIT_MSG)"
+
+gpg-push:
+	@echo 'Manual-only: review git diff and run an explicit git push command outside this Makefile if approved.'
+	@exit 2
+
+gpg-tag:
+	$(SAFETY) ./scripts/git/gpg-tag-safe.sh "$(TAG_NAME)"
+
+gpg-doctor:
+	$(SAFETY) ./scripts/git/gpg-doctor.sh
+
+gpg-list-keys:
+	$(SAFETY) ./scripts/git/gpg-list-keys.sh
+
+gpg-loopback:
+	$(SAFETY) ./scripts/git/gpg-loopback.sh

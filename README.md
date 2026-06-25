@@ -76,6 +76,8 @@ The command runner blocks dangerous patterns by default, including:
 - staging generated artifacts
 - touching `apps/zlms/**` unless explicitly configured otherwise
 
+Mutating Makefile workflows are dry-run by default. Use `APPLY=1` only after reviewing the command and exact target paths. No `git add .` workflow is supported; stage explicit files only.
+
 ## Config
 
 Default config path:

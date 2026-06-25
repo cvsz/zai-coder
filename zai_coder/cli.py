@@ -11,8 +11,19 @@ from .config import ensure_config, load_config
 from .core.messages import Message
 from .core.models import ModelRouter, provider_from_config
 from .core.orchestrator import MultiAgentOrchestrator
+from .core.audit import AuditLog
+from .core.memory import MemoryStore
+from .core.patcher import PatchRuntime
+from .core.project import scan_project
 from .core.registry import JsonRegistry
 from .core.safety import SafetyPolicy
+from .core.self_core import (
+    next_requirements_markdown,
+    run_self_doctor,
+    runbook,
+    self_features_markdown,
+    write_text_safely,
+)
 from .core.tools import ToolRuntime
 from .agents.registry import build_agent
 from .media import generate_svg_image, generate_voice_wav, generate_music_wav, generate_animation_svg, generate_video_storyboard
@@ -123,6 +134,81 @@ def cmd_run(args) -> int:
     return res.exit_code
 
 
+def cmd_scan(args) -> int:
+    cfg = load_config(args.config)
+    scan = scan_project(cfg.workspace)
+    print(scan.to_markdown())
+    return 0
+
+
+def cmd_audit(args) -> int:
+    cfg = load_config(args.config)
+    events = AuditLog(Path(cfg.workspace) / "data" / "zai-audit.jsonl").tail(args.limit)
+    print(json.dumps(events, indent=2))
+    return 0
+
+
+def cmd_memory(args) -> int:
+    cfg = load_config(args.config)
+    store = MemoryStore(Path(cfg.workspace) / "data" / "zai-memory.db")
+    if args.memory_cmd == "list":
+        items = store.list(namespace=args.namespace, limit=args.limit)
+        print(json.dumps([item.__dict__ for item in items], indent=2))
+        return 0
+    if args.memory_cmd == "get":
+        value = store.get(args.key, namespace=args.namespace)
+        print(value or "")
+        return 0 if value is not None else 1
+    raise SystemExit(f"Unknown memory command: {args.memory_cmd}")
+
+
+def cmd_patch(args) -> int:
+    cfg = load_config(args.config)
+    runtime = PatchRuntime(cfg.workspace, Path(".zai-coder") / "checkpoints", SafetyPolicy(cfg.allow_apps_zlms))
+    result = runtime.apply_file(args.patch_file, check_only=not args.apply)
+    if result.stdout:
+        print(result.stdout, end="")
+    if result.stderr:
+        print(result.stderr, end="", file=sys.stderr)
+    if result.blocked_reason:
+        print(f"BLOCKED: {result.blocked_reason}", file=sys.stderr)
+    if result.checkpoint:
+        print(f"checkpoint: {result.checkpoint}")
+    return 0 if result.ok else 1
+
+
+def cmd_serve(args) -> int:
+    if args.host not in {"127.0.0.1", "localhost"}:
+        print("Remote bind is disabled by default; use 127.0.0.1 or localhost.", file=sys.stderr)
+        return 2
+    print(f"Local server plan: host={args.host} port={args.port}. Use deployment scripts for approved runtime start.")
+    return 0
+
+
+def cmd_self(args) -> int:
+    if args.self_cmd == "list":
+        print(self_features_markdown())
+        return 0
+    if args.self_cmd == "doctor":
+        print(json.dumps(run_self_doctor(Path.cwd()), indent=2))
+        return 0
+    if args.self_cmd == "plan":
+        print(next_requirements_markdown())
+        return 0
+    if args.self_cmd == "requirement-next":
+        content = next_requirements_markdown()
+        if args.out:
+            out = write_text_safely(args.out, content, Path.cwd())
+            print(out)
+        else:
+            print(content)
+        return 0
+    if args.self_cmd == "runbook":
+        print(runbook(args.feature), end="")
+        return 0
+    raise SystemExit(f"Unknown self command: {args.self_cmd}")
+
+
 def cmd_media(args) -> int:
     if args.kind == "image":
         out = generate_svg_image(args.prompt, args.out)
@@ -171,6 +257,49 @@ def build_parser() -> argparse.ArgumentParser:
     run = sub.add_parser("run")
     run.add_argument("command")
     run.set_defaults(func=cmd_run)
+
+    scan = sub.add_parser("scan")
+    scan.set_defaults(func=cmd_scan)
+
+    audit = sub.add_parser("audit")
+    audit.add_argument("--limit", type=int, default=50)
+    audit.set_defaults(func=cmd_audit)
+
+    serve = sub.add_parser("serve")
+    serve.add_argument("--host", default="127.0.0.1")
+    serve.add_argument("--port", type=int, default=8765)
+    serve.set_defaults(func=cmd_serve)
+
+    memory = sub.add_parser("memory")
+    memory_sub = memory.add_subparsers(dest="memory_cmd", required=True)
+    memory_list = memory_sub.add_parser("list")
+    memory_list.add_argument("--namespace", default="default")
+    memory_list.add_argument("--limit", type=int, default=100)
+    memory_list.set_defaults(func=cmd_memory)
+    memory_get = memory_sub.add_parser("get")
+    memory_get.add_argument("key")
+    memory_get.add_argument("--namespace", default="default")
+    memory_get.set_defaults(func=cmd_memory)
+
+    patch = sub.add_parser("patch")
+    patch.add_argument("patch_file")
+    patch.add_argument("--apply", action="store_true")
+    patch.set_defaults(func=cmd_patch)
+
+    self_cmd = sub.add_parser("self")
+    self_sub = self_cmd.add_subparsers(dest="self_cmd", required=True)
+    self_list = self_sub.add_parser("list")
+    self_list.set_defaults(func=cmd_self)
+    self_doctor = self_sub.add_parser("doctor")
+    self_doctor.set_defaults(func=cmd_self)
+    self_plan = self_sub.add_parser("plan")
+    self_plan.set_defaults(func=cmd_self)
+    self_req = self_sub.add_parser("requirement-next")
+    self_req.add_argument("--out", default="")
+    self_req.set_defaults(func=cmd_self)
+    self_runbook = self_sub.add_parser("runbook")
+    self_runbook.add_argument("feature")
+    self_runbook.set_defaults(func=cmd_self)
 
     media = sub.add_parser("media")
     media.add_argument("kind", choices=["image", "voice", "music", "animation", "video"])

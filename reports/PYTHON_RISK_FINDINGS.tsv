@@ -1,0 +1,9 @@
+File	Line	Pattern	Risk_Level	Gating_Instruction
+zai_coder/template_content_studio/audit.py	30	executescript	Medium	allowed local-only; static schema creation for local SQLite audit log
+zai_coder/agent_runtime_supervisor/audit.py	33	executescript	Medium	allowed local-only; static schema creation for local SQLite audit log
+zai_coder/agent_marketplace_and_skills/registry.py	33	executescript	Low	stale finding; file not present in audited tree
+zai_coder/real_provider_adapters/routes/__init__.py	24	ProviderExecutor().execute	High	disabled by default; dry-run unless apply=true and approval_id is accepted
+zai_coder/real_provider_adapters/routes/__init__.py	26	ProviderExecutor().execute	High	disabled by default; dry-run unless apply=true and approval_id is accepted
+zai_coder/real_provider_adapters/routes/__init__.py	28	ProviderExecutor().execute	High	disabled by default; dry-run unless apply=true and approval_id is accepted
+zai_coder/real_provider_adapters/routes/__init__.py	30	ProviderExecutor().execute	High	disabled by default; dry-run unless apply=true and approval_id is accepted
+zai_coder/real_provider_adapters/routes/__init__.py	32	ProviderExecutor().execute	High	disabled by default; dry-run unless apply=true and approval_id is accepted

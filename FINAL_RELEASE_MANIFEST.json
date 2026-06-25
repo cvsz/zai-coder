@@ -1,0 +1,32 @@
+{
+  "project": "ZAI Coder Control Plane",
+  "version": "v50-final-enterprise-release-pack",
+  "release_name": "zai-coder-v50-final-enterprise-release",
+  "generated_at": "2026-06-25T12:00:00Z",
+  "root": "/home/zeazdev/zai-coder",
+  "archive": "zai-coder-clean-release.tgz",
+  "checksum": "zai-coder-clean-release.sha256",
+  "validation_commands": {
+    "pytest": 0,
+    "doctor": 0,
+    "safety_check": 0,
+    "final_release_status": 0
+  },
+  "artifact_inventory": [
+    "zai-coder-clean-release.tgz",
+    "zai-coder-clean-release.sha256",
+    "CLEAN_RELEASE_AUDIT_REPORT.md",
+    "FINAL_RELEASE_*"
+  ],
+  "safety_policy": "local-first, dry-run-first, manual-approval",
+  "excluded_patterns": [
+    ".git/",
+    ".env",
+    "__pycache__/",
+    ".pytest_cache/",
+    "*.pyc",
+    "*.sqlite*",
+    "*.db"
+  ],
+  "final_verdict": "FINAL_RELEASE_READY_WITH_WARNINGS"
+}
