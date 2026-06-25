@@ -26,7 +26,7 @@ jobs:
       - run: make release-build APPLY=1 NAME="zai-coder-control-plane-${{ inputs.version }}"
       - run: make release-checksums
       - run: make release-sbom
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: zai-coder-control-plane-${{ inputs.version }}
           path: |
