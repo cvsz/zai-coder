@@ -1,12 +1,26 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
 PREFIX="${PREFIX:-${HOME}/.local/share/zai-coder}"
+LAUNCHER="${HOME}/.local/bin/zai-coder"
 
 echo "== Post-Install Check =="
-if [ -d "$PREFIX" ] && [ -x "$HOME/.local/bin/zai-coder" ]; then
-    echo "Check: PASSED"
-else
-    echo "Check: FAILED"
-    exit 1
+echo "PREFIX: ${PREFIX}"
+echo "LAUNCHER: ${LAUNCHER}"
+
+if [[ ! -d "${PREFIX}" ]]; then
+  echo "Check: FAILED - install prefix missing"
+  exit 1
 fi
-EOF
+
+if [[ ! -x "${LAUNCHER}" ]]; then
+  echo "Check: FAILED - launcher missing or not executable"
+  exit 1
+fi
+
+if [[ ! -d "${PREFIX}/zai_coder" ]]; then
+  echo "Check: FAILED - Python package directory missing"
+  exit 1
+fi
+
+echo "Check: PASSED"
