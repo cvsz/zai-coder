@@ -12,13 +12,17 @@ PATCH ?=
 PACKAGE_NAME ?= zai-coder-clean-release
 SAFETY := ./scripts/safety-dry-run.sh --apply $(APPLY) --
 
-.PHONY: help dry-run doctor install test compile safety-check scan ask chat serve run-command patch-check patch-apply package clean-preview clean-safe models status final-release-status gpg-commit gpg-push gpg-tag gpg-doctor gpg-list-keys gpg-loopback
+.PHONY: help dry-run doctor install install-dry-run uninstall post-install-check test compile safety-check scan ask chat serve run-command patch-check patch-apply package clean-preview clean-safe models status final-release-status gpg-commit gpg-push gpg-tag gpg-doctor gpg-list-keys gpg-loopback
 
 help:
 	@printf '%s\n' 'ZAI Coder Makefile targets:'
 	@printf '%s\n' ''
 	@printf '%s\n' '  make dry-run                Preview the default safe workflow'
-	@printf '%s\n' '  make doctor                 Preview ./zai-coder doctor'
+	@printf '%s\n' '  make doctor                 Run ZAI Coder doctor'
+	@printf '%s\n' '  make install APPLY=1        Install to PREFIX'
+	@printf '%s\n' '  make install-dry-run        Preview install'
+	@printf '%s\n' '  make uninstall APPLY=1      Uninstall from PREFIX'
+	@printf '%s\n' '  make post-install-check     Verify installation'
 	@printf '%s\n' '  make test                   Preview pytest'
 	@printf '%s\n' '  make scan                   Preview project scan'
 	@printf '%s\n' '  make ask PROMPT="..."       Preview agent ask'
@@ -26,7 +30,6 @@ help:
 	@printf '%s\n' '  make patch-check PATCH=fix.diff'
 	@printf '%s\n' '  make patch-apply PATCH=fix.diff APPLY=1'
 	@printf '%s\n' '  make serve APPLY=1          Start local web UI'
-	@printf '%s\n' '  make install APPLY=1        Run installer'
 	@printf '%s\n' '  make clean-safe APPLY=1     Remove only safe cache files'
 	@printf '%s\n' '  make package APPLY=1        Build clean release TGZ + SHA256'
 	@printf '%s\n' '  make final-release-status   Preview final release status'
@@ -55,7 +58,16 @@ doctor:
 	$(SAFETY) ./zai-coder doctor
 
 install:
-	$(SAFETY) ./install.sh
+	$(SAFETY) ./scripts/install/install-local-safe.sh
+
+install-dry-run:
+	./scripts/install/install-local-safe.sh
+
+uninstall:
+	$(SAFETY) ./scripts/install/uninstall-local-safe.sh
+
+post-install-check:
+	./scripts/install/post-install-check.sh
 
 test:
 	$(SAFETY) PYTHONPATH=. $(PYTHON) -m pytest -q --import-mode=importlib
@@ -106,15 +118,7 @@ clean-preview:
 
 clean-safe:
 	@echo 'Cleaning only Python/test cache files. APPLY=$(APPLY)'
-	@if [[ "$(APPLY)" != "1" ]]; then \
-	  $(MAKE) --no-print-directory clean-preview; \
-	  echo 'Set APPLY=1 to remove listed cache files.'; \
-	else \
-	  find . -type d -name __pycache__ -prune -exec rm -rf {} +; \
-	  find . -type d -name .pytest_cache -prune -exec rm -rf {} +; \
-	  find . -type f \( -name '*.pyc' -o -name '*.pyo' \) -delete; \
-	  echo 'Safe cache cleanup complete.'; \
-	fi
+	@if [[ "$(APPLY)" != "1" ]]; then 	  $(MAKE) --no-print-directory clean-preview; 	  echo 'Set APPLY=1 to remove listed cache files.'; 	else 	  find . -type d -name __pycache__ -prune -exec rm -rf {} +; 	  find . -type d -name .pytest_cache -prune -exec rm -rf {} +; 	  find . -type f \( -name '*.pyc' -o -name '*.pyo' \) -delete; 	  echo 'Safe cache cleanup complete.'; 	fi
 
 gpg-commit:
 	$(SAFETY) ./scripts/git/gpg-commit-safe.sh "$(COMMIT_MSG)"

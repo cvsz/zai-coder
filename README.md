@@ -17,15 +17,41 @@ It includes:
 
 > This package does **not** include model weights. Use it with Ollama models such as `zcode-turbo-safe`, `zcode-fast-safe`, or any OpenAI-compatible endpoint.
 
-## Quick start
+## Installation
 
+### Dry-run (Preview)
 ```bash
-unzip zai-coder-standalone.zip
-cd zai-coder-standalone
-./install.sh
-./zai-coder doctor
-./zai-coder ask "Inspect this repo and make a safe plan. Do not edit files."
+make install-dry-run
 ```
+
+### Real Install
+```bash
+make install APPLY=1
+```
+*(Default prefix: ~/.local/share/zai-coder)*
+
+### Custom Path
+```bash
+PREFIX=/custom/path make install APPLY=1
+```
+
+### Post-Install
+```bash
+make post-install-check
+~/.local/bin/zai-coder doctor
+```
+
+### Uninstall
+```bash
+make uninstall APPLY=1
+```
+
+### PATH Setup
+Ensure `~/.local/bin` is in your `PATH`:
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
 
 ## Recommended local Ollama models
 
