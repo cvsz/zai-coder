@@ -1,0 +1,43 @@
+{
+  "version": "0.1.0",
+  "commit": "e08b987",
+  "timestamp": "2026-06-26T02:49:00Z",
+  "commands_run": [
+    "git status --short",
+    "git rev-parse HEAD",
+    "python3 -m pytest -q",
+    "make package APPLY=1",
+    "make safety-check"
+  ],
+  "artifacts": [
+    "dist/zai-coder-standalone-0.1.0.tar.gz",
+    "dist/zai-coder-standalone-0.1.0.zip",
+    "dist/RELEASE_MANIFEST.json"
+  ],
+  "checksums": {
+    "dist/zai-coder-standalone-0.1.0.tar.gz": "20c6898c5a47ff7afc422df806911cca26c64547719725b7429257d6de8364f4",
+    "dist/zai-coder-standalone-0.1.0.zip": "9af4632dbe12ec3259def06f2b52e16f62040df42380ca6f155c115ebe8f8147"
+  },
+  "test_result": {
+    "passed": 446,
+    "failed": 0
+  },
+  "safety_result": {
+    "git_add_all_blocked": true,
+    "no_verify_blocked": true,
+    "force_push_blocked": true,
+    "rm_rf_blocked": true,
+    "env_cat_blocked": true
+  },
+  "package_result": "ok",
+  "readiness_score": 100,
+  "verified_claims": [
+    "readiness score 100/100",
+    "commit hash e08b987",
+    "446/446 tests passing",
+    "deterministic package artifacts in dist/",
+    "no pending TODOs",
+    "all enterprise subsystems completed"
+  ],
+  "failed_claims": []
+}
