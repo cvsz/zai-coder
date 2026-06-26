@@ -1,0 +1,13 @@
+{
+    "name": "locked_down",
+    "description": "Deny all risky actions",
+    "allowed_commands": ["echo", "cat", "ls"],
+    "denied_patterns": ["rm", "sudo", "chmod", "git", "python", "make", "npm", "yarn", "docker", "bash", "sh"],
+    "protected_paths": ["apps/zlms/"],
+    "generated_paths": ["node_modules/", "dist/", ".next/", "coverage/", "reports/", ".turbo/", ".vite/", "vendor/ai-assets/"],
+    "max_timeout_seconds": 10,
+    "require_approval": true,
+    "allow_network": false,
+    "allow_shell": false,
+    "allow_write": false
+}

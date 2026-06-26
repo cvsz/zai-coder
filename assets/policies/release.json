@@ -1,0 +1,13 @@
+{
+    "name": "release",
+    "description": "Package and release checks",
+    "allowed_commands": ["make", "python", "python3", "pytest", "git", "bash", "sh", "tar", "zip", "sha256sum"],
+    "denied_patterns": ["rm -rf /", "sudo rm -rf"],
+    "protected_paths": ["apps/zlms/"],
+    "generated_paths": ["node_modules/", "dist/", ".next/", "coverage/", "reports/", ".turbo/", ".vite/", "vendor/ai-assets/"],
+    "max_timeout_seconds": 600,
+    "require_approval": true,
+    "allow_network": true,
+    "allow_shell": false,
+    "allow_write": true
+}

@@ -1,0 +1,13 @@
+{
+    "name": "read_only",
+    "description": "Read-only inspection policy",
+    "allowed_commands": ["ls", "cat", "grep", "find", "head", "tail", "git"],
+    "denied_patterns": ["rm -rf", "sudo", "chmod", "git add", "git commit", "git push"],
+    "protected_paths": ["apps/zlms/"],
+    "generated_paths": ["node_modules/", "dist/", ".next/", "coverage/", "reports/", ".turbo/", ".vite/", "vendor/ai-assets/"],
+    "max_timeout_seconds": 60,
+    "require_approval": false,
+    "allow_network": false,
+    "allow_shell": false,
+    "allow_write": false
+}
