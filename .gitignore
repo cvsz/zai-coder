@@ -30,3 +30,18 @@ secrets/
 *.pem
 *.key
 *.age
+*.p12
+*.pfx
+
+# Runtime local state (ZAI Coder generated - DO NOT COMMIT)
+.zai-coder/
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+data/zai-audit.jsonl
+
+# Temporary reports
+reports/*.tmp
+
+# Modelfile (local AI model config)
+Modelfile
