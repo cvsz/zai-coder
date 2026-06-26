@@ -1,0 +1,7 @@
+[
+  {
+    "id": "rag-1",
+    "prompt": "where is command safety enforced",
+    "expect_substring": "safety"
+  }
+]

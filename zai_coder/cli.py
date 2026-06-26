@@ -324,6 +324,56 @@ def cmd_repair(args) -> int:
         
     raise SystemExit(f"Unknown repair command: {args.repair_cmd}")
 
+def cmd_eval(args) -> int:
+    from pathlib import Path
+    from zai_coder.evals.cases import CaseLoader
+    from zai_coder.evals.runner import EvalRunner
+    from zai_coder.evals.report import EvalReporter
+    
+    loader = CaseLoader(Path.cwd())
+    if args.eval_cmd == "list":
+        for suite in ["safety", "agents", "rag", "tool-runtime", "model-router", "server"]:
+            cases = loader.load_suite(suite)
+            print(f"Suite: {suite} ({len(cases)} cases)")
+        return 0
+        
+    elif args.eval_cmd == "run":
+        cases = loader.load_suite(args.suite)
+        if not cases:
+            print(f"No cases found for suite: {args.suite}")
+            return 1
+            
+        runner = EvalRunner(Path.cwd())
+        results = runner.run_suite(cases)
+        report = EvalReporter(results)
+        print(report.to_markdown())
+        return 0
+        
+    return 1
+
+def cmd_bench(args) -> int:
+    from pathlib import Path
+    from zai_coder.evals.cases import CaseLoader
+    from zai_coder.evals.runner import EvalRunner
+    from zai_coder.evals.report import EvalReporter
+    
+    loader = CaseLoader(Path.cwd())
+    target = args.bench_target
+    cases = loader.load_suite(target)
+    
+    if not cases:
+        print(f"No benchmark data for {target}")
+        return 1
+        
+    print(f"Benchmarking {target}...")
+    runner = EvalRunner(Path.cwd())
+    results = runner.run_suite(cases)
+    report = EvalReporter(results)
+    
+    print("\n--- BENCHMARK RESULTS ---")
+    print(report.to_json())
+    return 0
+
 def cmd_media(args) -> int:
     if args.kind == "image":
         out = generate_svg_image(args.prompt, args.out)
@@ -616,6 +666,18 @@ def build_parser() -> argparse.ArgumentParser:
     metrics_snap = metrics_sub.add_parser("snapshot")
     metrics_snap.add_argument("--json", action="store_true")
     metrics_snap.set_defaults(func=cmd_metrics)
+
+    eval_cmd = sub.add_parser("eval")
+    eval_sub = eval_cmd.add_subparsers(dest="eval_cmd", required=True)
+    eval_list = eval_sub.add_parser("list")
+    eval_list.set_defaults(func=cmd_eval)
+    eval_run = eval_sub.add_parser("run")
+    eval_run.add_argument("--suite", default="safety")
+    eval_run.set_defaults(func=cmd_eval)
+
+    bench_cmd = sub.add_parser("bench")
+    bench_cmd.add_argument("bench_target", choices=["models", "safety"])
+    bench_cmd.set_defaults(func=cmd_bench)
 
     serve = sub.add_parser("serve")
     serve.add_argument("--host", default="127.0.0.1")

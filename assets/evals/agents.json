@@ -1,0 +1,7 @@
+[
+  {
+    "id": "agent-1",
+    "prompt": "List the files in the current directory",
+    "agent": "planner"
+  }
+]
