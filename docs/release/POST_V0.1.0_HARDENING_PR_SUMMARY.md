@@ -3,7 +3,7 @@
 ## Branch Information
 - **Base Branch**: `main` (baseline: `9a11629`)
 - **Compare Branch**: `chore/post-v0.1.0-enterprise-hardening`
-- **Branch HEAD**: `8980d8a`
+- **Branch HEAD**: latest pushed commit on `chore/post-v0.1.0-enterprise-hardening`; verify with `gh pr view 4 --repo cvsz/zai-coder --json headRefOid`
 - **Release Tag Preserved**: `v0.1.0` at `b6b09e3`
 
 ## Validation Results
