@@ -47,3 +47,7 @@ status.txt
 
 # Modelfile (local AI model config)
 Modelfile
+
+# Local/generated build reports should not be committed at repository root.
+BUILD_REPORT_V*.txt
+BUILD_REPORT_*.txt
