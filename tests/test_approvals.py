@@ -2,8 +2,8 @@ from zai_coder.core.approvals import ActionApprover
 
 def test_action_approver():
     approver = ActionApprover(apply_mode=False)
-    assert approver.approve("run_command", "ls") is False
-    assert approver.approve("unknown_action", "details") is False
+    assert approver.check("run_command", "ls") is False
+    assert approver.check("unknown_action", "details") is False
     
     approver2 = ActionApprover(apply_mode=True)
     
@@ -13,4 +13,4 @@ def test_action_approver():
     assert approver2.requires_approval("delete_file") is True
     assert approver2.requires_approval("safe_read") is False
     
-    assert approver2.approve("safe_read", "file.txt") is True
+    assert approver2.check("safe_read", "file.txt") is True

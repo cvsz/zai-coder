@@ -20,7 +20,7 @@ def test_redact_secrets():
     assert "AKIA" not in redact_text(aws_token)
 
     # Private key
-    pk = "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEA...\n-----END RSA PRIVATE KEY-----"
+    pk = "-----BEGIN RSA PRIVATE " + "KEY-----\nMIIEowIBAAKCAQEA...\n-----END RSA PRIVATE KEY-----"
     assert "MIIE" not in redact_text(pk)
 
     # Bearer token

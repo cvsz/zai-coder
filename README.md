@@ -17,6 +17,7 @@ A local-first, python-standard-library-centric AI autonomous agent operations pl
 ```bash
 make install-dry-run
 ./zai-coder self heal --check
+make package APPLY=1
 ```
 
 Refer to the `docs/` folder for explicit CLI usage maps, system diagrams, and regression pipeline outlines.

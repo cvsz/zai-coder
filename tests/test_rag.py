@@ -14,4 +14,4 @@ def test_rag(tmp_path):
     
     res = rag.query("command_safety")
     assert "safety.py" in res
-    assert "Metrics:" in res
+    assert "--- Retrieval Metrics ---" in res

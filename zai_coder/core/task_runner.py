@@ -24,7 +24,7 @@ class TaskRunner:
 
         try:
             # Check approval
-            if not self.approver.approve("run_command", f"Execute task '{task_data['title']}'"):
+            if not self.approver.check("run_command", f"Execute task '{task_data['title']}'"):
                 self.store.update_task_state(task_id, "cancelled")
                 self.store.add_event(task_id, "cancel", "Task cancelled by user.")
                 print(f"Task {task_id} cancelled.")
