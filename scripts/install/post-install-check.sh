@@ -2,14 +2,21 @@
 set -euo pipefail
 
 PREFIX="${PREFIX:-${HOME}/.local/share/zai-coder}"
+VENV_DIR="${VENV_DIR:-${HOME}/.venvs/zai-coder}"
 LAUNCHER="${LAUNCHER:-${HOME}/.local/bin/zai-coder}"
 
 echo "== Post-Install Check =="
 echo "PREFIX: ${PREFIX}"
+echo "VENV_DIR: ${VENV_DIR}"
 echo "LAUNCHER: ${LAUNCHER}"
 
 if [[ ! -d "${PREFIX}" ]]; then
   echo "Check: FAILED - install prefix missing"
+  exit 1
+fi
+
+if [[ ! -d "${VENV_DIR}" ]]; then
+  echo "Check: FAILED - venv directory missing"
   exit 1
 fi
 
@@ -18,8 +25,10 @@ if [[ ! -x "${LAUNCHER}" ]]; then
   exit 1
 fi
 
-if [[ ! -d "${PREFIX}/zai_coder" ]]; then
-  echo "Check: FAILED - Python package directory missing"
+# Check version
+VERSION=$("${LAUNCHER}" --version 2>&1)
+if [[ "${VERSION}" != *"0.1.3"* ]]; then
+  echo "Check: FAILED - version mismatch (got: ${VERSION})"
   exit 1
 fi
 
