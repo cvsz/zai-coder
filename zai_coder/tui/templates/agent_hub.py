@@ -9,6 +9,8 @@ class AgentHubTemplate(BaseTemplate):
         purpose="Operator dashboard for monitoring multiple local agents.",
         status_chips=(
             ("Agent Grid", "6 tiles", "active"),
+            ("Registry", "{agent_registry}", "ready"),
+            ("Skills", "{skill_registry}", "ready"),
             ("Dry Run", "{dry_run}", "dry_run"),
             ("Session", "{session}", "ready"),
         ),

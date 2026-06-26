@@ -12,6 +12,9 @@ class CommandCenterTemplate(BaseTemplate):
             ("Safe Mode", "local dry-run first", "safe"),
             ("Template", "{template}", "ready"),
             ("Last Command", "{last_command}", "neutral"),
+            ("Task Queue", "{task_queue}", "ready"),
+            ("Server", "{server_status}", "active"),
+            ("Policy", "{policy_profile}", "warn"),
         ),
         panels=(
             TemplatePanel(

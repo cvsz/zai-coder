@@ -11,6 +11,9 @@ class OperationGateTemplate(BaseTemplate):
             ("Gate", "approval required for apply", "warn"),
             ("Dry Run", "{dry_run}", "dry_run"),
             ("External Mutation", "blocked", "blocked"),
+            ("Audit Tail", "{audit_tail}", "neutral"),
+            ("Safe Runner", "{safe_command}", "safe"),
+            ("Release Status", "{release_status}", "warn"),
         ),
         panels=(
             TemplatePanel(

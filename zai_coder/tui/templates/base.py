@@ -87,6 +87,8 @@ class BaseTemplate:
         )
 
     def _resolve_chip_value(self, value: str) -> str:
+        from zai_coder.tui.integrations import TuiIntegrations
+        
         if value == "{dry_run}":
             return "on" if self.state.dry_run_mode else "off"
         if value == "{template}":
@@ -97,4 +99,23 @@ class BaseTemplate:
             return self.state.workspace
         if value == "{last_command}":
             return self.state.last_command or "none"
+            
+        integ = TuiIntegrations(self.state.workspace)
+        if value == "{task_queue}":
+            return integ.get_task_queue_list()
+        if value == "{server_status}":
+            return integ.get_local_server_status()
+        if value == "{agent_registry}":
+            return integ.get_agent_registry()
+        if value == "{skill_registry}":
+            return integ.get_skill_registry()
+        if value == "{policy_profile}":
+            return integ.get_policy_profile()
+        if value == "{audit_tail}":
+            return integ.get_audit_tail()
+        if value == "{safe_command}":
+            return integ.get_safe_command_runner_dry_run()
+        if value == "{release_status}":
+            return integ.get_final_release_status()
+            
         return value
