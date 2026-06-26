@@ -45,6 +45,32 @@ def test_release_notes():
     assert "python3 -m pytest -q" in notes
 
 
+def test_secret_scan_ignores_placeholders_and_runtime_tokens():
+    assert scan_text("SESSION_SECRET=CHANGE_ME_GENERATE_WITH_OPENSSL") == []
+    assert scan_text("token = extract_auth_token(request)") == []
+    assert scan_text("API_KEY=livevalue123456789") != []
+
+
+def test_makefile_wires_ci_targets():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "Makefile").read_text(encoding="utf-8")
+    for target in [
+        "repo-check:",
+        "secret-scan:",
+        "stage-manifest-check:",
+        "release-build:",
+        "release-checksums:",
+        "release-sbom:",
+    ]:
+        assert target in text
+
+
+def test_legacy_server_imports():
+    import zai_coder.server as server
+
+    assert callable(server.run_server)
+
+
 def test_github_files_exist():
     root = Path(__file__).resolve().parents[1]
     for rel in [

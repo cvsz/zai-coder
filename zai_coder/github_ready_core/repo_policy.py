@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 FORBIDDEN_COMMANDS = ["git add .", "git add -A", "--no-verify", "push --force", "docker system prune --volumes"]
-BLOCKED_PATH_PREFIXES = ["apps/zlms/", "node_modules/", "dist/", ".next/", "coverage/", "reports/", "release/", "data/", "logs/", "backups/"]
+BLOCKED_PATH_PREFIXES = ["apps/zlms/", "node_modules/", "dist/", ".next/", "coverage/", "reports/", "release/", "data/", "logs/", "backups/", "__pycache__/", ".pytest_cache/"]
 BLOCKED_FILENAMES = {".env", "credentials.json", "creds.json", "secrets.json", "terraform.tfvars"}
 
 def is_safe_stage_path(path: str) -> bool:
@@ -13,9 +13,11 @@ def is_safe_stage_path(path: str) -> bool:
         return False
     if any(normalized.startswith(prefix) for prefix in BLOCKED_PATH_PREFIXES):
         return False
+    if "__pycache__" in p.parts or ".pytest_cache" in p.parts:
+        return False
     if p.name in BLOCKED_FILENAMES or p.name.startswith(".env"):
         return False
-    if p.suffix in {".pem", ".key", ".p12", ".pfx", ".tfstate"}:
+    if p.suffix in {".pem", ".key", ".p12", ".pfx", ".tfstate", ".zip", ".tgz", ".tar", ".gz", ".sqlite3", ".db", ".pyc", ".pyo"}:
         return False
     return True
 
