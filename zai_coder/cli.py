@@ -183,8 +183,17 @@ def cmd_audit(args) -> int:
 
 
 def cmd_metrics(args) -> int:
-    from .core.monitor import get_metrics
-    print(json.dumps(get_metrics(Path.cwd()), indent=2))
+    from .core.monitor import SystemMonitor
+    from .core.metrics import MetricsFormatter
+    from pathlib import Path
+    
+    monitor = SystemMonitor(Path.cwd())
+    snap = monitor.get_snapshot()
+    
+    if getattr(args, "json", False):
+        print(MetricsFormatter.to_json(snap))
+    else:
+        print(MetricsFormatter.to_markdown(snap))
     return 0
 
 def cmd_memory(args) -> int:
@@ -253,8 +262,10 @@ def cmd_self(args) -> int:
         print(runbook(args.feature), end="")
         return 0
     if args.self_cmd == "monitor":
-        from .core.monitor import get_metrics, format_metrics_markdown
-        print(format_metrics_markdown(get_metrics(Path.cwd())))
+        from .core.monitor import SystemMonitor
+        from .core.metrics import MetricsFormatter
+        monitor = SystemMonitor(Path.cwd())
+        print(MetricsFormatter.to_markdown(monitor.get_snapshot()))
         return 0
     if args.self_cmd == "heal":
         from zai_coder.core.heal import SelfHeal
@@ -603,6 +614,7 @@ def build_parser() -> argparse.ArgumentParser:
     metrics = sub.add_parser("metrics")
     metrics_sub = metrics.add_subparsers(dest="metrics_cmd", required=True)
     metrics_snap = metrics_sub.add_parser("snapshot")
+    metrics_snap.add_argument("--json", action="store_true")
     metrics_snap.set_defaults(func=cmd_metrics)
 
     serve = sub.add_parser("serve")
