@@ -2,12 +2,14 @@
 set -euo pipefail
 
 PREFIX="${PREFIX:-${HOME}/.local/share/zai-coder}"
+VENV_DIR="${VENV_DIR:-${HOME}/.venvs/zai-coder}"
 APPLY="${APPLY:-0}"
 BIN_DIR="${BIN_DIR:-${HOME}/.local/bin}"
 LAUNCHER="${BIN_DIR}/zai-coder"
 
 echo "== ZAI Coder Install Plan =="
 echo "PREFIX: ${PREFIX}"
+echo "VENV_DIR: ${VENV_DIR}"
 echo "APPLY:  ${APPLY}"
 
 if [[ "${APPLY}" != "1" ]]; then
@@ -15,9 +17,16 @@ if [[ "${APPLY}" != "1" ]]; then
   exit 0
 fi
 
+mkdir -p "$(dirname "${VENV_DIR}")"
+python3 -m venv "${VENV_DIR}"
+"${VENV_DIR}/bin/python" -m pip install --upgrade pip --no-cache-dir
+"${VENV_DIR}/bin/python" -m pip install -e . --no-cache-dir
+"${VENV_DIR}/bin/python" -m pip install -r requirements-dev.txt --no-cache-dir
+
 mkdir -p "${PREFIX}"
 mkdir -p "${BIN_DIR}"
 
+# RSync the rest if needed, but the VENV already has the package
 rsync -a \
   --exclude='.git/' \
   --exclude='.env' \
@@ -31,6 +40,8 @@ rsync -a \
   --exclude='*.tgz' \
   --exclude='*.zip' \
   --exclude='*.sha256' \
+  --exclude='venv/' \
+  --exclude='.venv/' \
   ./ "${PREFIX}/"
 
 mkdir -p \
@@ -39,33 +50,16 @@ mkdir -p \
   "${PREFIX}/.zai-coder/tmp" \
   "${PREFIX}/.zai-coder/checkpoints"
 
-chmod +x "${PREFIX}/run.sh" 2>/dev/null || true
-chmod +x "${PREFIX}/zai-coder" 2>/dev/null || true
-
 cat > "${LAUNCHER}" <<LAUNCHER_EOF
 #!/usr/bin/env bash
 set -euo pipefail
 
-PREFIX="\${ZAI_CODER_HOME:-${PREFIX}}"
-cd "\${PREFIX}"
-
-if python3 -m zai_coder --help >/dev/null 2>&1; then
-  exec python3 -m zai_coder "\$@"
-fi
-
-if [[ -f "zai-coder/main.py" ]]; then
-  exec python3 zai-coder/main.py "\$@"
-fi
-
-if [[ -x "./run.sh" ]]; then
-  exec ./run.sh "\$@"
-fi
-
-echo "ERROR: Cannot find ZAI Coder entrypoint in \${PREFIX}" >&2
-exit 1
+VENV_DIR="${VENV_DIR:-${HOME}/.venvs/zai-coder}"
+exec "\${VENV_DIR}/bin/python" -m zai_coder "\$@"
 LAUNCHER_EOF
 
 chmod +x "${LAUNCHER}"
 
 echo "Installation complete to ${PREFIX}"
 echo "Launcher: ${LAUNCHER}"
+echo "VENV: ${VENV_DIR}"
