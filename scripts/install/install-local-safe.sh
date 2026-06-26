@@ -3,7 +3,7 @@ set -euo pipefail
 
 PREFIX="${PREFIX:-${HOME}/.local/share/zai-coder}"
 APPLY="${APPLY:-0}"
-BIN_DIR="${HOME}/.local/bin"
+BIN_DIR="${BIN_DIR:-${HOME}/.local/bin}"
 LAUNCHER="${BIN_DIR}/zai-coder"
 
 echo "== ZAI Coder Install Plan =="

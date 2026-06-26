@@ -2,7 +2,7 @@
 set -euo pipefail
 
 PREFIX="${PREFIX:-${HOME}/.local/share/zai-coder}"
-LAUNCHER="${HOME}/.local/bin/zai-coder"
+LAUNCHER="${LAUNCHER:-${HOME}/.local/bin/zai-coder}"
 
 echo "== Post-Install Check =="
 echo "PREFIX: ${PREFIX}"
