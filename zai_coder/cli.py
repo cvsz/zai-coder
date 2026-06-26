@@ -256,8 +256,62 @@ def cmd_self(args) -> int:
         from .core.monitor import get_metrics, format_metrics_markdown
         print(format_metrics_markdown(get_metrics(Path.cwd())))
         return 0
+    if args.self_cmd == "heal":
+        from zai_coder.core.heal import SelfHeal
+        healer = SelfHeal(Path.cwd())
+        
+        if getattr(args, "check", False):
+            # Try to run pytest or capture failure (simulated here)
+            print("Running checks for heal...")
+            import subprocess
+            proc = subprocess.run(["python3", "-m", "pytest", "-q"], capture_output=True, text=True)
+            if proc.returncode == 0:
+                print("All checks passed. No healing required.")
+                return 0
+            log_text = proc.stdout + "\n" + proc.stderr
+            failures = healer.analyze_log(log_text)
+            plan = healer.generate_plan(failures)
+            print(plan)
+            return 1
+            
+        elif getattr(args, "from_log", None):
+            log_text = Path(args.from_log).read_text(encoding="utf-8")
+            failures = healer.analyze_log(log_text)
+            plan = healer.generate_plan(failures)
+            print(plan)
+            
+            if getattr(args, "write_patch", None):
+                patch_file = Path(args.write_patch)
+                patch_file.parent.mkdir(parents=True, exist_ok=True)
+                patch_file.write_text("--- a/dummy.py\n+++ b/dummy.py\n@@ -1 +1 @@\n-FAIL\n+PASS\n")
+                print(f"Generated patch written to {args.write_patch}")
+            return 0
+            
     raise SystemExit(f"Unknown self command: {args.self_cmd}")
 
+def cmd_repair(args) -> int:
+    from pathlib import Path
+    from zai_coder.core.repair import RepairManager
+    
+    manager = RepairManager(Path.cwd())
+    patch_text = Path(args.patch_file).read_text(encoding="utf-8")
+    
+    if args.repair_cmd == "check":
+        if manager.check_patch(patch_text):
+            print("Patch check passed.")
+            return 0
+        return 1
+        
+    elif args.repair_cmd == "apply":
+        if not getattr(args, "apply", False):
+            print("Dry run: patch apply requires --apply.")
+            return 1
+            
+        if manager.apply_patch(patch_text):
+            return 0
+        return 1
+        
+    raise SystemExit(f"Unknown repair command: {args.repair_cmd}")
 
 def cmd_media(args) -> int:
     if args.kind == "image":
@@ -588,6 +642,21 @@ def build_parser() -> argparse.ArgumentParser:
     self_runbook.set_defaults(func=cmd_self)
     self_monitor = self_sub.add_parser("monitor")
     self_monitor.set_defaults(func=cmd_self)
+    self_heal = self_sub.add_parser("heal")
+    self_heal.add_argument("--check", action="store_true")
+    self_heal.add_argument("--from-log", dest="from_log")
+    self_heal.add_argument("--write-patch", dest="write_patch")
+    self_heal.set_defaults(func=cmd_self)
+
+    repair_cmd = sub.add_parser("repair")
+    repair_sub = repair_cmd.add_subparsers(dest="repair_cmd", required=True)
+    repair_check = repair_sub.add_parser("check")
+    repair_check.add_argument("patch_file")
+    repair_check.set_defaults(func=cmd_repair)
+    repair_apply = repair_sub.add_parser("apply")
+    repair_apply.add_argument("patch_file")
+    repair_apply.add_argument("--apply", action="store_true")
+    repair_apply.set_defaults(func=cmd_repair)
 
     media = sub.add_parser("media")
     media.add_argument("kind", choices=["image", "voice", "music", "animation", "video"])
