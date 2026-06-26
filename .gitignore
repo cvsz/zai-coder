@@ -42,6 +42,8 @@ data/zai-audit.jsonl
 
 # Temporary reports
 reports/*.tmp
+*.tmp
+status.txt
 
 # Modelfile (local AI model config)
 Modelfile
