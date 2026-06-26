@@ -44,10 +44,10 @@ def test_release_dry_run_refuses_to_mutate(tmp_path: Path):
     
     assert result.returncode == 0
     assert (stage / "dist").exists()
-    assert (stage / "dist" / "zai-coder-standalone-0.1.2.zip").exists()
+    assert (stage / "dist" / "zai-coder-standalone-0.1.3.zip").exists()
     
     # Verify no mutation in original root/dist
-    assert not (root / "dist" / "zai-coder-standalone-0.1.2.zip").exists()
+    assert not (root / "dist" / "zai-coder-standalone-0.1.3.zip").exists()
 
 def test_package_check_validates_isolated_artifacts(tmp_path: Path):
     root = Path.cwd()
@@ -55,7 +55,7 @@ def test_package_check_validates_isolated_artifacts(tmp_path: Path):
     dist.mkdir()
     
     # Create dummy valid artifacts
-    archive_name = "zai-coder-standalone-0.1.2"
+    archive_name = "zai-coder-standalone-0.1.3"
     (dist / f"{archive_name}.tar.gz").write_text("dummy tar")
     (dist / f"{archive_name}.zip").write_text("dummy zip")
     (dist / f"{archive_name}.tar.gz.sha256").write_text(f"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  {archive_name}.tar.gz")
@@ -64,7 +64,7 @@ def test_package_check_validates_isolated_artifacts(tmp_path: Path):
     # Create manifest
     import json
     manifest = {
-        "version": "0.1.2",
+        "version": "0.1.3",
         "archives": [f"{archive_name}.tar.gz", f"{archive_name}.zip"],
         "timestamp": "2026-06-26T00:00:00Z"
     }
