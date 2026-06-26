@@ -51,3 +51,24 @@ Modelfile
 # Local/generated build reports should not be committed at repository root.
 BUILD_REPORT_V*.txt
 BUILD_REPORT_*.txt
+
+# Runtime/generated local state.
+data/*.db
+data/**/*.db
+*.sqlite
+*.sqlite3
+**/*.sqlite
+**/*.sqlite3
+
+# Generated evidence/export snapshots.
+evidence/**/*.json
+identity/evidence/**/*.json
+marketplace/exports/**/*.json
+migration/exports/**/*.json
+security/evidence/**/*.json
+
+# Local release/build outputs.
+dist/
+.zai-coder/
+.pytest_cache/
+status.txt

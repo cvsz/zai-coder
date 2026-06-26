@@ -105,6 +105,7 @@ safety-check:
 
 repo-check:
 	bash ./scripts/repo/repo-check.sh
+	./scripts/repo/check-generated-state.sh
 
 secret-scan:
 	bash ./scripts/repo/secret-scan-safe.sh
