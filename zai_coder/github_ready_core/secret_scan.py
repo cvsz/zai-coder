@@ -8,7 +8,26 @@ PATTERNS = {
     "generic_secret_assignment": re.compile(r"(?i)(api[_-]?key|secret|token|password)\s*=\s*['\"]?[A-Za-z0-9_\-]{16,}"),
     "github_token": re.compile(r"gh[pousr]_[A-Za-z0-9_]{20,}"),
 }
-SKIP_DIRS = {".git", "__pycache__", ".pytest_cache", "node_modules", "dist", ".next", "coverage", "reports", "release"}
+SKIP_DIRS = {
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".tox",
+    ".nox",
+    ".venv",
+    "venv",
+    "env",
+    ".envdir",
+    "node_modules",
+    "dist",
+    ".next",
+    "coverage",
+    "reports",
+    "release",
+    "site-packages",
+}
 SKIP_FILES = {".env", ".env.local", ".env.development", ".env.production"}
 TEXT_SUFFIXES = {".py", ".md", ".txt", ".json", ".yml", ".yaml", ".sh", ".toml", ".ini", ".cfg", ""}
 PLACEHOLDER_MARKERS = (
