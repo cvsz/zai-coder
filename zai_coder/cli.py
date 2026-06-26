@@ -55,7 +55,17 @@ def cmd_doctor(args) -> int:
     cfg = load_config(str(path))
     print_box("Config", json.dumps(cfg.to_dict(), indent=2))
     print_box("Python", sys.version.split()[0])
+    print_box("Platform", os.uname().sysname + " " + os.uname().release)
     print_box("Workspace", str(Path(cfg.workspace).expanduser().resolve()))
+    print_box("Current Dir", str(Path.cwd()))
+    
+    # Check writability of workspace
+    workspace = Path(cfg.workspace).expanduser().resolve()
+    if os.access(workspace, os.W_OK):
+        print_box("Workspace Status", "Writable")
+    else:
+        print_box("Workspace Status", "NOT Writable")
+
     ollama = shutil.which("ollama")
     print_box("Ollama", ollama or "not found")
     if ollama:
