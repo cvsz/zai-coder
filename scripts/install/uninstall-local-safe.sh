@@ -3,7 +3,7 @@ set -euo pipefail
 
 PREFIX="${PREFIX:-${HOME}/.local/share/zai-coder}"
 APPLY="${APPLY:-0}"
-LAUNCHER="${HOME}/.local/bin/zai-coder"
+LAUNCHER="${LAUNCHER:-${HOME}/.local/bin/zai-coder}"
 
 echo "== ZAI Coder Uninstall Plan =="
 echo "PREFIX: ${PREFIX}"
