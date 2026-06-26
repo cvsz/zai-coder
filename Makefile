@@ -12,7 +12,7 @@ PATCH ?=
 PACKAGE_NAME ?= zai-coder-clean-release
 SAFETY := ./scripts/safety-dry-run.sh --apply $(APPLY) --
 
-.PHONY: help dry-run doctor install install-dry-run uninstall post-install-check test compile safety-check scan ask chat serve run-command patch-check patch-apply package clean-preview clean-safe models status final-release-status tui tui-dry-run tui-check tui-command-center tui-agent-hub tui-flow-stream tui-architect-tree tui-creative-canvas tui-operation-gate gpg-commit gpg-push gpg-tag gpg-doctor gpg-list-keys gpg-loopback
+.PHONY: help dry-run doctor install install-dry-run uninstall post-install-check test compile safety-check repo-check secret-scan stage-manifest-check verify-source-package release-build release-checksums release-sbom github-stage-manifest github-create-repo github-push github-release scan ask chat serve run-command patch-check patch-apply package package-check clean-preview clean-safe models status final-release-status tui tui-dry-run tui-check tui-command-center tui-agent-hub tui-flow-stream tui-architect-tree tui-creative-canvas tui-operation-gate gpg-commit gpg-push gpg-tag gpg-doctor gpg-list-keys gpg-loopback
 
 help:
 	@printf '%s\n' 'ZAI Coder Makefile targets:'
@@ -24,6 +24,9 @@ help:
 	@printf '%s\n' '  make uninstall APPLY=1      Uninstall from PREFIX'
 	@printf '%s\n' '  make post-install-check     Verify installation'
 	@printf '%s\n' '  make test                   Preview pytest'
+	@printf '%s\n' '  make repo-check             Run source repository policy checks'
+	@printf '%s\n' '  make secret-scan            Run local secret-pattern scan'
+	@printf '%s\n' '  make stage-manifest-check   Validate exact-file stage manifest'
 	@printf '%s\n' '  make scan                   Preview project scan'
 	@printf '%s\n' '  make ask PROMPT="..."       Preview agent ask'
 	@printf '%s\n' '  make run-command COMMAND="git status --short"'
@@ -74,11 +77,64 @@ post-install-check:
 test:
 	$(SAFETY) PYTHONPATH=. $(PYTHON) -m pytest -q --import-mode=importlib
 
+.PHONY: audit
+audit:
+	$(PYTHON) -m zai_coder.cli audit --limit 50 --format table
+
+.PHONY: self-doctor
+self-doctor:
+	./zai-coder self doctor
+
+.PHONY: self-list
+self-list:
+	./zai-coder self list
+
+.PHONY: self-plan
+self-plan:
+	./zai-coder self plan
+
+.PHONY: self-requirement-next
+self-requirement-next:
+	./zai-coder self requirement-next
+
 compile:
 	$(SAFETY) $(PYTHON) -m compileall -q zai_coder
 
 safety-check:
 	$(SAFETY) ./scripts/safety-check.sh .
+
+repo-check:
+	bash ./scripts/repo/repo-check.sh
+
+secret-scan:
+	bash ./scripts/repo/secret-scan-safe.sh
+
+stage-manifest-check:
+	bash ./scripts/repo/stage-manifest-check.sh
+
+verify-source-package:
+	bash ./scripts/repo/verify-source-package.sh
+
+release-build:
+	APPLY="$(APPLY)" NAME="$(NAME)" bash ./scripts/release/build-release-safe.sh
+
+release-checksums:
+	bash ./scripts/release/checksums.sh
+
+release-sbom:
+	bash ./scripts/release/sbom.sh
+
+github-stage-manifest:
+	APPLY="$(APPLY)" MANIFEST="$(MANIFEST)" bash ./scripts/github/gh-stage-manifest-safe.sh
+
+github-create-repo:
+	APPLY="$(APPLY)" REPO_NAME="$(REPO_NAME)" VISIBILITY="$(VISIBILITY)" DESCRIPTION="$(DESCRIPTION)" bash ./scripts/github/gh-create-repo-safe.sh
+
+github-push:
+	APPLY="$(APPLY)" BRANCH="$(BRANCH)" bash ./scripts/github/gh-push-safe.sh
+
+github-release:
+	APPLY="$(APPLY)" VERSION="$(VERSION)" NOTES="$(NOTES)" bash ./scripts/github/gh-release-safe.sh
 
 scan:
 	$(SAFETY) ./zai-coder scan
@@ -109,6 +165,9 @@ models:
 
 package:
 	$(SAFETY) ./scripts/package.sh "$(PACKAGE_NAME)"
+
+package-check:
+	$(SAFETY) ./scripts/package-check.sh
 
 final-release-status:
 	$(SAFETY) ./scripts/final-release/final-release-status.sh
