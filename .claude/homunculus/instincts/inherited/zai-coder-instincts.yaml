@@ -1,0 +1,516 @@
+# Instincts generated from https://github.com/cvsz/zai-coder
+# Generated: 2026-06-26T04:29:09.347Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: zai-coder-commit-conventional
+trigger: "when writing a commit message"
+confidence: 0.85
+domain: git
+source: repo-analysis
+source_repo: https://github.com/cvsz/zai-coder
+---
+
+# Zai Coder Commit Conventional
+
+## Action
+
+Use conventional commit format with prefixes: chore, feat, test, refactor, docs
+
+## Evidence
+
+- 10 commits analyzed
+- Detected conventional commit pattern
+- Examples: chore: reconcile v0.1.0 release workspace state, test: expand safety and registry coverage
+
+---
+id: zai-coder-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/cvsz/zai-coder
+---
+
+# Zai Coder Commit Length
+
+## Action
+
+Keep commit messages concise (~45 characters)
+
+## Evidence
+
+- Average commit message length: 45 chars
+- Based on 10 commits
+
+---
+id: zai-coder-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/cvsz/zai-coder
+---
+
+# Zai Coder Naming Files
+
+## Action
+
+Use kebab-case naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: kebab-case
+
+---
+id: zai-coder-import-relative
+trigger: "when importing modules"
+confidence: 0.75
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/cvsz/zai-coder
+---
+
+# Zai Coder Import Relative
+
+## Action
+
+Use relative imports for project files
+
+## Evidence
+
+- Import analysis shows relative import pattern
+- Example: import { x } from '../lib/x'
+
+---
+id: zai-coder-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/cvsz/zai-coder
+---
+
+# Zai Coder Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: zai-coder-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/cvsz/zai-coder
+---
+
+# Zai Coder Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: zai-coder-test-naming
+trigger: "when creating a test file"
+confidence: 0.85
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/cvsz/zai-coder
+---
+
+# Zai Coder Test Naming
+
+## Action
+
+Name test files using the pattern: *.test.ts
+
+## Evidence
+
+- File pattern: *.test.ts
+- Consistent across test files
+
+---
+id: zai-coder-workflow-feature-development
+trigger: "when implementing a new feature"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/cvsz/zai-coder
+---
+
+# Zai Coder Workflow Feature Development
+
+## Action
+
+Follow the feature-development workflow:
+1. Add feature implementation
+2. Add tests for feature
+3. Update documentation
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~18x per month
+- Files: **/*.test.*, **/api/**
+
+---
+id: zai-coder-workflow-add-new-module-with-tests
+trigger: "when doing add new module with tests"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/cvsz/zai-coder
+---
+
+# Zai Coder Workflow Add New Module With Tests
+
+## Action
+
+Follow the add-new-module-with-tests workflow:
+1. Create new implementation files in zai_coder/core/ or zai_coder/server/ or similar module directory.
+2. Add corresponding test files in tests/ (e.g., tests/test_<module>.py).
+3. Update __init__.py if exposing new imports or package namespaces.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: zai_coder/core/*.py, zai_coder/server/*.py, zai_coder/migrations/__init__.py
+
+---
+id: zai-coder-workflow-repository-hardening-and-policy-update
+trigger: "when doing repository hardening and policy update"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/cvsz/zai-coder
+---
+
+# Zai Coder Workflow Repository Hardening And Policy Update
+
+## Action
+
+Follow the repository-hardening-and-policy-update workflow:
+1. Update .github/workflows/ci.yml to add or modify CI steps.
+2. Modify or add scripts in scripts/repo/ and related directories.
+3. Update or add core policy/check modules (e.g., repo_check.py, repo_policy.py, secret_scan.py).
+4. Add or update tests to cover new checks or policies.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: .github/workflows/*.yml, scripts/repo/*.sh, zai_coder/github_ready_core/*.py
+
+---
+id: zai-coder-workflow-test-expansion-and-coverage
+trigger: "when doing test expansion and coverage"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/cvsz/zai-coder
+---
+
+# Zai Coder Workflow Test Expansion And Coverage
+
+## Action
+
+Follow the test-expansion-and-coverage workflow:
+1. Add or update test files in tests/ directory.
+2. Modify core logic files to facilitate testing or fix test failures.
+3. Run tests to verify coverage and correctness.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: tests/test_*.py, zai_coder/core/*.py
+
+---
+id: zai-coder-instinct-file-naming
+trigger: "When creating or renaming a file in the codebase"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: cvsz/zai-coder
+---
+
+# Zai Coder Instinct File Naming
+
+## Action
+
+Use kebab-case for file names (e.g., my-file.py)
+
+## Evidence
+
+- Pattern in namingConventions.files: kebab-case
+
+---
+id: zai-coder-instinct-function-naming
+trigger: "When defining a new function"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: cvsz/zai-coder
+---
+
+# Zai Coder Instinct Function Naming
+
+## Action
+
+Use camelCase for function names (e.g., processData)
+
+## Evidence
+
+- Pattern in namingConventions.functions: camelCase
+
+---
+id: zai-coder-instinct-class-naming
+trigger: "When defining a new class"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: cvsz/zai-coder
+---
+
+# Zai Coder Instinct Class Naming
+
+## Action
+
+Use PascalCase for class names (e.g., DataProcessor)
+
+## Evidence
+
+- Pattern in namingConventions.classes: PascalCase
+
+---
+id: zai-coder-instinct-constant-naming
+trigger: "When defining a constant"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: cvsz/zai-coder
+---
+
+# Zai Coder Instinct Constant Naming
+
+## Action
+
+Use SCREAMING_SNAKE_CASE for constant names (e.g., MAX_SIZE)
+
+## Evidence
+
+- Pattern in namingConventions.constants: SCREAMING_SNAKE_CASE
+
+---
+id: zai-coder-instinct-relative-imports
+trigger: "When importing modules within the package"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: cvsz/zai-coder
+---
+
+# Zai Coder Instinct Relative Imports
+
+## Action
+
+Use relative import style
+
+## Evidence
+
+- Pattern in importStyle: relative
+
+---
+id: zai-coder-instinct-named-exports
+trigger: "When exporting functions, classes, or variables from a module"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: cvsz/zai-coder
+---
+
+# Zai Coder Instinct Named Exports
+
+## Action
+
+Use named exports
+
+## Evidence
+
+- Pattern in exportStyle: named
+
+---
+id: zai-coder-instinct-test-location
+trigger: "When adding or updating tests"
+confidence: 0.85
+domain: testing
+source: repo-analysis
+source_repo: cvsz/zai-coder
+---
+
+# Zai Coder Instinct Test Location
+
+## Action
+
+Place test files in the separate tests/ directory, using the pattern tests/test_<module>.py
+
+## Evidence
+
+- Pattern in folderStructure.testLocation: separate
+- Pattern in files: tests/test_*.py
+
+---
+id: zai-coder-instinct-test-type
+trigger: "When writing tests for new or existing features"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: cvsz/zai-coder
+---
+
+# Zai Coder Instinct Test Type
+
+## Action
+
+Write unit tests for core logic
+
+## Evidence
+
+- Pattern in testTypes: unit
+- Pattern in workflows: add-new-module-with-tests, test-expansion-and-coverage
+
+---
+id: zai-coder-instinct-test-pattern
+trigger: "When naming a test file"
+confidence: 0.85
+domain: testing
+source: repo-analysis
+source_repo: cvsz/zai-coder
+---
+
+# Zai Coder Instinct Test Pattern
+
+## Action
+
+Use the pattern tests/test_<module>.py
+
+## Evidence
+
+- Pattern in files: tests/test_*.py
+
+---
+id: zai-coder-instinct-git-commit-format
+trigger: "When making a git commit"
+confidence: 0.9
+domain: git
+source: repo-analysis
+source_repo: cvsz/zai-coder
+---
+
+# Zai Coder Instinct Git Commit Format
+
+## Action
+
+Use conventional commit prefixes: chore, feat, test, refactor, docs
+
+## Evidence
+
+- Pattern in commits.prefixes
+- Seen in commit: 'chore: reconcile v0.1.0 release workspace state'
+
+---
+id: zai-coder-instinct-git-commit-length
+trigger: "When writing a commit message"
+confidence: 0.7
+domain: git
+source: repo-analysis
+source_repo: cvsz/zai-coder
+---
+
+# Zai Coder Instinct Git Commit Length
+
+## Action
+
+Keep the commit message around 45 characters on average
+
+## Evidence
+
+- Pattern in commits.averageLength: 45
+
+---
+id: zai-coder-instinct-add-new-module
+trigger: "When adding a new feature or subsystem that requires test coverage"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: cvsz/zai-coder
+---
+
+# Zai Coder Instinct Add New Module
+
+## Action
+
+Create implementation files in zai_coder/core/ or zai_coder/server/, add corresponding tests in tests/, and update __init__.py if exposing new imports
+
+## Evidence
+
+- Workflow: add-new-module-with-tests
+- Example commits and files in workflow
+
+---
+id: zai-coder-instinct-harden-repo
+trigger: "When enhancing repository safety, enforcing policies, or improving CI checks"
+confidence: 0.85
+domain: workflow
+source: repo-analysis
+source_repo: cvsz/zai-coder
+---
+
+# Zai Coder Instinct Harden Repo
+
+## Action
+
+Update .github/workflows/ci.yml, modify/add scripts in scripts/repo/, update/add policy/check modules, and add/update tests for new checks or policies
+
+## Evidence
+
+- Workflow: repository-hardening-and-policy-update
+- Example commits and files in workflow
+
+---
+id: zai-coder-instinct-expand-tests
+trigger: "When improving or ensuring test coverage for new or existing features"
+confidence: 0.8
+domain: workflow
+source: repo-analysis
+source_repo: cvsz/zai-coder
+---
+
+# Zai Coder Instinct Expand Tests
+
+## Action
+
+Add or update test files in tests/, modify core logic files as needed, and run tests to verify coverage and correctness
+
+## Evidence
+
+- Workflow: test-expansion-and-coverage
+- Example commits and files in workflow
+
