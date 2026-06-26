@@ -374,6 +374,41 @@ def cmd_bench(args) -> int:
     print(report.to_json())
     return 0
 
+def cmd_deploy(args) -> int:
+    from zai_coder.deploy.planner import DeployPlanner
+    from pathlib import Path
+    
+    planner = DeployPlanner()
+    plan = planner.get_plan(args.target)
+    
+    if args.deploy_cmd == "plan":
+        print(f"Deploy Plan for {args.target.upper()}")
+        print("\nFiles to generate:")
+        for name in plan["files"]:
+            print(f" - {name}")
+        print("\nChecklist:")
+        for step in plan["checklist"]:
+            print(f" - [ ] {step}")
+        print("\nRollback:")
+        for step in plan["rollback"]:
+            print(f" - [ ] {step}")
+            
+    elif args.deploy_cmd == "render":
+        out_dir = Path(args.out).resolve()
+        cwd = Path.cwd().resolve()
+        # Safety: Ensure output directory is within the workspace
+        if not str(out_dir).startswith(str(cwd)):
+            print("Error: Render output must be within the workspace.")
+            return 1
+            
+        out_dir.mkdir(parents=True, exist_ok=True)
+        for name, content in plan["files"].items():
+            fpath = out_dir / name
+            fpath.write_text(content, encoding="utf-8")
+            print(f"Rendered {fpath}")
+            
+    return 0
+
 def cmd_media(args) -> int:
     if args.kind == "image":
         out = generate_svg_image(args.prompt, args.out)
@@ -678,6 +713,16 @@ def build_parser() -> argparse.ArgumentParser:
     bench_cmd = sub.add_parser("bench")
     bench_cmd.add_argument("bench_target", choices=["models", "safety"])
     bench_cmd.set_defaults(func=cmd_bench)
+
+    deploy_cmd = sub.add_parser("deploy")
+    deploy_sub = deploy_cmd.add_subparsers(dest="deploy_cmd", required=True)
+    deploy_plan = deploy_sub.add_parser("plan")
+    deploy_plan.add_argument("--target", choices=["systemd", "docker", "nginx"], required=True)
+    deploy_plan.set_defaults(func=cmd_deploy)
+    deploy_render = deploy_sub.add_parser("render")
+    deploy_render.add_argument("--target", choices=["systemd", "docker", "nginx"], required=True)
+    deploy_render.add_argument("--out", required=True)
+    deploy_render.set_defaults(func=cmd_deploy)
 
     serve = sub.add_parser("serve")
     serve.add_argument("--host", default="127.0.0.1")
