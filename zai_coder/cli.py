@@ -337,59 +337,54 @@ def cmd_rag(args) -> int:
     return 0
 
 def cmd_task(args) -> int:
-    from .core.tasks import TaskQueue
-    from .core.approvals import ApprovalGate
+    from .core.task_store import TaskStore
+    from .core.task_runner import TaskRunner
+    from .core.approvals import ActionApprover
     from .config import load_config
-    from .cli import _ask
     import json
+    from pathlib import Path
+    
     cfg = load_config(args.config)
-    queue = TaskQueue(Path(cfg.workspace) / "data" / "tasks.db")
+    store = TaskStore(Path(cfg.workspace) / ".zai-coder" / "tasks" / "tasks.db")
     
     if args.task_cmd == "create":
-        task_id = queue.create(args.title, args.agent, args.prompt)
+        task_id = store.create_task(args.title, args.agent, args.prompt)
         print(f"Task {task_id} created.")
+        
     elif args.task_cmd == "list":
-        for t in queue.list_tasks():
+        for t in store.list_tasks():
             print(f"[{t['id']}] {t['state'].upper()}: {t['title']} (agent: {t['agent']})")
+            
     elif args.task_cmd == "show":
-        t = queue.get(args.task_id)
+        t = store.get_task(args.task_id)
         if not t:
             print("Task not found.")
             return 1
         print(json.dumps(t, indent=2))
+        
     elif args.task_cmd == "cancel":
-        if queue.transition(args.task_id, ["queued", "waiting_approval", "running"], "cancelled"):
-            print("Task cancelled.")
-        else:
-            print("Could not cancel task.")
-            return 1
-    elif args.task_cmd == "logs":
-        t = queue.get(args.task_id)
+        t = store.get_task(args.task_id)
         if not t:
             print("Task not found.")
             return 1
-        print(f"Output:\n{t['output']}\nError:\n{t['error']}")
+        store.update_task_state(args.task_id, "cancelled")
+        store.add_event(args.task_id, "cancel", "Task cancelled via CLI.")
+        print("Task cancelled.")
+        
     elif args.task_cmd == "run":
-        gate = ApprovalGate(getattr(args, "apply", False))
-        t = queue.get(args.task_id)
-        if not t or t["state"] not in ("queued", "waiting_approval"):
-            print("Task not ready to run.")
-            return 1
-            
-        if not gate.check():
-            queue.update_state(args.task_id, "waiting_approval")
-            print("Dry run: task requires --apply to run. State changed to waiting_approval.")
-            return 0
-            
-        queue.update_state(args.task_id, "running")
-        try:
-            res = _ask(cfg, t["prompt"], t["agent"])
-            queue.update_state(args.task_id, "completed", output=res.content)
-            print(f"Task completed:\n{res.content}")
-        except Exception as e:
-            queue.update_state(args.task_id, "failed", error=str(e))
-            print(f"Task failed: {e}")
-            return 1
+        apply_mode = getattr(args, "apply", False)
+        approver = ActionApprover(apply_mode=apply_mode)
+        runner = TaskRunner(store, approver)
+        runner.run(args.task_id)
+        
+    elif args.task_cmd == "logs":
+        events = store.get_events(args.task_id)
+        if not events:
+            print("No events found.")
+        else:
+            for ev in events:
+                print(f"[{ev['created_at']}] {ev['event_type'].upper()}: {ev['message']}")
+                
     return 0
 
 def cmd_policy(args) -> int:
