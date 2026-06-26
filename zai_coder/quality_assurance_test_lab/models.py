@@ -8,6 +8,7 @@ def now_iso() -> str:
 
 @dataclass(frozen=True)
 class TestCase:
+    __test__ = False  # prevent pytest from collecting this dataclass as a test class
     id: str
     name: str
     suite: str
