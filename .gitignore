@@ -1,7 +1,6 @@
 # Build artifacts and dependencies
 out/
 .env
-.env.example
 __pycache__/
 *.pyc
 *.pyo
