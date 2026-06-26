@@ -1,18 +1,18 @@
 from pathlib import Path
-from zai_coder.quality_assurance_test_lab.models import TestCase, FixtureSpec, QualityGate
-from zai_coder.quality_assurance_test_lab.core import *
+from zai_coder.quality_assurance_test_lab.models import TestCase as QATestCase, FixtureSpec, QualityGate
+from zai_coder.quality_assurance_test_lab.core import get_test_matrix, fixture_catalog, quality_gates, validation_report, smoke_plan, regression_report, quality_gate_evaluation, evidence_bundle, write_qa_evidence, write_qa_report, qa_demo
 from zai_coder.quality_assurance_test_lab.routes import *
 
 def test_models_validation():
-    assert TestCase("t","Name","suite").validate() == []
-    assert TestCase("","","", test_type="bad", priority="bad", status="bad", command="pytest --no-verify").validate()
+    assert QATestCase("t","Name","suite").validate() == []
+    assert QATestCase("","","", test_type="bad", priority="bad", status="bad", command="pytest --no-verify").validate()
     assert FixtureSpec("f","Fixture","json").validate() == []
     assert FixtureSpec("","","bad", scope="bad", safe=False).validate()
     assert QualityGate("g","Gate",1.0,"tests_passed").validate() == []
     assert QualityGate("","","-1","bad").validate()
 
 def test_core_qa():
-    assert test_matrix()
+    assert get_test_matrix()
     assert fixture_catalog()
     assert quality_gates()
     assert validation_report()["ok"]

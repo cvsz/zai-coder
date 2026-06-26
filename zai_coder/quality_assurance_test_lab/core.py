@@ -20,7 +20,7 @@ GATES = [
     QualityGate("gate-lint", "No lint errors in generated docs", 0.0, "lint_errors", False),
 ]
 
-def test_matrix(): return [t.to_dict() for t in TESTS]
+def get_test_matrix(): return [t.to_dict() for t in TESTS]
 def fixture_catalog(): return [f.to_dict() for f in FIXTURES]
 def quality_gates(): return [g.to_dict() for g in GATES]
 
@@ -34,7 +34,7 @@ def smoke_plan() -> dict:
     return {"dry_run": True, "suite": "smoke", "tests": smoke, "command": "python -m pytest -q", "execute": False}
 
 def regression_report() -> dict:
-    matrix = test_matrix()
+    matrix = get_test_matrix()
     return {
         "kind": "zai-qa-regression-report",
         "total": len(matrix),
@@ -61,7 +61,7 @@ def evidence_bundle() -> dict:
     return {
         "kind": "zai-qa-evidence-bundle",
         "version": "1.0",
-        "test_matrix": test_matrix(),
+        "test_matrix": get_test_matrix(),
         "fixtures": fixture_catalog(),
         "regression": regression_report(),
         "quality_gates": quality_gate_evaluation(),
@@ -87,7 +87,7 @@ def qa_status():
     return {"ok": True, "systems": ["qa_dashboard","test_matrix","regression_report","fixture_catalog","smoke_plan","quality_gates","evidence_export","dashboard_routes"]}
 
 def qa_overview():
-    return {"status": qa_status(), "matrix": test_matrix(), "fixtures": fixture_catalog(), "gates": quality_gates(), "validation": validation_report(), "regression": regression_report()}
+    return {"status": qa_status(), "matrix": get_test_matrix(), "fixtures": fixture_catalog(), "gates": quality_gates(), "validation": validation_report(), "regression": regression_report()}
 
 def qa_demo(root="."):
     evidence = write_qa_evidence(root)
