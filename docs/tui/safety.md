@@ -26,6 +26,15 @@ The TUI blocks:
 - `cloudflare`
 - `stripe`
 - Any command containing `APPLY=1`
+- `curl` or `wget` to external URLs
 - Commands containing obvious tokens, secrets, credentials, private keys, API keys, or passwords
+- Arbitrary shell commands from user input
 
-Dry-run previews do not execute subprocesses. Runtime output is redacted before display.
+Dry-run previews do not execute subprocesses. Runtime output is redacted before display and before state persistence.
+
+## Dry-Run-First Rules
+
+- TUI actions may only execute the allowlisted local read/check commands.
+- TUI actions never run `APPLY=1`.
+- Approval in `operation-gate` records local dry-run evidence only.
+- Release, deploy, publish, upload, registry push, and external-service mutation remain outside the TUI.

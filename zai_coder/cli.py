@@ -226,16 +226,19 @@ def cmd_media(args) -> int:
     return 0
 
 def cmd_tui(args) -> int:
-    from .tui.app import describe_templates, run_tui
-    from .tui.config import load_tui_config
+    from .tui.app import run_tui
 
-    if args.list_templates:
-        print(describe_templates())
-        return 0
-    if args.print_config:
-        print(json.dumps(load_tui_config(), indent=2))
-        return 0
-    return run_tui(args.template, args.dry_run, args.no_textual)
+    try:
+        return run_tui(
+            args.template,
+            args.dry_run,
+            args.no_textual,
+            print_config=args.print_config,
+            list_templates=args.list_templates,
+        )
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
 
 def build_parser() -> argparse.ArgumentParser:
 

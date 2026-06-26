@@ -1,4 +1,14 @@
-from zai_coder.tui.state import TuiState, default_agent_tiles, default_gate_statuses, load_state, save_state
+from zai_coder.tui.state import (
+    TuiState,
+    append_log,
+    default_agent_tiles,
+    default_gate_statuses,
+    load_state,
+    save_state,
+    state_from_dict,
+    state_to_dict,
+    switch_template,
+)
 
 
 def test_tui_state_initializes_correctly():
@@ -40,3 +50,19 @@ def test_state_persistence_save_load(tmp_path):
     assert loaded.last_focus == "gate-pipeline"
     assert loaded.last_command == "make tui-check"
     assert len(loaded.agent_tiles) == 6
+
+
+def test_state_to_dict_redacts_secret_text():
+    state = TuiState(last_command="echo token=abc123", last_result="password=hunter2")
+    append_log(state, "API_KEY=abc123", level="warn")
+    data = state_to_dict(state)
+    assert "abc123" not in str(data)
+    assert "hunter2" not in str(data)
+    assert "REDACTED" in str(data)
+
+
+def test_state_from_dict_and_switch_template():
+    state = state_from_dict({"active_template": "command-center", "dry_run_mode": True})
+    switch_template(state, "06")
+    assert state.active_template == "operation-gate"
+    assert state.last_focus == "template"

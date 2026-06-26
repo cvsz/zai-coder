@@ -9,6 +9,7 @@ Terminal UIs cannot implement browser backdrop blur. ZAI Coder uses a terminal-n
 - Status chips
 - Command palette
 - Non-blocking async refresh
+- Accessible layout with deterministic panel names and readable contrast
 
 ## Theme
 
@@ -27,3 +28,10 @@ warning: #ffd166
 danger: #ff5c7a
 success: #6be675
 ```
+
+## Token Surfaces
+
+- Theme name: `zeaz-glass-dark`
+- Panel styles: base panel, alternate panel, bright border, soft border
+- Status levels: safe, dry-run, ready, warning, blocked, active
+- Text fallback: every template can render a static terminal preview without Textual

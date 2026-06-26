@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import subprocess
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
 from .safety import assert_allowed_tui_command, redact_secret_text, require_dry_run_first
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 @dataclass(frozen=True)
@@ -18,17 +21,27 @@ class ActionSpec:
 
 @dataclass
 class ActionResult:
-    name: str
+    action_name: str
     command: list[str]
-    exit_code: int
+    dry_run: bool
+    returncode: int
     stdout: str = ""
     stderr: str = ""
-    dry_run: bool = True
+    duration_ms: int = 0
     blocked: bool = False
+    reason: str = ""
+
+    @property
+    def name(self) -> str:
+        return self.action_name
+
+    @property
+    def exit_code(self) -> int:
+        return self.returncode
 
     @property
     def ok(self) -> bool:
-        return self.exit_code == 0 and not self.blocked
+        return self.returncode == 0 and not self.blocked
 
 
 COMMAND_REGISTRY: dict[str, ActionSpec] = {
@@ -94,6 +107,7 @@ def run_safe_action(
     timeout: int = 60,
     dry_run_completed: bool = True,
 ) -> ActionResult:
+    started = time.monotonic()
     try:
         spec = resolve_action(action)
         command = list(spec.command)
@@ -102,26 +116,49 @@ def run_safe_action(
             raise ValueError(f"{spec.name} requires a completed dry run before execution.")
     except ValueError as exc:
         command = [action] if isinstance(action, str) else list(action)
-        return ActionResult("Blocked TUI Action", command, 126, stderr=str(exc), dry_run=dry_run, blocked=True)
+        return ActionResult(
+            action_name="Blocked TUI Action",
+            command=command,
+            dry_run=dry_run,
+            returncode=126,
+            stderr=str(exc),
+            duration_ms=_duration_ms(started),
+            blocked=True,
+            reason=str(exc),
+        )
 
     if dry_run:
         return ActionResult(
-            spec.name,
-            command,
-            0,
-            stdout=f"[DRY-RUN] Would execute: {' '.join(command)}",
+            action_name=spec.name,
+            command=command,
             dry_run=True,
+            returncode=0,
+            stdout=f"[DRY-RUN] Would execute: {' '.join(command)}",
+            duration_ms=_duration_ms(started),
         )
 
     try:
-        result = subprocess.run(command, capture_output=True, text=True, timeout=timeout, cwd=cwd, check=False)
+        result = subprocess.run(command, capture_output=True, text=True, timeout=timeout, cwd=cwd or REPO_ROOT, check=False)
         return ActionResult(
-            spec.name,
-            command,
-            result.returncode,
+            action_name=spec.name,
+            command=command,
+            dry_run=False,
+            returncode=result.returncode,
             stdout=redact_secret_text(result.stdout),
             stderr=redact_secret_text(result.stderr),
-            dry_run=False,
+            duration_ms=_duration_ms(started),
         )
     except Exception as exc:  # pragma: no cover - defensive subprocess guard
-        return ActionResult(spec.name, command, 1, stderr=f"Action failed: {exc}", dry_run=False)
+        return ActionResult(
+            action_name=spec.name,
+            command=command,
+            dry_run=False,
+            returncode=1,
+            stderr=f"Action failed: {exc}",
+            duration_ms=_duration_ms(started),
+            reason=str(exc),
+        )
+
+
+def _duration_ms(started: float) -> int:
+    return int((time.monotonic() - started) * 1000)

@@ -105,6 +105,7 @@ The TUI is optional. Non-TUI CLI commands work without Textual installed.
 ./run.sh tui --template architect-tree --dry-run
 ./run.sh tui --template creative-canvas --dry-run
 ./run.sh tui --template operation-gate --dry-run
+
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[tui]"
@@ -121,6 +122,18 @@ Templates:
 - `tui-template-06` / `operation-gate`
 
 The terminal design uses layered panels, soft borders, dim/bright contrast, status chips, a command palette, and non-blocking refresh. It does not rely on web-only backdrop blur.
+
+Installed launcher examples:
+
+```bash
+~/.local/bin/zai-coder tui --dry-run
+~/.local/bin/zai-coder tui --print-config
+~/.local/bin/zai-coder tui --list-templates
+~/.local/bin/zai-coder tui --template command-center --dry-run
+~/.local/bin/zai-coder tui --template operation-gate --dry-run
+```
+
+TUI safety allows only local read/check commands from the registry: `./run.sh doctor`, `make safety-check`, `make final-release-status`, `make install-dry-run`, and `./run.sh tui --print-config`. It blocks external mutation, `APPLY=1`, external `curl`/`wget`, and secret-like command text.
 
 ## Safety defaults
 
@@ -178,7 +191,7 @@ tests/             no-dependency tests
 ## Run tests
 
 ```bash
-python3 -m unittest discover -s tests -v
+python3 -m pytest -q
 ```
 
 ## License

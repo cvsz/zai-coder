@@ -1,6 +1,6 @@
 import pytest
 
-from zai_coder.tui.safety import assert_allowed_tui_command, is_mutating_command, redact_secret_text
+from zai_coder.tui.safety import assert_allowed_tui_command, contains_secret_like_text, is_mutating_command, redact_secret_text
 
 
 @pytest.mark.parametrize(
@@ -15,6 +15,8 @@ from zai_coder.tui.safety import assert_allowed_tui_command, is_mutating_command
         ["stripe", "listen"],
         ["make", "safety-check", "APPLY=1"],
         ["echo", "API_KEY=abc123"],
+        ["curl", "https://example.com/hook"],
+        ["wget", "https://example.com/file"],
     ],
 )
 def test_safety_blocks_forbidden_commands(command):
@@ -46,3 +48,8 @@ def test_safety_redacts_secret_like_text():
     assert "hunter2" not in redacted
     assert "liveabc" not in redacted
     assert "REDACTED" in redacted
+
+
+def test_contains_secret_like_text():
+    assert contains_secret_like_text("password=abc123") is True
+    assert contains_secret_like_text("ordinary local status") is False

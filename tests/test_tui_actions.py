@@ -4,15 +4,19 @@ from zai_coder.tui.actions import list_actions, list_palette_commands, run_safe_
 def test_action_runner_dry_run_does_not_mutate():
     result = run_safe_action("doctor", dry_run=True)
     assert result.ok
+    assert result.action_name == "Doctor"
     assert result.dry_run is True
+    assert result.returncode == 0
     assert result.command == ["./run.sh", "doctor"]
     assert "[DRY-RUN]" in result.stdout
+    assert result.duration_ms >= 0
 
 
 def test_action_runner_blocks_unregistered_command():
     result = run_safe_action(["git", "push"], dry_run=True)
     assert result.blocked
     assert result.exit_code == 126
+    assert result.reason
 
 
 def test_command_palette_contains_required_items():

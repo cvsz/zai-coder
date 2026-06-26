@@ -18,7 +18,7 @@ class CommandCenterTemplate(BaseTemplate):
                 "Header",
                 (
                     "Project: zai-coder",
-                    "Provider/model: resolved by CLI config at runtime",
+                    "Provider/model: resolved from local CLI config at runtime",
                     "Template: command-center",
                     "Safe mode: external mutation disabled by default",
                 ),

@@ -7,6 +7,8 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
+from .safety import redact_secret_text
+
 
 @dataclass
 class AgentTile:
@@ -40,6 +42,7 @@ class TuiState:
     last_focus: str = "command-input"
     dry_run_mode: bool = True
     last_command: str = ""
+    last_result: str = ""
     log_buffer: list[str] = field(default_factory=list)
     workspace: str = "."
     current_session: str = "local"
@@ -75,7 +78,7 @@ class TuiState:
         self.dry_run_mode = value
 
     def add_log(self, message: str) -> None:
-        self.log_buffer.append(message)
+        self.log_buffer.append(redact_secret_text(message))
         self.log_buffer = self.log_buffer[-200:]
         self.refresh_timestamp = time.time()
 
@@ -136,10 +139,7 @@ def load_state(path: str | Path) -> TuiState:
         return TuiState()
     try:
         payload = json.loads(state_path.read_text(encoding="utf-8"))
-        payload["agent_tiles"] = _coerce_agent_tiles(payload.get("agent_tiles", []))
-        payload["timeline_events"] = _coerce_timeline_events(payload.get("timeline_events", []))
-        payload["gate_statuses"] = _coerce_gate_statuses(payload.get("gate_statuses", []))
-        return TuiState(**payload)
+        return state_from_dict(payload)
     except Exception as exc:  # pragma: no cover - defensive persistence guard
         print(f"WARN: failed to load TUI state from {state_path}: {exc}", file=sys.stderr)
         return TuiState()
@@ -149,8 +149,38 @@ def save_state(path: str | Path, state: TuiState) -> bool:
     state_path = Path(path)
     try:
         state_path.parent.mkdir(parents=True, exist_ok=True)
-        state_path.write_text(json.dumps(state.to_dict(), indent=2, sort_keys=True), encoding="utf-8")
+        state_path.write_text(json.dumps(state_to_dict(state), indent=2, sort_keys=True), encoding="utf-8")
         return True
     except Exception as exc:  # pragma: no cover - defensive persistence guard
         print(f"WARN: failed to save TUI state to {state_path}: {exc}", file=sys.stderr)
         return False
+
+
+def state_to_dict(state: TuiState) -> dict[str, Any]:
+    data = state.to_dict()
+    data["last_command"] = redact_secret_text(data.get("last_command", ""))
+    data["last_result"] = redact_secret_text(data.get("last_result", ""))
+    data["log_buffer"] = [redact_secret_text(item) for item in data.get("log_buffer", [])][-200:]
+    return data
+
+
+def state_from_dict(data: dict[str, Any]) -> TuiState:
+    payload = dict(data)
+    payload["agent_tiles"] = _coerce_agent_tiles(payload.get("agent_tiles", []))
+    payload["timeline_events"] = _coerce_timeline_events(payload.get("timeline_events", []))
+    payload["gate_statuses"] = _coerce_gate_statuses(payload.get("gate_statuses", []))
+    return TuiState(**payload)
+
+
+def append_log(state: TuiState, message: str, level: str = "info") -> TuiState:
+    state.add_log(f"{level.upper()}: {message}")
+    return state
+
+
+def switch_template(state: TuiState, template_name: str) -> TuiState:
+    from .loader import normalize_template_name
+
+    state.active_template = normalize_template_name(template_name)
+    state.last_focus = "template"
+    state.refresh_timestamp = time.time()
+    return state

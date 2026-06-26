@@ -5,30 +5,43 @@ import time
 from pathlib import Path
 
 from zai_coder.tui.actions import list_palette_commands
-from zai_coder.tui.config import load_tui_config
-from zai_coder.tui.loader import load_template, normalize_template_name, template_entries
+from zai_coder.tui.config import TuiConfig, load_tui_config
+from zai_coder.tui.loader import instantiate_template, normalize_template_name, template_entries
 from zai_coder.tui.messages import HELP_TEXT, TEXTUAL_MISSING_MESSAGE
 from zai_coder.tui.persistence import load_persisted_state, save_persisted_state
 from zai_coder.tui.state import TuiState
 
 
-def run_tui(template_name: str | None = None, dry_run: bool = False, no_textual: bool = False, root: str | Path | None = None) -> int:
+def run_tui(
+    template_name: str | None = None,
+    dry_run: bool = False,
+    no_textual: bool = False,
+    print_config: bool = False,
+    list_templates: bool = False,
+    root: str | Path | None = None,
+) -> int:
     project_root = Path(root or ".").resolve()
-    config = load_tui_config(project_root)
-    template_key = normalize_template_name(template_name or config.get("template", "command-center"))
+    config = load_tui_config(root=project_root)
+    if print_config:
+        print(json.dumps(config.to_dict(), indent=2, sort_keys=True))
+        return 0
+    if list_templates:
+        print(describe_templates())
+        return 0
+    template_key = normalize_template_name(template_name or config.template)
     state = _load_state(project_root, config)
     state.active_template = template_key
     state.workspace = str(project_root)
     state.add_log(f"Selected template: {template_key}")
 
     if dry_run:
-        template = load_template(template_key, state=state)
+        template = instantiate_template(template_key, state=state)
         print(json.dumps(_launch_plan(config, template.as_dict(), project_root), indent=2))
         _save_state(project_root, config, state)
         return 0
 
     if no_textual:
-        template = load_template(template_key, state=state)
+        template = instantiate_template(template_key, state=state)
         print(template.render_static())
         _save_state(project_root, config, state)
         return 0
@@ -36,25 +49,25 @@ def run_tui(template_name: str | None = None, dry_run: bool = False, no_textual:
     return _launch_textual(template_key, state, config, project_root)
 
 
-def _load_state(project_root: Path, config: dict) -> TuiState:
-    if config.get("persist_state", True):
-        return load_persisted_state(project_root, config.get("state_path", ".zai-coder/tui-state.json"))
+def _load_state(project_root: Path, config: TuiConfig) -> TuiState:
+    if config.persist_state:
+        return load_persisted_state(project_root, config.state_path)
     return TuiState()
 
 
-def _save_state(project_root: Path, config: dict, state: TuiState) -> None:
-    if config.get("persist_state", True):
-        save_persisted_state(project_root, config.get("state_path", ".zai-coder/tui-state.json"), state)
+def _save_state(project_root: Path, config: TuiConfig, state: TuiState) -> None:
+    if config.persist_state:
+        save_persisted_state(project_root, config.state_path, state)
 
 
-def _launch_plan(config: dict, template: dict, project_root: Path) -> dict:
+def _launch_plan(config: TuiConfig, template: dict, project_root: Path) -> dict:
     return {
         "mode": "dry-run",
         "project": "zai-coder",
         "root": str(project_root),
         "template": template,
-        "dry_run_first": config.get("dry_run_first", True),
-        "refresh_interval_seconds": config.get("refresh_interval_seconds", 1),
+        "dry_run_first": config.dry_run_first,
+        "refresh_interval_seconds": config.refresh_interval_seconds,
         "textual_required_for_real_launch": True,
         "allowed_local_actions": [
             "./run.sh doctor",
@@ -77,14 +90,28 @@ def _launch_plan(config: dict, template: dict, project_root: Path) -> dict:
     }
 
 
-def _launch_textual(template_key: str, state: TuiState, config: dict, project_root: Path) -> int:
+def create_tui_app(config: TuiConfig, state: TuiState):
+    return _create_textual_app(config, state, Path.cwd())
+
+
+def _launch_textual(template_key: str, state: TuiState, config: TuiConfig, project_root: Path) -> int:
+    app_class = _create_textual_app(config, state, project_root)
+    if app_class is None:
+        return 1
+    app = app_class(state, config)
+    app.run()
+    _save_state(project_root, config, state)
+    return 0
+
+
+def _create_textual_app(config: TuiConfig, state: TuiState, project_root: Path):
     try:
         from textual.app import App, ComposeResult
         from textual.containers import Horizontal, Vertical
         from textual.widgets import Footer, Header, Input, Static
     except ImportError:
         print(TEXTUAL_MISSING_MESSAGE, end="")
-        return 1
+        return None
 
     class ZaiCoderTuiApp(App):
         CSS = """
@@ -145,7 +172,7 @@ def _launch_textual(template_key: str, state: TuiState, config: dict, project_ro
             self.query_one("#status", Static).update(self._render_status())
 
         def _render_template(self) -> str:
-            template = load_template(self.tui_state.active_template, state=self.tui_state)
+            template = instantiate_template(self.tui_state.active_template, state=self.tui_state)
             return template.render_static()
 
         def _render_status(self) -> str:
@@ -188,10 +215,7 @@ def _launch_textual(template_key: str, state: TuiState, config: dict, project_ro
             _save_state(project_root, config, self.tui_state)
             self.exit()
 
-    app = ZaiCoderTuiApp(state, config)
-    app.run()
-    _save_state(project_root, config, state)
-    return 0
+    return ZaiCoderTuiApp
 
 
 def describe_templates() -> str:

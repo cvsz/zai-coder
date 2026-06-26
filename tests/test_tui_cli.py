@@ -1,6 +1,5 @@
 import os
 import subprocess
-import sys
 
 from zai_coder.cli import main
 
@@ -35,6 +34,18 @@ def test_cli_dry_run_exits_zero_for_all_templates(capsys):
     output = capsys.readouterr().out
     assert '"mode": "dry-run"' in output
     assert '"name": "operation-gate"' in output
+
+
+def test_cli_invalid_template_exits_nonzero(capsys):
+    assert main(["tui", "--template", "missing", "--dry-run"]) == 2
+    assert "Unknown TUI template" in capsys.readouterr().err
+
+
+def test_cli_textual_missing_path_fails_gracefully(capsys):
+    code = main(["tui", "--template", "command-center"])
+    if code != 0:
+        assert code == 1
+        assert "Textual is not installed" in capsys.readouterr().out
 
 
 def test_installed_launcher_supports_tui_dry_run_after_install(tmp_path):

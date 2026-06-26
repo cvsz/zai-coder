@@ -19,6 +19,7 @@ FORBIDDEN_PATTERNS = [
     r"\bcloudflare\b",
     r"\bstripe\b",
     r"(^|\s)APPLY=1(\s|$)",
+    r"\b(curl|wget)\b.*\b(https?://|ftp://)",
 ]
 
 SECRET_COMMAND_PATTERNS = [
@@ -37,7 +38,7 @@ def is_mutating_command(command: list[str]) -> bool:
     for pattern in FORBIDDEN_PATTERNS:
         if re.search(pattern, cmd_str, re.IGNORECASE):
             return True
-    if _contains_secret_reference(cmd_str):
+    if contains_secret_like_text(cmd_str):
         return True
     return False
 
@@ -69,6 +70,10 @@ def assert_allowed_tui_command(command: list[str]) -> None:
     if command_tuple not in ALLOWED_TUI_COMMANDS:
         allowed = ", ".join(" ".join(item) for item in sorted(ALLOWED_TUI_COMMANDS))
         raise ValueError(f"TUI command is not registered as local-safe: {' '.join(command)}. Allowed: {allowed}")
+
+
+def contains_secret_like_text(text: str) -> bool:
+    return _contains_secret_reference(text)
 
 
 def _contains_secret_reference(value: str) -> bool:

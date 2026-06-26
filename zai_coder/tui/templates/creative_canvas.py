@@ -8,7 +8,7 @@ class CreativeCanvasTemplate(BaseTemplate):
         title="Creative Canvas",
         purpose="Media and preview-heavy template for creative, docs, prompts, screenshots, and generated artifacts.",
         status_chips=(
-            ("Preview", "text/file/media placeholders", "active"),
+            ("Preview", "text/file/media panes", "active"),
             ("Safe Mode", "local preview only", "safe"),
             ("Dry Run", "{dry_run}", "dry_run"),
         ),
@@ -18,8 +18,8 @@ class CreativeCanvasTemplate(BaseTemplate):
                 "Center Preview Canvas",
                 (
                     "Text preview area",
-                    "File preview placeholder",
-                    "Media placeholder for screenshots and generated artifacts",
+                    "File preview pane for selected local artifacts",
+                    "Media preview pane for screenshots and generated artifacts",
                 ),
             ),
             TemplatePanel("Right Metadata / Status Panel", ("Artifact path, safety mode, and latest local command.",)),
