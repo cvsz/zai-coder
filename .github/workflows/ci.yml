@@ -21,3 +21,4 @@ jobs:
       - run: make repo-check
       - run: make secret-scan
       - run: make stage-manifest-check
+      - run: make final-release-status APPLY=1

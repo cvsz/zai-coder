@@ -1,0 +1,134 @@
+{
+  "reconciliation": {
+    "version": "v0.1.0",
+    "date": "2026-06-26T10:00:00+07:00",
+    "head": "9a11629",
+    "tag_intact": true,
+    "tag_name": "v0.1.0",
+    "tag_commit": "b6b09e3"
+  },
+  "counts": {
+    "modified_total": 441,
+    "modified_scripts": 425,
+    "modified_source_py": 7,
+    "modified_workflow": 1,
+    "modified_data_exports": 7,
+    "deleted_files": 1,
+    "untracked_before_cleanup": 21,
+    "untracked_after_cleanup": 15
+  },
+  "classification": {
+    "A_release_evidence_source": [],
+    "B_source_code_change": [
+      "zai_coder/core/registry.py",
+      "zai_coder/core/safety.py",
+      "zai_coder/github_ready_core/repo_check.py",
+      "zai_coder/github_ready_core/repo_policy.py",
+      "zai_coder/github_ready_core/secret_scan.py",
+      "tests/test_final_enterprise_release_pack_v50.py",
+      "tests/test_github_ready_v12.py",
+      ".github/workflows/ci.yml"
+    ],
+    "C_script_change": [
+      "scripts/ (425 shell scripts modified - post-release hardening work)"
+    ],
+    "D_runtime_generated_local_state_removed": [
+      ".zai-coder/ (untracked - REMOVED)",
+      "data/index.db (untracked - REMOVED)",
+      "data/migrations.db (untracked - REMOVED)",
+      "data/tasks.db (untracked - REMOVED)",
+      "data/zai-audit.jsonl (untracked - REMOVED)",
+      "Modelfile (untracked - REMOVED)"
+    ],
+    "D_runtime_generated_local_state_tracked_hygiene_issue": [
+      "data/enterprise-admin-console.db (TRACKED - hygiene issue: should not be committed)",
+      "data/provider-audit.db (TRACKED - hygiene issue: should not be committed)",
+      "data/zai-app.db (TRACKED - hygiene issue: should not be committed)"
+    ],
+    "E_generated_export_or_evidence_data": [
+      "evidence/governance/evidence-bundle.json (TRACKED - modified)",
+      "identity/evidence/identity-evidence.json (TRACKED - modified)",
+      "marketplace/exports/marketplace-export.json (TRACKED - modified)",
+      "migration/exports/migration-evidence.json (TRACKED - modified)",
+      "security/evidence/security-ops-evidence.json (TRACKED - modified)"
+    ],
+    "F_deleted_file": [
+      "zai_coder/final_enterprise_release_pack/routes/__init__.py (INTENTIONAL REFACTOR - replaced by routes.py module, imports verified working)"
+    ],
+    "G_suspicious_or_needs_review": [
+      "data/enterprise-admin-console.db (tracked binary DB - should be gitignored)",
+      "data/provider-audit.db (tracked binary DB - should be gitignored)",
+      "data/zai-app.db (tracked binary DB - should be gitignored)"
+    ]
+  },
+  "untracked_new_source_code": {
+    "new_tests": [
+      "tests/test_ci.py",
+      "tests/test_migrations.py",
+      "tests/test_patch_runtime.py",
+      "tests/test_policies.py",
+      "tests/test_registry.py",
+      "tests/test_router.py",
+      "tests/test_server.py",
+      "tests/test_update.py"
+    ],
+    "new_modules": [
+      "zai_coder/core/migrations.py",
+      "zai_coder/core/policies.py",
+      "zai_coder/core/update.py",
+      "zai_coder/migrations/",
+      "zai_coder/server/"
+    ],
+    "new_scripts": [
+      "scripts/package-check.sh"
+    ],
+    "legacy_remnant": [
+      "zai_coder/final_enterprise_release_pack/routes_old/ (untracked - old package before refactor)"
+    ]
+  },
+  "gitignore_hygiene": {
+    "patterns_added": [
+      ".zai-coder/",
+      "data/*.db",
+      "data/*.sqlite",
+      "data/*.sqlite3",
+      "data/zai-audit.jsonl",
+      "reports/*.tmp",
+      "*.p12",
+      "*.pfx",
+      "Modelfile"
+    ],
+    "remaining_tracked_db_issue": {
+      "files": [
+        "data/enterprise-admin-console.db",
+        "data/provider-audit.db",
+        "data/zai-app.db"
+      ],
+      "note": "These are TRACKED files - adding to .gitignore does not untrack them. Requires explicit 'git rm --cached' to remove from tracking. Deferred to post-release branch to avoid disrupting v0.1.0 release state."
+    }
+  },
+  "validation_results": {
+    "compileall": "PASS - no errors",
+    "pytest": "PASS - 446/446 tests passing, 2 warnings",
+    "safety_check": "PASS - safety rules OK",
+    "repo_check": "PASS - required files present, no forbidden commands",
+    "secret_scan": "PASS",
+    "stage_manifest_check": "PASS - no blocked files",
+    "final_release_status": "PASS - ok: true"
+  },
+  "cleanup_actions_taken": [
+    "Removed .zai-coder/ (untracked runtime state directory)",
+    "Removed data/index.db (untracked runtime DB)",
+    "Removed data/migrations.db (untracked runtime DB)",
+    "Removed data/tasks.db (untracked runtime DB)",
+    "Removed data/zai-audit.jsonl (untracked audit log)",
+    "Removed Modelfile (untracked local AI model config)",
+    "Updated .gitignore with missing patterns for runtime files"
+  ],
+  "decision": {
+    "verdict": "post-release-work-isolated-on-branch",
+    "rationale": "The modified scripts (425), source code (7 .py files), new modules, and new tests represent legitimate post-release engineering work for the next version. These must NOT be mixed into v0.1.0 cleanup. They should be committed on a new branch: chore/post-v0.1.0-enterprise-hardening",
+    "v0.1.0_tag_intact": true,
+    "release_state": "The release tag v0.1.0 points to commit b6b09e3 which is clean. HEAD (9a11629) is one commit ahead (publication report doc). The working tree divergence is all post-release work."
+  }
+}

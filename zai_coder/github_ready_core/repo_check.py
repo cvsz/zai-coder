@@ -48,7 +48,46 @@ def check_forbidden_commands(root: str | Path) -> dict:
             findings.append({"path": rels, "forbidden": bad_lines})
     return {"ok": not findings, "findings": findings}
 
+def check_compile(root: str | Path) -> dict:
+    import subprocess
+    import sys
+    try:
+        subprocess.run([sys.executable, "-m", "compileall", "-q", "zai_coder"], cwd=root, check=True, capture_output=True)
+        return {"ok": True}
+    except subprocess.CalledProcessError as e:
+        return {"ok": False, "error": e.stderr.decode()}
+
+def check_cli_entrypoint(root: str | Path) -> dict:
+    import subprocess
+    import sys
+    try:
+        subprocess.run(["./zai-coder", "--help"], cwd=root, check=True, capture_output=True)
+        return {"ok": True}
+    except subprocess.CalledProcessError as e:
+        return {"ok": False, "error": e.stderr.decode()}
+
+def check_readme_commands(root: str | Path) -> dict:
+    root = Path(root)
+    readme = root / "README.md"
+    if not readme.exists():
+        return {"ok": False, "error": "README missing"}
+    text = readme.read_text(encoding="utf-8")
+    if "./zai-coder" not in text or "make" not in text:
+        return {"ok": False, "error": "README commands stale"}
+    return {"ok": True}
+
 def repo_ready_report(root: str | Path) -> dict:
     required = check_required_files(root)
     forbidden = check_forbidden_commands(root)
-    return {"ok": required["ok"] and forbidden["ok"], "required_files": required, "forbidden_commands": forbidden}
+    comp = check_compile(root)
+    cli = check_cli_entrypoint(root)
+    readme = check_readme_commands(root)
+    ok = required["ok"] and forbidden["ok"] and comp["ok"] and cli["ok"] and readme["ok"]
+    return {
+        "ok": ok,
+        "required_files": required,
+        "forbidden_commands": forbidden,
+        "compile": comp,
+        "cli": cli,
+        "readme": readme
+    }

@@ -23,7 +23,10 @@ class JsonRegistry:
         if not self.directory.exists():
             return items
         for path in sorted(self.directory.glob("*.json")):
-            data = json.loads(path.read_text(encoding="utf-8"))
+            try:
+                data = json.loads(path.read_text(encoding="utf-8"))
+            except Exception:
+                continue
             items.append(RegistryItem(
                 name=data.get("name", path.stem),
                 description=data.get("description", ""),

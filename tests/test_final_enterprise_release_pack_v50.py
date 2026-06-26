@@ -34,7 +34,8 @@ def test_exports(tmp_path, monkeypatch):
     assert Path(demo["report_path"]).exists()
 
 def test_routes():
-    assert route_final_release_status()["ok"]
+    import json
+    assert json.loads(route_final_release_status())["ok"]
     assert route_final_release_overview()["validation"]["ok"]
     assert route_final_installer_manifest()["safe_defaults"]["production_launch"] is False
     assert route_final_docs_index()["artifacts"]
