@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from zai_coder import __version__
+
 import argparse
 import json
 import os
@@ -673,7 +675,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--version",
         action="version",
-        version="%(prog)s 0.1.2",
+        version=f"%(prog)s {__version__}",
         help="Show program's version number and exit"
     )
     sub = p.add_subparsers(dest="cmd", required=True)
