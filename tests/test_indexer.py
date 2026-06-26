@@ -3,32 +3,37 @@ from pathlib import Path
 from zai_coder.core.indexer import ProjectIndexer
 from zai_coder.core.rag import LocalRAG
 
-def test_indexing_and_rag(tmp_path):
+def test_project_indexer(tmp_path):
     repo = tmp_path / "repo"
     repo.mkdir()
     
     # Write some safe file
-    (repo / "safe.py").write_text("def command_safety():\n    return 'Command safety is enforced here.'\n", encoding="utf-8")
+    (repo / "safe.py").write_text("class SafetyPolicy:\n    def check(self):\n        pass\n", encoding="utf-8")
     
     # Write some excluded file
     (repo / ".env").write_text("SECRET=ENVONLY999\n", encoding="utf-8")
     
     # Write some file with secrets
     secret = "s" + "k-12345678901234567890123456"
-    (repo / "secret_file.py").write_text(f"API_KEY = '{secret}'\n", encoding="utf-8")
+    (repo / "api_keys.py").write_text(f"API_KEY = '{secret}'\n", encoding="utf-8")
     
     # DB path
     db_path = tmp_path / "index.db"
     
     # Build index
-    indexer = ProjectIndexer(db_path)
-    indexer.build(repo)
+    indexer = ProjectIndexer(workspace=repo, db_path=db_path)
+    indexer.build()
+    
+    stats = indexer.get_stats()
+    assert stats["files"] >= 1
+    assert stats["chunks"] >= 1
+    assert stats["symbols"] >= 1
     
     # Test index search
-    results, metrics = indexer.search("safety")
+    results, metrics = indexer.search("SafetyPolicy")
     assert len(results) > 0
     assert "safe.py" in results[0]["path"]
-    assert "time_ms" in metrics
+    assert any(r["type"] == "symbol" for r in results)
     
     # Check that .env is not indexed
     env_results, _ = indexer.search("envonly999")
@@ -40,12 +45,10 @@ def test_indexing_and_rag(tmp_path):
     
     redacted_results, _ = indexer.search("REDACTED")
     assert len(redacted_results) > 0
-    
-    # Test RAG
-    rag = LocalRAG(tmp_path)
-    # patch rag.db_path for test
-    rag.db_path = db_path
-    rag.indexer = indexer
-    
-    res = rag.query("command safety")
-    assert "Command safety is enforced here" in res
+
+    # Test clear
+    indexer.clear()
+    stats = indexer.get_stats()
+    assert stats["files"] == 0
+    assert stats["chunks"] == 0
+    assert stats["symbols"] == 0

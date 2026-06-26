@@ -269,17 +269,52 @@ def cmd_media(args) -> int:
 
 def cmd_index(args) -> int:
     from .core.indexer import ProjectIndexer
-    from .config import load_config
-    cfg = load_config(args.config)
-    indexer = ProjectIndexer(Path(cfg.workspace) / "data" / "index.db")
+    from pathlib import Path
+    
+    indexer = ProjectIndexer()
+    
     if args.index_cmd == "build":
-        indexer.build(cfg.workspace)
-        print("Index built.")
+        print("Building local source index...")
+        indexer.build()
+        stats = indexer.get_stats()
+        print(f"Indexed {stats.get('files', 0)} files, {stats.get('chunks', 0)} chunks, {stats.get('symbols', 0)} symbols.")
+        return 0
+        
     elif args.index_cmd == "search":
-        results = indexer.search(args.query)
+        print(f"Searching index for '{args.query}'...")
+        results, metrics = indexer.search(args.query)
+        if not results:
+            print("No matches found.")
+            return 0
+            
         for r in results:
-            print(f"{r['path']} (score: {r['score']})")
-    return 0
+            if r["type"] == "symbol":
+                print(f"[{r['type'].upper()}] {r['path']} - {r['symbol_type']} '{r['name']}' at line {r['line']} (Score: {r['score']})")
+            else:
+                print(f"[{r['type'].upper()}] {r['path']}:{r['start_line']}-{r['end_line']} (Score: {r['score']})")
+                
+        print(f"\nMetrics: {metrics['time_ms']}ms, scanned {metrics['chunks_scanned']} chunks.")
+        return 0
+        
+    elif args.index_cmd == "stats":
+        stats = indexer.get_stats()
+        print("Index Statistics:")
+        for k, v in stats.items():
+            print(f"  {k}: {v}")
+        return 0
+        
+    elif args.index_cmd == "clear":
+        if getattr(args, "apply", False):
+            print("Clearing index...")
+            indexer.clear()
+            print("Index cleared.")
+            return 0
+        else:
+            print("Must specify --apply to clear the index.")
+            return 1
+            
+    print("Invalid index command.")
+    return 1
 
 def cmd_rag(args) -> int:
     from .core.rag import LocalRAG
@@ -572,6 +607,11 @@ def build_parser() -> argparse.ArgumentParser:
     index_search = index_sub.add_parser("search")
     index_search.add_argument("query")
     index_search.set_defaults(func=cmd_index)
+    index_stats = index_sub.add_parser("stats")
+    index_stats.set_defaults(func=cmd_index)
+    index_clear = index_sub.add_parser("clear")
+    index_clear.add_argument("--apply", action="store_true")
+    index_clear.set_defaults(func=cmd_index)
 
     rag = sub.add_parser("rag")
     rag_sub = rag.add_subparsers(dest="rag_cmd", required=True)
