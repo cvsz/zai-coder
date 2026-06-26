@@ -11,8 +11,28 @@ from datetime import datetime, timezone
 from typing import Any
 
 
+SUPPORTED_SKILL_SOURCES = {
+    "local",
+    "bundled",
+    "official",
+    "skills-sh",
+    "well-known",
+    "github",
+    "url",
+    "clawhub",
+    "lobehub",
+    "browse-sh",
+}
+
+SUPPORTED_PLATFORMS = {"linux", "macos", "windows"}
+
+
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def _safe_slug(value: str) -> bool:
+    return bool(value) and "/" not in value and "\\" not in value and ".." not in value
 
 
 @dataclass(frozen=True)
@@ -26,18 +46,35 @@ class SkillManifest:
     required_permissions: tuple[str, ...] = ("skill:view",)
     compatible_agent_types: tuple[str, ...] = ("builder", "operator")
     tags: tuple[str, ...] = ()
+    platforms: tuple[str, ...] = ()
+    source: str = "local"
+    source_slug: str = ""
+    required_environment_variables: tuple[str, ...] = ()
+    hermes_metadata: dict[str, Any] = field(default_factory=dict)
     created_at: str = field(default_factory=now_iso)
 
     def validate(self) -> list[str]:
         issues: list[str] = []
         if not self.id or not self.name or not self.version:
             issues.append("skill id, name, and version required")
-        if "/" in self.id or ".." in self.id:
+        if not _safe_slug(self.id):
             issues.append("unsafe skill id")
+        if len(self.description.strip()) > 120:
+            issues.append("description should stay concise for progressive disclosure")
         if not self.entrypoint.endswith(".md"):
             issues.append("entrypoint must be markdown")
-        if any("/" in p or ".." in p for p in self.required_permissions):
+        if self.entrypoint.startswith("/") or ".." in self.entrypoint:
+            issues.append("unsafe entrypoint path")
+        if any("/" in p or "\\" in p or ".." in p for p in self.required_permissions):
             issues.append("unsafe permission value")
+        if any(platform not in SUPPORTED_PLATFORMS for platform in self.platforms):
+            issues.append("unsupported platform")
+        if self.source not in SUPPORTED_SKILL_SOURCES:
+            issues.append("unsupported skill source")
+        if self.source != "local" and not self.source_slug:
+            issues.append("hub or external skill sources require source_slug")
+        if any("/" in name or "\\" in name or ".." in name for name in self.required_environment_variables):
+            issues.append("unsafe environment variable name")
         return issues
 
     def to_dict(self) -> dict:
@@ -51,6 +88,11 @@ class SkillManifest:
             "required_permissions": list(self.required_permissions),
             "compatible_agent_types": list(self.compatible_agent_types),
             "tags": list(self.tags),
+            "platforms": list(self.platforms),
+            "source": self.source,
+            "source_slug": self.source_slug,
+            "required_environment_variables": list(self.required_environment_variables),
+            "hermes_metadata": dict(self.hermes_metadata),
             "created_at": self.created_at,
         }
 
@@ -72,7 +114,7 @@ class AgentListing:
             issues.append("agent listing id, name, and agent_type required")
         if self.status not in {"available", "deprecated", "hidden"}:
             issues.append("invalid listing status")
-        if "/" in self.id or ".." in self.id:
+        if not _safe_slug(self.id):
             issues.append("unsafe agent listing id")
         return issues
 
