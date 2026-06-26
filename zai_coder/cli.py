@@ -133,7 +133,15 @@ def cmd_plan(args) -> int:
     names = [n.strip() for n in args.agents.split(",") if n.strip()]
     agents = [build_agent(n) for n in names]
     orchestrator = MultiAgentOrchestrator(router, cfg.model, cfg.fallback_models, cfg.temperature, cfg.max_tokens)
-    result = orchestrator.run(args.task, agents)
+    
+    task_text = args.task
+    if getattr(args, "with_rag", False):
+        from zai_coder.core.rag import LocalRAG
+        rag = LocalRAG(cfg.workspace)
+        context = rag.query(task_text)
+        task_text = f"Context:\n{context}\n\nTask:\n{task_text}"
+        
+    result = orchestrator.run(task_text, agents)
     print(result.content)
     print(f"\n[steps={', '.join(result.steps)} model={result.model} provider={result.provider}]")
     return 0
@@ -528,6 +536,7 @@ def build_parser() -> argparse.ArgumentParser:
     plan = sub.add_parser("plan")
     plan.add_argument("--task", required=True)
     plan.add_argument("--agents", default="planner,coder,reviewer")
+    plan.add_argument("--with-rag", action="store_true")
     plan.set_defaults(func=cmd_plan)
 
     run = sub.add_parser("run")
