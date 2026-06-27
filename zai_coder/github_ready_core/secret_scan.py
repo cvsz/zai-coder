@@ -28,6 +28,7 @@ SKIP_DIRS = {
     "reports",
     "release",
     "site-packages",
+    "web",
 }
 SKIP_FILES = {".env", ".env.local", ".env.development", ".env.production"}
 TEXT_SUFFIXES = {".py", ".md", ".txt", ".json", ".yml", ".yaml", ".sh", ".toml", ".ini", ".cfg", ""}
