@@ -38,4 +38,6 @@ def get_default_toolset_registry() -> ToolsetRegistry:
     reg.register(Toolset("media_local", "Local Media", "Local media generation", True))
     reg.register(Toolset("audio_local", "Local Audio", "Local audio streaming and generation", True, risk_level="medium"))
     reg.register(Toolset("server_local", "Local Server", "Local API server testing", True))
+    reg.register(Toolset("git_history", "Git History", "MCP integration for Git log/history", True, requires_integration=True))
+    reg.register(Toolset("sqlite_inspector", "SQLite Inspector", "MCP integration for SQLite introspection", True, requires_integration=True))
     return reg
