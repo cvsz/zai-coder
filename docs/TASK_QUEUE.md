@@ -7,6 +7,8 @@ ZAI Coder incorporates a fully local task queue to manage and persist agent orch
 - **Events**: Write audit logs associated tightly to exact task states.
 - **Dry-run**: Assumes simulation mode default; `--apply` enforces risky changes.
 - **Local SQLite Storage**: Fast metadata storage.
+- **Schema versioning**: `schema_version` tracks the task queue schema.
+- **Retry / export**: Retry terminal tasks and export queue state as JSON.
 
 ## CLI Usage
 
@@ -31,4 +33,12 @@ ZAI Coder incorporates a fully local task queue to manage and persist agent orch
 
 # Stop a pending task
 ./zai-coder task cancel TASK_ID
+
+# Retry a failed task
+./zai-coder task retry TASK_ID
+
+# Export queue state as JSON
+./zai-coder task export --json
 ```
+
+See also `docs/ops/self-queue.md` for the operator runbook.

@@ -17,25 +17,30 @@ class SafetyPolicy:
         self.block_patterns: list[tuple[re.Pattern[str], str]] = [
             (re.compile(r"\bgit\s+add\s+\.(?:$|\s)"), "Blocked: use exact-path staging, not git add ."),
             (re.compile(r"\bgit\s+add\s+-A(?:$|\s)"), "Blocked: use exact-path staging, not git add -A"),
+            (re.compile(r"\bgit\s+add\b.*(?:^|\s)(?:(?:\.zai-coder/|data/|logs/|release/|reports/|out/|dist/|coverage/)\S*|\S*\.(?:db|sqlite|sqlite3))(?:$|\s)"), "Blocked: generated state and artifacts must not be staged"),
             (re.compile(r"--no-verify\b"), "Blocked: --no-verify bypasses checks"),
             (re.compile(r"\bgit\s+push\b.*\s(-f|--force|--force-with-lease)\b"), "Blocked: force push is disabled"),
             (re.compile(r"\brm\s+-rf\s+(/|~|\$HOME|\.)(['\"]?)(?:$|\s)"), "Blocked: broad rm -rf is dangerous"),
+            (re.compile(r"\brmdir\s+(?:-p\s+)?(/|~|\$HOME|\.)(['\"]?)(?:$|\s)"), "Blocked: broad rmdir is dangerous"),
             (re.compile(r"\bsudo\s+rm\s+-rf\b"), "Blocked: sudo rm -rf requires manual review"),
             (re.compile(r"\bchmod\s+-R\s+777\b"), "Blocked: recursive chmod 777 is unsafe"),
             (re.compile(r";\s*bash"), "Blocked: semicolon chaining to shell"),
             (re.compile(r";\s*sh"), "Blocked: semicolon chaining to shell"),
+            (re.compile(r"&&\s*(bash|sh)\b"), "Blocked: shell chaining"),
             (re.compile(r"\|\s*bash"), "Blocked: pipe to shell"),
             (re.compile(r"\|\s*sh"), "Blocked: pipe to shell"),
             (re.compile(r"\$\("), "Blocked: command substitution"),
             (re.compile(r"`.*`"), "Blocked: command substitution"),
             (re.compile(r"base64\s+-d\s*\|"), "Blocked: encoded dangerous commands"),
             (re.compile(r"\bcat\s+.*\.env\b"), "Blocked: reading .env"),
+            (re.compile(r"\b(cp|mv|less|tail|head|grep|sed|awk)\b.*\.env\b"), "Blocked: .env file operation"),
+            (re.compile(r"(>|>>)\s*\.env\b"), "Blocked: writing .env"),
             (re.compile(r"open\(['\"].*\.env['\"]\)\.read\(\)"), "Blocked: reading .env from code snippet"),
             (re.compile(r"\bcurl\b.*\|\s*(bash|sh)\b"), "Blocked: curl to shell"),
             (re.compile(r"\bwget\b.*\|\s*(bash|sh)\b"), "Blocked: wget to shell"),
         ]
         self.generated_paths = [
-            "node_modules/", "dist/", ".next/", "coverage/", "reports/", ".turbo/", ".vite/", "vendor/ai-assets/"
+            ".zai-coder/", "node_modules/", "dist/", ".next/", "coverage/", "reports/", "release/", "data/", "logs/", ".turbo/", ".vite/", "vendor/ai-assets/"
         ]
 
     def check_command(self, command: str) -> SafetyResult:

@@ -5,6 +5,7 @@ Textual lazily inside ``zai_coder.tui.app``.
 """
 
 from .loader import list_templates, load_template, normalize_template_name
+from .task_panel import TaskPanelAdapter
 from .state import TuiState
 
-__all__ = ["TuiState", "list_templates", "load_template", "normalize_template_name"]
+__all__ = ["TuiState", "TaskPanelAdapter", "list_templates", "load_template", "normalize_template_name"]
