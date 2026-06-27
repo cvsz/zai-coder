@@ -53,9 +53,20 @@ def render_prometheus_metrics(samples: list[MetricSample]) -> str:
     return "\n".join(lines) + ("\n" if lines else "")
 
 
-def default_metrics_registry() -> MetricsRegistry:
+def default_metrics_registry(execute: bool = False) -> MetricsRegistry:
     registry = MetricsRegistry()
     registry.gauge("zai_health_ok", 1, {"service": "control-plane"})
-    registry.gauge("zai_queue_depth", 0, {"queue": "execution"})
     registry.increment("zai_build_info", 1, {"version": "v19"})
+    if execute:
+        try:
+            import psutil
+            cpu = psutil.cpu_percent(interval=0.1)
+            mem = psutil.virtual_memory().percent
+            registry.gauge("zai_cpu_usage", cpu, {"host": "local"})
+            registry.gauge("zai_mem_usage", mem, {"host": "local"})
+            registry.gauge("zai_queue_depth", 0, {"queue": "execution"})
+        except Exception:
+            registry.gauge("zai_queue_depth", 0, {"queue": "execution"})
+    else:
+        registry.gauge("zai_queue_depth", 0, {"queue": "execution"})
     return registry
