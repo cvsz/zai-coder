@@ -10,9 +10,9 @@ from .attestations import attestation_gap_report
 from .risk_matrix import risk_control_matrix
 
 
-def audit_readiness_gate(evidence: list[dict], attestations: list[dict], approval_id: str = "") -> dict:
+def audit_readiness_gate(evidence: list[dict], attestations: list[dict], approval_id: str = "", execute: bool = False, root: str = ".") -> dict:
     controls = control_library()
-    evidence_gaps = evidence_gap_report(controls, evidence)
+    evidence_gaps = evidence_gap_report(controls, evidence, execute=execute, root=root)
     processing = processing_register_validation()
     required_policies = ["policy-security", "policy-data-retention", "policy-incident-response"]
     attestation = attestation_gap_report(attestations, required_policies)
