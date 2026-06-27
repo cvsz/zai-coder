@@ -13,7 +13,8 @@ def handle_get(handler: JsonHTTPRequestHandler, path: str):
     if path == "/health":
         handler.send_json_response(200, {"status": "ok"})
     elif path == "/version":
-        handler.send_json_response(200, {"version": "0.1.0"})
+        import zai_coder
+        handler.send_json_response(200, {"version": zai_coder.__version__})
     elif path == "/agents":
         reg = JsonRegistry(Path("assets/agents").resolve())
         agents = [{"name": item.name, "description": item.description} for item in reg.list()]
