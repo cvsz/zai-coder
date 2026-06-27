@@ -1,0 +1,77 @@
+{
+  "current": "phase1",
+  "phases": [
+    {
+      "id": "phase1",
+      "name": "self-queue-production",
+      "branch": "feat/self-queue-production",
+      "prompt": "docs/prompts/25-self-queue-production.md",
+      "title": "feat: add production self-queue",
+      "status": "next",
+      "blocked_by": [],
+      "validation": [
+        "python3 -m pytest tests/test_tasks.py -q",
+        "python3 -m pytest tests/test_self_queue_v014.py -q",
+        "python3 -m pytest tests/test_task_queue_worker_v014.py -q",
+        "python3 -m pytest tests/test_task_cli_v014.py -q",
+        "python3 -m pytest tests/test_tui_task_panel_v014.py -q",
+        "python3 -m pytest -q",
+        "python3 -m compileall -q zai_coder",
+        "make repo-check",
+        "make secret-scan",
+        "make stage-manifest-check",
+        "./scripts/repo/check-generated-state.sh",
+        "./scripts/repo/check-ci-pytest-setup.sh"
+      ]
+    },
+    {
+      "id": "phase2",
+      "name": "self-orchestrate-supervisor",
+      "branch": "feat/self-orchestrate-supervisor",
+      "prompt": "docs/prompts/26-self-orchestrate-supervisor.md",
+      "status": "planned"
+    },
+    {
+      "id": "phase3",
+      "name": "self-rag-production",
+      "branch": "feat/self-rag-production",
+      "prompt": "docs/prompts/27-self-rag-production.md",
+      "status": "planned"
+    },
+    {
+      "id": "phase4",
+      "name": "self-monitor-observability",
+      "branch": "feat/self-monitor-observability",
+      "prompt": "docs/prompts/28-self-monitor-observability.md",
+      "status": "planned"
+    },
+    {
+      "id": "phase5",
+      "name": "self-heal-repair-production",
+      "branch": "feat/self-heal-repair-production",
+      "prompt": "docs/prompts/29-self-heal-repair-production.md",
+      "status": "planned"
+    },
+    {
+      "id": "phase6",
+      "name": "self-rollback-checkpoints",
+      "branch": "feat/self-rollback-checkpoints",
+      "prompt": "docs/prompts/30-self-rollback-checkpoints.md",
+      "status": "planned"
+    },
+    {
+      "id": "phase7",
+      "name": "governance-redaction",
+      "branch": "feat/governance-redaction",
+      "prompt": "docs/prompts/31-governance-redaction.md",
+      "status": "planned"
+    },
+    {
+      "id": "phase8",
+      "name": "final-readiness-gate",
+      "branch": "feat/final-readiness-gate",
+      "prompt": "docs/prompts/32-final-readiness-gate.md",
+      "status": "planned"
+    }
+  ]
+}
