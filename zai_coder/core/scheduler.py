@@ -133,3 +133,21 @@ class LocalScheduler:
                 (time.time(), result, job_id)
             )
             conn.commit()
+
+    def process_pending_jobs(self, callback: Any) -> int:
+        """
+        Polls for pending jobs, executes them via callback, and updates their status.
+        Returns the number of jobs processed.
+        """
+        jobs = self.get_pending_jobs()
+        processed = 0
+        for job in jobs:
+            try:
+                # Basic check if it's due could be added here if 'schedule' was parsed.
+                # Currently we execute all enabled pending.
+                result = callback(job)
+                self.update_job_status(job.id, str(result))
+                processed += 1
+            except Exception as e:
+                self.update_job_status(job.id, f"Error: {e}")
+        return processed
