@@ -44,10 +44,10 @@ def test_release_dry_run_refuses_to_mutate(tmp_path: Path):
     
     assert result.returncode == 0
     assert (stage / "dist").exists()
-    assert (stage / "dist" / "zai-coder-standalone-0.1.3.zip").exists()
+    assert (stage / "dist" / "zai-coder-standalone-0.1.4.zip").exists()
     
     # Verify no mutation in original root/dist
-    assert not (root / "dist" / "zai-coder-standalone-0.1.3.zip").exists()
+    assert not (root / "dist" / "zai-coder-standalone-0.1.4.zip").exists()
 
 def test_package_check_validates_isolated_artifacts(tmp_path: Path):
     root = Path.cwd()
