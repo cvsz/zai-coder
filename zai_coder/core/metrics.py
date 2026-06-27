@@ -1,5 +1,41 @@
 import json
+import sqlite3
+import time
+from pathlib import Path
 from typing import Dict, Any
+
+class TokenTracker:
+    def __init__(self, db_path: str | Path):
+        self.db_path = Path(db_path).expanduser().resolve()
+        self._init_db()
+
+    def _init_db(self):
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS token_usage (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    model TEXT NOT NULL,
+                    prompt_tokens INTEGER NOT NULL,
+                    completion_tokens INTEGER NOT NULL,
+                    total_tokens INTEGER NOT NULL,
+                    timestamp REAL NOT NULL
+                )
+                """
+            )
+            conn.commit()
+
+    def record_usage(self, model: str, prompt_tokens: int, completion_tokens: int):
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute(
+                """
+                INSERT INTO token_usage (model, prompt_tokens, completion_tokens, total_tokens, timestamp)
+                VALUES (?, ?, ?, ?, ?)
+                """,
+                (model, prompt_tokens, completion_tokens, prompt_tokens + completion_tokens, time.time())
+            )
+            conn.commit()
 
 class MetricsFormatter:
     @staticmethod
