@@ -104,3 +104,32 @@ class LocalScheduler:
                 "status": "simulated",
                 "message": f"Would execute command: {row['command']} with profile {row['profile']}"
             }
+
+    def get_pending_jobs(self) -> list[ScheduledJob]:
+        with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            cur = conn.execute("SELECT * FROM scheduled_jobs WHERE enabled = 1 ORDER BY id ASC")
+            # In a real scheduler we would parse the 'schedule' (cron or interval) to check if it's due.
+            # For this foundation, we just return all enabled jobs.
+            return [
+                ScheduledJob(
+                    id=row["id"],
+                    name=row["name"],
+                    command=row["command"],
+                    schedule=row["schedule"],
+                    enabled=bool(row["enabled"]),
+                    profile=row["profile"],
+                    created_at=row["created_at"],
+                    last_run_at=row["last_run_at"],
+                    last_result=row["last_result"]
+                )
+                for row in cur.fetchall()
+            ]
+
+    def update_job_status(self, job_id: int, result: str):
+        with sqlite3.connect(self.db_path) as conn:
+            conn.execute(
+                "UPDATE scheduled_jobs SET last_run_at = ?, last_result = ? WHERE id = ?",
+                (time.time(), result, job_id)
+            )
+            conn.commit()
