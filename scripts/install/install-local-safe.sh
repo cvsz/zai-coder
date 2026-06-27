@@ -30,6 +30,7 @@ rsync -a \
   --exclude='.zai-coder/' \
   --exclude='__pycache__/' \
   --exclude='.pytest_cache/' \
+  --exclude='node_modules/' \
   --exclude='*.pyc' \
   --exclude='*.db' \
   --exclude='*.sqlite' \
