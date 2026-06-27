@@ -40,4 +40,5 @@ def get_default_toolset_registry() -> ToolsetRegistry:
     reg.register(Toolset("server_local", "Local Server", "Local API server testing", True))
     reg.register(Toolset("git_history", "Git History", "MCP integration for Git log/history", True, requires_integration=True))
     reg.register(Toolset("sqlite_inspector", "SQLite Inspector", "MCP integration for SQLite introspection", True, requires_integration=True))
+    reg.register(Toolset("http_rest", "HTTP REST", "MCP integration for HTTP REST API interaction", True, requires_integration=True))
     return reg

@@ -16,6 +16,7 @@ class MCPConfig:
     command: str | None = None
     url: str | None = None
     enabled: bool = False
+    args: list[str] | None = None
 
 class MCPAdapter:
     def __init__(self, registry: PluginRegistry, safety: SafetyPolicy):
