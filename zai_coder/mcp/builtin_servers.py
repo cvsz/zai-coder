@@ -11,11 +11,19 @@ def get_git_mcp_config() -> MCPConfig:
         enabled=True
     )
 
-
 def get_sqlite_mcp_config(db_path: str) -> MCPConfig:
     return MCPConfig(
         server_id="sqlite-inspector",
         transport="stdio",
         command="sqlite3",
+        args=["-readonly", "-bail", db_path],
+        enabled=True
+    )
+
+def get_http_rest_mcp_config(base_url: str) -> MCPConfig:
+    return MCPConfig(
+        server_id="http-rest",
+        transport="http",
+        url=base_url,
         enabled=True
     )
