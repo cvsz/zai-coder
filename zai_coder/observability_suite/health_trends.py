@@ -56,8 +56,8 @@ def default_health_trend_store(execute: bool = False) -> HealthTrendStore:
                 ok_checks = 3
                 status = "degraded"
             store.add(HealthSnapshot(status, 5, ok_checks, cpu))
-        except Exception:
-            store.add(HealthSnapshot("ok", 5, 5, 12.5))
+        except Exception as e:
+            store.add(HealthSnapshot("degraded", 5, 0, 0.0))
     else:
         store.add(HealthSnapshot("ok", 5, 5, 12.5))
         store.add(HealthSnapshot("ok", 5, 5, 13.2))
