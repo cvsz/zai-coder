@@ -9,7 +9,7 @@ Role = Literal["system", "user", "assistant", "tool"]
 @dataclass
 class Message:
     role: Role
-    content: str
+    content: str | list[dict]
 
-    def to_dict(self) -> dict[str, str]:
-        return asdict(self)
+    def to_dict(self) -> dict:
+        return {"role": self.role, "content": self.content}

@@ -30,7 +30,11 @@ class EchoProvider(ModelProvider):
     name = "echo"
 
     def chat(self, messages: list[Message], model: str, temperature: float = 0.05, max_tokens: int = 2048) -> ModelResponse:
-        last = next((m.content for m in reversed(messages) if m.role == "user"), "")
+        last_msg = next((m for m in reversed(messages) if m.role == "user"), None)
+        if last_msg and isinstance(last_msg.content, list):
+            last = next((item.get("text", "") for item in last_msg.content if item.get("type") == "text"), "")
+        else:
+            last = last_msg.content if last_msg else ""
         return ModelResponse(
             content=(
                 "[offline echo provider]\n"
