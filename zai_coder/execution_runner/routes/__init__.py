@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from zai_coder.core.booleans import coerce_bool
 from zai_coder.execution_runner.models import CommandSpec
 from zai_coder.execution_runner.queue import ExecutionQueue
 from zai_coder.execution_runner.runner import ApprovedCommandRunner
@@ -43,7 +44,7 @@ def route_enqueue(payload: dict) -> dict:
         command=tuple(payload.get("command", ["echo", "hello"])),
         cwd=payload.get("cwd", "."),
         timeout_seconds=int(payload.get("timeout_seconds", 60)),
-        apply=bool(payload.get("apply", False)),
+        apply=coerce_bool(payload.get("apply", False)),
         approval_id=payload.get("approval_id", ""),
     )
     item = ExecutionQueue().enqueue(payload.get("provider", "local"), payload.get("action", "demo"), command)

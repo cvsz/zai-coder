@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import uuid
 
 from .models import EvidenceItem
@@ -21,10 +21,14 @@ SAFE_EVIDENCE_PATHS = (
 
 
 def evidence_path_allowed(path: str) -> bool:
-    normalized = path.replace("\\", "/")
-    if any(part in normalized for part in [".env", "credentials", "secret", ".git/"]):
+    normalized = path.replace("\\", "/").strip()
+    candidate = PurePosixPath(normalized)
+    if candidate.is_absolute() or ".." in candidate.parts:
         return False
-    return normalized.startswith(SAFE_EVIDENCE_PATHS) or "BUILD_REPORT" in normalized
+    lowered_parts = {part.lower() for part in candidate.parts}
+    if ".git" in lowered_parts or any("secret" in part or "credential" in part or part.startswith(".env") for part in lowered_parts):
+        return False
+    return normalized.startswith(SAFE_EVIDENCE_PATHS) or any(part.startswith("BUILD_REPORT") for part in candidate.parts)
 
 
 def map_evidence(control_id: str, title: str, source_path: str, evidence_type: str = "document") -> EvidenceItem:

@@ -1,3 +1,4 @@
+import io
 import tempfile
 from pathlib import Path
 import tarfile
@@ -48,6 +49,38 @@ def test_backup_plan_and_create_restore():
         target.mkdir()
         restored = restore_backup(created.archive_path, target, apply=False)
         assert restored["dry_run"] is True
+
+
+def test_restore_rejects_unsafe_tar_members(tmp_path):
+    archive = tmp_path / "unsafe.tar.gz"
+    with tarfile.open(archive, "w:gz") as tar:
+        info = tarfile.TarInfo("../escape.txt")
+        data = b"bad"
+        info.size = len(data)
+        tar.addfile(info, fileobj=io.BytesIO(data))
+
+    try:
+        restore_backup(archive, tmp_path / "restore", apply=False)
+    except ValueError as exc:
+        assert "unsafe archive entries" in str(exc)
+    else:
+        raise AssertionError("expected unsafe tar member to be rejected")
+
+
+def test_restore_rejects_tar_links(tmp_path):
+    archive = tmp_path / "link.tar.gz"
+    with tarfile.open(archive, "w:gz") as tar:
+        info = tarfile.TarInfo("link")
+        info.type = tarfile.SYMTYPE
+        info.linkname = "README.md"
+        tar.addfile(info)
+
+    try:
+        restore_backup(archive, tmp_path / "restore", apply=False)
+    except ValueError as exc:
+        assert "unsafe archive entries" in str(exc)
+    else:
+        raise AssertionError("expected tar link to be rejected")
 
 
 def test_admin_bootstrap_dry_run_and_apply():

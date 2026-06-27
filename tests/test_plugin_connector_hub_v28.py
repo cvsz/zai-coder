@@ -58,6 +58,9 @@ def test_catalog_validator_env_permissions_policy():
     assert search_connectors("cloud")["connectors"]
     payload = find_connector("github").to_dict()
     assert validate_connector_manifest_payload(payload)["ok"] is True
+    parsed = validate_connector_manifest_payload({**payload, "webhook_supported": "false", "sync_supported": "false"})
+    assert parsed["manifest"]["webhook_supported"] is False
+    assert parsed["manifest"]["sync_supported"] is False
     risky = ConnectorManifest("r", "Risky", "risky", "1.0.0", "desc", required_permissions=("providers:apply",))
     assert connector_security_report(risky)["ok"] is False
     assert redact_env({"GITHUB_TOKEN": "secret", "SAFE": "ok"})["GITHUB_TOKEN"] == "<redacted>"
