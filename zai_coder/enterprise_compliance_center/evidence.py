@@ -44,7 +44,58 @@ def map_evidence(control_id: str, title: str, source_path: str, evidence_type: s
     return item
 
 
-def evidence_gap_report(controls: list[dict], evidence: list[dict]) -> dict:
+def auto_discover_evidence(root=".") -> list[dict]:
+    import os
+    discovered = []
+    
+    # We will map known filenames to controls
+    # Just a heuristic map for the sake of the upgrade
+    filename_to_control = {
+        "role_matrix": "cc-access-001",
+        "tenant_isolation_policy": "cc-access-001",
+        "access_review_log": "cc-access-001",
+        "audit_log_sample": "cc-audit-001",
+        "retention_policy": "cc-audit-001",
+        "observability_dashboard": "iso-ops-001",
+        "incident_report": "iso-ops-001",
+        "postmortem": "iso-ops-001",
+        "processing_register": "gdpr-data-001",
+        "lawful_basis_register": "pdpa-consent-001",
+        "privacy_notice": "pdpa-consent-001"
+    }
+
+    try:
+        for dirpath, _, filenames in os.walk(root):
+            if ".git" in dirpath or "__pycache__" in dirpath:
+                continue
+            for f in filenames:
+                basename = f.split(".")[0]
+                if basename in filename_to_control:
+                    filepath = os.path.join(dirpath, f)
+                    try:
+                        item = map_evidence(
+                            control_id=filename_to_control[basename],
+                            title=basename,
+                            source_path=filepath,
+                            evidence_type="document"
+                        )
+                        discovered.append(item.to_dict())
+                    except Exception:
+                        pass
+    except Exception:
+        pass
+    
+    return discovered
+
+def evidence_gap_report(controls: list[dict], evidence: list[dict], execute: bool = False, root: str = ".") -> dict:
+    if execute:
+        auto_ev = auto_discover_evidence(root)
+        # Merge discovered evidence with passed evidence
+        seen = {e.get("title") for e in evidence}
+        for ev in auto_ev:
+            if ev["title"] not in seen:
+                evidence.append(ev)
+                
     evidence_by_control = {}
     for item in evidence:
         evidence_by_control.setdefault(item["control_id"], []).append(item)
@@ -55,7 +106,6 @@ def evidence_gap_report(controls: list[dict], evidence: list[dict]) -> dict:
         if missing:
             gaps.append({"control_id": control["id"], "missing": missing})
     return {"ok": not gaps, "gaps": gaps, "evidence_count": len(evidence)}
-
 
 def write_evidence_inventory(evidence: list[dict], root: str | Path = ".", out: str = "compliance/evidence/evidence-inventory.json") -> str:
     root = Path(root)
