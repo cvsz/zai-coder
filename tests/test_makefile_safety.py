@@ -5,7 +5,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def run(*args: str):
-    return subprocess.run(args, cwd=ROOT, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    import os
+    env = os.environ.copy()
+    env.pop("APPLY", None)
+    return subprocess.run(args, cwd=ROOT, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env)
 
 
 def test_makefile_exists():
