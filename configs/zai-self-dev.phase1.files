@@ -1,0 +1,15 @@
+# Exact files allowed for Phase 1 staging.
+# scripts/zai-self-dev.sh stage reads this file and runs git add on each existing path only.
+
+zai_coder/core/task_store.py
+zai_coder/core/task_queue.py
+zai_coder/core/task_runner.py
+zai_coder/core/task_models.py
+zai_coder/cli.py
+zai_coder/tui/task_panel.py
+tests/test_self_queue_v014.py
+tests/test_task_queue_worker_v014.py
+tests/test_task_cli_v014.py
+tests/test_tui_task_panel_v014.py
+docs/ops/self-queue.md
+docs/prompts/25-self-queue-production.md
