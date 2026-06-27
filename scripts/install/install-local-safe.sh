@@ -18,10 +18,7 @@ if [[ "${APPLY}" != "1" ]]; then
 fi
 
 mkdir -p "$(dirname "${VENV_DIR}")"
-python3 -m venv "${VENV_DIR}"
-"${VENV_DIR}/bin/python" -m pip install --upgrade pip --no-cache-dir
-"${VENV_DIR}/bin/python" -m pip install -e . --no-cache-dir
-"${VENV_DIR}/bin/python" -m pip install -r requirements-dev.txt --no-cache-dir
+mkdir -p "${VENV_DIR}"
 
 mkdir -p "${PREFIX}"
 mkdir -p "${BIN_DIR}"
@@ -44,6 +41,10 @@ rsync -a \
   --exclude='.venv/' \
   ./ "${PREFIX}/"
 
+# Keep the launcher self-contained and offline-friendly.
+# It resolves the package from the copied prefix instead of relying on a live
+# editable install or network access during setup.
+
 mkdir -p \
   "${PREFIX}/.zai-coder/logs" \
   "${PREFIX}/.zai-coder/cache" \
@@ -54,8 +55,8 @@ cat > "${LAUNCHER}" <<LAUNCHER_EOF
 #!/usr/bin/env bash
 set -euo pipefail
 
-VENV_DIR="${VENV_DIR:-${HOME}/.venvs/zai-coder}"
-exec "\${VENV_DIR}/bin/python" -m zai_coder "\$@"
+PREFIX="${PREFIX:-${HOME}/.local/share/zai-coder}"
+PYTHONPATH="\${PREFIX}:\${PYTHONPATH:-}" exec python3 -m zai_coder "\$@"
 LAUNCHER_EOF
 
 chmod +x "${LAUNCHER}"
