@@ -36,6 +36,28 @@ class TokenTracker:
                 (model, prompt_tokens, completion_tokens, prompt_tokens + completion_tokens, time.time())
             )
             conn.commit()
+    def get_prometheus_metrics(self) -> str:
+        with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            cur = conn.execute("SELECT model, SUM(prompt_tokens) as pt, SUM(completion_tokens) as ct, SUM(total_tokens) as tt FROM token_usage GROUP BY model")
+            rows = cur.fetchall()
+
+        lines = [
+            "# HELP token_usage_prompt_tokens Total prompt tokens used per model",
+            "# TYPE token_usage_prompt_tokens counter",
+            "# HELP token_usage_completion_tokens Total completion tokens used per model",
+            "# TYPE token_usage_completion_tokens counter",
+            "# HELP token_usage_total_tokens Total tokens used per model",
+            "# TYPE token_usage_total_tokens counter"
+        ]
+
+        for row in rows:
+            model = row["model"]
+            lines.append(f'token_usage_prompt_tokens{{model="{model}"}} {row["pt"]}')
+            lines.append(f'token_usage_completion_tokens{{model="{model}"}} {row["ct"]}')
+            lines.append(f'token_usage_total_tokens{{model="{model}"}} {row["tt"]}')
+            
+        return "\n".join(lines) + "\n"
 
 class MetricsFormatter:
     @staticmethod
@@ -58,3 +80,13 @@ class MetricsFormatter:
             lines.append(f"| {name} | {v_str} |")
             
         return "\n".join(lines)
+
+    @staticmethod
+    def to_prometheus(metrics: Dict[str, Any]) -> str:
+        # Generic fallback for dicts
+        lines = []
+        for k, v in metrics.items():
+            if isinstance(v, (int, float)):
+                lines.append(f"# TYPE {k} gauge")
+                lines.append(f"{k} {v}")
+        return "\n".join(lines) + "\n"
