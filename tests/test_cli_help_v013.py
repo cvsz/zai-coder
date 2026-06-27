@@ -27,7 +27,7 @@ def test_top_level_help():
 def test_version_flag():
     res = run_cli("--version")
     assert res.returncode == 0
-    assert "0.1.3" in res.stdout or "0.1.3" in res.stderr
+    assert "0.1.4" in res.stdout or "0.1.4" in res.stderr
 
 def test_invalid_command():
     res = run_cli("__definitely_invalid_command__")
