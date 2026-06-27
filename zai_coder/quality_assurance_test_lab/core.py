@@ -1,5 +1,6 @@
 from __future__ import annotations
 import json
+import shlex
 from pathlib import Path
 from .models import TestCase, FixtureSpec, QualityGate
 
@@ -27,7 +28,7 @@ def quality_gates(): return [g.to_dict() for g in GATES]
 def run_pytest(command: str) -> dict:
     import subprocess
     try:
-        result = subprocess.run(command.split(), capture_output=True, text=True, timeout=60)
+        result = subprocess.run(shlex.split(command), capture_output=True, text=True, timeout=60)
         passed = result.returncode == 0
         return {"passed": passed, "stdout": result.stdout, "stderr": result.stderr}
     except Exception as e:

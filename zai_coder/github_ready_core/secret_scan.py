@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import subprocess
 from pathlib import Path
 
 PATTERNS = {
@@ -59,10 +60,43 @@ def scan_text(text: str) -> list[dict]:
             findings.append({"type": name, "start": match.start(), "end": match.end()})
     return findings
 
+
+def _tracked_paths(root: Path) -> list[Path]:
+    try:
+        result = subprocess.run(
+            ["git", "ls-files", "-z"],
+            cwd=root,
+            capture_output=True,
+            check=False,
+            text=False,
+            timeout=10,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return []
+    if result.returncode != 0 or not result.stdout:
+        return []
+    paths = []
+    for raw in result.stdout.split(b"\0"):
+        if not raw:
+            continue
+        rel = Path(raw.decode("utf-8", errors="ignore"))
+        paths.append(root / rel)
+    return paths
+
+
+def _candidate_paths(root: Path) -> list[Path]:
+    tracked = _tracked_paths(root)
+    if tracked:
+        return tracked
+    return list(root.rglob("*"))
+
+
 def scan_repo(root: str | Path) -> dict:
     root = Path(root)
     findings = []
-    for path in root.rglob("*"):
+    for path in _candidate_paths(root):
+        if not path.exists():
+            continue
         rel = path.relative_to(root)
         rels = str(rel)
         if path.name in SKIP_FILES:
