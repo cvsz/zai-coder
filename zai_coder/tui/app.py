@@ -10,9 +10,11 @@ from zai_coder.tui.config import TuiConfig, load_tui_config
 from zai_coder.tui.loader import instantiate_template, normalize_template_name, template_entries
 from zai_coder.tui.messages import TEXTUAL_MISSING_MESSAGE
 from zai_coder.tui.output import format_action_result, format_output_panel
-from zai_coder.tui.persistence import load_persisted_state, save_persisted_state
+from zai_coder.tui.palette import PaletteController
+from zai_coder.tui.persistence import load_persisted_state, resolve_state_path, save_persisted_state
 from zai_coder.tui.screens import render_about_screen, render_config_screen, render_help_screen, render_templates_screen
-from zai_coder.tui.state import TuiState, switch_template
+from zai_coder.tui.state import TuiState
+from zai_coder.tui.template_controller import switch_active_template
 
 COMMAND_INPUT_ID = "command"
 
@@ -33,8 +35,8 @@ def run_tui(
     if list_templates:
         print(describe_templates())
         return 0
-    template_key = normalize_template_name(template_name or config.template)
     state = _load_state(project_root, config)
+    template_key = _select_launch_template(template_name, state, config, project_root)
     state.active_template = template_key
     state.workspace = str(project_root)
     state.add_log(f"Selected template: {template_key}")
@@ -63,6 +65,14 @@ def _load_state(project_root: Path, config: TuiConfig) -> TuiState:
 def _save_state(project_root: Path, config: TuiConfig, state: TuiState) -> None:
     if config.persist_state:
         save_persisted_state(project_root, config.state_path, state)
+
+
+def _select_launch_template(template_name: str | None, state: TuiState, config: TuiConfig, project_root: Path) -> str:
+    if template_name:
+        return normalize_template_name(template_name)
+    if config.persist_state and resolve_state_path(project_root, config.state_path).exists():
+        return normalize_template_name(state.active_template or config.template)
+    return normalize_template_name(config.template)
 
 
 def _launch_plan(config: TuiConfig, template: dict, project_root: Path) -> dict:
@@ -129,8 +139,8 @@ def submit_tui_command(
     state.add_log(f"Command submitted: {decision.command}")
 
     if decision.kind == "switch":
-        switch_template(state, decision.target)
-        state.add_output(f"Switched template to {decision.target}")
+        result = switch_active_template(state, config, project_path, decision.target)
+        state.add_output(result.message)
         return decision
 
     if decision.kind == "action":
@@ -229,6 +239,7 @@ def _create_textual_app(config: TuiConfig, state: TuiState, project_root: Path):
             super().__init__()
             self.tui_state = tui_state
             self.tui_config = tui_config
+            self.palette_controller = PaletteController.create()
 
         def compose(self) -> ComposeResult:
             yield Header(show_clock=True)
@@ -253,6 +264,16 @@ def _create_textual_app(config: TuiConfig, state: TuiState, project_root: Path):
             if decision.allowed and decision.command.split(maxsplit=1)[0].lower() == "quit":
                 self.action_quit()
 
+        def on_key(self, event) -> None:
+            if not self.palette_controller.is_open:
+                return
+            handled = self._handle_palette_key(event)
+            if handled:
+                if hasattr(event, "prevent_default"):
+                    event.prevent_default()
+                if hasattr(event, "stop"):
+                    event.stop()
+
         def _tick(self) -> None:
             self.tui_state.refresh_timestamp = time.time()
             self.query_one("#status", Static).update(self._render_status())
@@ -274,6 +295,8 @@ def _create_textual_app(config: TuiConfig, state: TuiState, project_root: Path):
             )
 
         def _render_palette(self) -> str:
+            if self.palette_controller.is_open:
+                return self.palette_controller.render()
             items = "\n".join(f"- {item}" for item in list_palette_commands())
             return "Command Palette\n" + items
 
@@ -286,6 +309,35 @@ def _create_textual_app(config: TuiConfig, state: TuiState, project_root: Path):
             self.query_one("#palette", Static).update(self._render_palette())
             self.query_one("#output", Static).update(self._render_output())
 
+        def _focus_command_input(self) -> None:
+            self.tui_state.last_focus = "command-input"
+            self.query_one(f"#{COMMAND_INPUT_ID}", Input).focus()
+
+        def _handle_palette_key(self, event) -> bool:
+            key = getattr(event, "key", "")
+            character = getattr(event, "character", None)
+            if key == "up":
+                self.palette_controller.move_previous()
+            elif key == "down":
+                self.palette_controller.move_next()
+            elif key == "enter":
+                command = self.palette_controller.selected_command()
+                if command:
+                    self.palette_controller.close()
+                    submit_tui_command(command, self.tui_state, self.tui_config, project_root)
+                    self._focus_command_input()
+            elif key == "escape":
+                self.palette_controller.close()
+                self._focus_command_input()
+            elif key == "backspace":
+                self.palette_controller.backspace()
+            elif character:
+                self.palette_controller.append_query(character)
+            else:
+                return False
+            self._refresh_panels()
+            return True
+
         def action_refresh(self) -> None:
             submit_tui_command("refresh", self.tui_state, self.tui_config, project_root)
             self._refresh_panels()
@@ -295,7 +347,9 @@ def _create_textual_app(config: TuiConfig, state: TuiState, project_root: Path):
             self._refresh_panels()
 
         def action_command_palette(self) -> None:
-            submit_tui_command("palette", self.tui_state, self.tui_config, project_root)
+            self.palette_controller.open()
+            self.tui_state.last_focus = "command-palette"
+            self.tui_state.add_output("Command palette opened. Use arrows, enter, escape, or type to filter.")
             self._refresh_panels()
 
         def action_help(self) -> None:
