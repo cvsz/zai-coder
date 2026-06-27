@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  gateway:
+    image: zai-coder-gateway:latest
+    ports:
+      - "8765:8765"
+    environment:
+      - ENVIRONMENT=production
+      - TLS_TERMINATION=cloudflare
+      - UPSTREAM_HEALTH_FAILOVER=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8765/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  core:
+    image: zai-coder-core:latest
+    environment:
+      - ENVIRONMENT=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8765/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3

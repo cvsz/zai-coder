@@ -38,3 +38,16 @@ def gateway_smoke_plan() -> dict:
             "Rate limiter returns remaining counter",
         ],
     }
+
+def production_gateway_profile() -> dict:
+    return {
+        "tls_termination": "expected_from_cloudflare",
+        "upstream_health_failover": True,
+        "request_size_limit_mb": 10,
+        "rate_limits": {
+            "global": "100/min",
+            "auth": "10/min"
+        },
+        "structured_audit_logging": True,
+        "strict_security_headers": True,
+    }
