@@ -10,6 +10,7 @@ from zai_coder.tui.loader import instantiate_template, normalize_template_name, 
 from zai_coder.tui.messages import HELP_TEXT, TEXTUAL_MISSING_MESSAGE
 from zai_coder.tui.persistence import load_persisted_state, save_persisted_state
 from zai_coder.tui.state import TuiState
+from zai_coder.tui.palette import CommandPalette
 
 
 def run_tui(
@@ -208,7 +209,12 @@ def _create_textual_app(config: TuiConfig, state: TuiState, project_root: Path):
 
         def action_command_palette(self) -> None:
             self.tui_state.last_focus = "command-palette"
-            self.query_one("#palette", Static).update(self._render_palette() + "\n\nPalette focused.")
+            self.push_screen(CommandPalette(), callback=self._on_palette_selected)
+
+        def _on_palette_selected(self, command_label: str | None) -> None:
+            if command_label:
+                self.tui_state.add_log(f"Palette selected: {command_label}")
+                self.action_refresh()
 
         def action_help(self) -> None:
             self.query_one("#work", Static).update(HELP_TEXT)
