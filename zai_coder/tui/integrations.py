@@ -7,19 +7,11 @@ class TuiIntegrations:
         self.workspace = Path(workspace).resolve()
         
     def get_task_queue_list(self) -> str:
-        db_path = self.workspace / ".zai-coder" / "tasks" / "tasks.db"
-        if not db_path.exists():
+        from zai_coder.tui.task_panel import TaskPanelAdapter
+        adapter = TaskPanelAdapter(self.workspace)
+        if not adapter.exists():
             return "Task DB not initialized."
-        try:
-            with sqlite3.connect(f"file:{db_path}?mode=ro", uri=True) as conn:
-                cur = conn.cursor()
-                cur.execute("SELECT id, state FROM tasks LIMIT 5")
-                rows = cur.fetchall()
-                if not rows:
-                    return "No tasks."
-                return ", ".join(f"{r[0]}: {r[1]}" for r in rows)
-        except Exception as e:
-            return f"Task DB error: {e}"
+        return adapter.chip()
 
     def get_local_server_status(self) -> str:
         import socket
