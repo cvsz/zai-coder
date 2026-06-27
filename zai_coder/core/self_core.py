@@ -235,6 +235,13 @@ SELF_FEATURES: tuple[SelfFeature, ...] = (
         ("media artifacts",),
         ("local fallback generators",),
     ),
+    SelfFeature(
+        "self-artifacts", "docs", "ready", True,
+        "Register local artifacts with metadata, hashes, tags, and JSON export.",
+        ("./zai-coder artifact add --path FILE", "./zai-coder artifact export --json"),
+        ("artifact registry", "checksum manifest"),
+        ("local-only", "no upload or publish", "blocks secrets"),
+    ),
 )
 
 

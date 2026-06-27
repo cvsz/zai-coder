@@ -1,25 +1,16 @@
-import json
-import sqlite3
 from pathlib import Path
+
+from .task_panel import TaskPanelAdapter
 
 class TuiIntegrations:
     def __init__(self, workspace: str | Path):
         self.workspace = Path(workspace).resolve()
         
     def get_task_queue_list(self) -> str:
-        db_path = self.workspace / ".zai-coder" / "tasks" / "tasks.db"
-        if not db_path.exists():
-            return "Task DB not initialized."
         try:
-            with sqlite3.connect(f"file:{db_path}?mode=ro", uri=True) as conn:
-                cur = conn.cursor()
-                cur.execute("SELECT id, state FROM tasks LIMIT 5")
-                rows = cur.fetchall()
-                if not rows:
-                    return "No tasks."
-                return ", ".join(f"{r[0]}: {r[1]}" for r in rows)
-        except Exception as e:
-            return f"Task DB error: {e}"
+            return TaskPanelAdapter(self.workspace).chip()
+        except Exception as exc:
+            return f"Task DB error: {exc}"
 
     def get_local_server_status(self) -> str:
         import socket
