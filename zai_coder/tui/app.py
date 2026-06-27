@@ -164,8 +164,14 @@ def _create_textual_app(config: TuiConfig, state: TuiState, project_root: Path):
             yield Input(placeholder="Type a local note or use ctrl+k for commands", id="command")
             yield Footer()
 
-        def on_mount(self) -> None:
-            self.set_interval(self.tui_config.get("refresh_interval_seconds", 1), self._tick)
+        def on_input_submitted(self, event: Input.Submitted) -> None:
+            command = event.value.strip()
+            if command:
+                self.tui_state.last_command = command
+                self.tui_state.add_log(f"Submitted: {command}")
+                self.query_one("#command", Input).value = ""
+                self.action_refresh()
+
 
         def _tick(self) -> None:
             self.tui_state.refresh_timestamp = time.time()
