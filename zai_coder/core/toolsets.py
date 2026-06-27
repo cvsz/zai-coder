@@ -36,5 +36,6 @@ def get_default_toolset_registry() -> ToolsetRegistry:
     reg.register(Toolset("locked_down", "Locked Down", "Completely restricted", True, blocked_commands=["*"]))
     reg.register(Toolset("research_local", "Local Research", "Local codebase research", True))
     reg.register(Toolset("media_local", "Local Media", "Local media generation", True))
+    reg.register(Toolset("audio_local", "Local Audio", "Local audio streaming and generation", True, risk_level="medium"))
     reg.register(Toolset("server_local", "Local Server", "Local API server testing", True))
     return reg
