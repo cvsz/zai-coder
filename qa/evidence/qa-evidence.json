@@ -73,9 +73,11 @@
   "regression": {
     "blocked": 0,
     "critical": 1,
+    "execute": false,
     "external_publish": false,
     "kind": "zai-qa-regression-report",
     "ready": 4,
+    "results": [],
     "status": "ready",
     "total": 4
   },

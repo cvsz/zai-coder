@@ -1,7 +1,9 @@
 [
   {
     "id": "rag-1",
+    "kind": "rag",
     "prompt": "where is command safety enforced",
-    "expect_substring": "safety"
+    "query": "Blocked: use exact-path staging",
+    "expect_substring": "Blocked: use exact-path staging"
   }
 ]

@@ -1,0 +1,309 @@
+<script lang="ts">
+	import { toast } from 'svelte-sonner';
+	import { createEventDispatcher, onMount, getContext } from 'svelte';
+	import { getLanguages, changeLanguage } from '$lib/i18n';
+	const dispatch = createEventDispatcher();
+
+	import { config, models, settings, theme, user } from '$lib/stores';
+	import {
+		applyThemePreference,
+		normalizeThemePreference,
+		type ThemePreference
+	} from '$lib/utils/theme';
+
+	const i18n = getContext('i18n');
+
+	import AdvancedParams from './Advanced/AdvancedParams.svelte';
+	import Textarea from '$lib/components/common/Textarea.svelte';
+	export let saveSettings: Function;
+	export let getModels: Function;
+
+	// General
+	const themeOptions: Array<{ value: ThemePreference; label: string; icon: string }> = [
+		{ value: 'system', label: 'System', icon: '⚙️' },
+		{ value: 'light', label: 'Light', icon: '☀️' },
+		{ value: 'dark', label: 'Dark', icon: '🌙' }
+	];
+	let selectedTheme: ThemePreference = 'system';
+
+	let languages: Awaited<ReturnType<typeof getLanguages>> = [];
+	let lang = $i18n.language;
+	let notificationEnabled = false;
+	let system = '';
+
+	let showAdvanced = false;
+
+	const toggleNotification = async () => {
+		const permission = await Notification.requestPermission();
+
+		if (permission === 'granted') {
+			notificationEnabled = !notificationEnabled;
+			saveSettings({ notificationEnabled: notificationEnabled });
+		} else {
+			toast.error(
+				$i18n.t(
+					'Response notifications cannot be activated as the website permissions have been denied. Please visit your browser settings to grant the necessary access.'
+				)
+			);
+		}
+	};
+
+	let params = {
+		// Advanced
+		stream_response: null,
+		stream_delta_chunk_size: null,
+		function_calling: null,
+		reasoning_tags: null,
+		seed: null,
+		temperature: null,
+		reasoning_effort: null,
+		logit_bias: null,
+		frequency_penalty: null,
+		presence_penalty: null,
+		repeat_penalty: null,
+		repeat_last_n: null,
+		mirostat: null,
+		mirostat_eta: null,
+		mirostat_tau: null,
+		top_k: null,
+		top_p: null,
+		min_p: null,
+		stop: null,
+		tfs_z: null,
+		num_ctx: null,
+		num_batch: null,
+		num_keep: null,
+		max_tokens: null,
+		use_mmap: null,
+		use_mlock: null,
+		num_thread: null,
+		num_gpu: null,
+		think: null,
+		format: null,
+		keep_alive: null
+	};
+
+	const saveHandler = async () => {
+		saveSettings({
+			system: system !== '' ? system : undefined,
+			params: {
+				stream_response: params.stream_response !== null ? params.stream_response : undefined,
+				stream_delta_chunk_size:
+					params.stream_delta_chunk_size !== null ? params.stream_delta_chunk_size : undefined,
+				function_calling: params.function_calling !== null ? params.function_calling : undefined,
+				reasoning_tags: params.reasoning_tags !== null ? params.reasoning_tags : undefined,
+				seed: (params.seed !== null ? params.seed : undefined) ?? undefined,
+				stop: params.stop ? params.stop.split(',').filter((e) => e) : undefined,
+				temperature: params.temperature !== null ? params.temperature : undefined,
+				reasoning_effort: params.reasoning_effort !== null ? params.reasoning_effort : undefined,
+				logit_bias: params.logit_bias !== null ? params.logit_bias : undefined,
+				frequency_penalty: params.frequency_penalty !== null ? params.frequency_penalty : undefined,
+				presence_penalty: params.presence_penalty !== null ? params.presence_penalty : undefined,
+				repeat_penalty: params.repeat_penalty !== null ? params.repeat_penalty : undefined,
+				repeat_last_n: params.repeat_last_n !== null ? params.repeat_last_n : undefined,
+				mirostat: params.mirostat !== null ? params.mirostat : undefined,
+				mirostat_eta: params.mirostat_eta !== null ? params.mirostat_eta : undefined,
+				mirostat_tau: params.mirostat_tau !== null ? params.mirostat_tau : undefined,
+				top_k: params.top_k !== null ? params.top_k : undefined,
+				top_p: params.top_p !== null ? params.top_p : undefined,
+				min_p: params.min_p !== null ? params.min_p : undefined,
+				tfs_z: params.tfs_z !== null ? params.tfs_z : undefined,
+				num_ctx: params.num_ctx !== null ? params.num_ctx : undefined,
+				num_batch: params.num_batch !== null ? params.num_batch : undefined,
+				num_keep: params.num_keep !== null ? params.num_keep : undefined,
+				max_tokens: params.max_tokens !== null ? params.max_tokens : undefined,
+				use_mmap: params.use_mmap !== null ? params.use_mmap : undefined,
+				use_mlock: params.use_mlock !== null ? params.use_mlock : undefined,
+				num_thread: params.num_thread !== null ? params.num_thread : undefined,
+				num_gpu: params.num_gpu !== null ? params.num_gpu : undefined,
+				think: params.think !== null ? params.think : undefined,
+				keep_alive: params.keep_alive !== null ? params.keep_alive : undefined,
+				format: params.format !== null ? params.format : undefined,
+				...(params.custom_params && Object.keys(params.custom_params).length > 0
+					? { custom_params: params.custom_params }
+					: {})
+			}
+		});
+		dispatch('save');
+	};
+
+	onMount(async () => {
+		selectedTheme = normalizeThemePreference(localStorage.theme ?? 'system');
+		if (localStorage.theme !== selectedTheme) {
+			localStorage.setItem('theme', selectedTheme);
+		}
+
+		languages = await getLanguages();
+
+		if (!$config?.features?.enable_easter_eggs) {
+			languages = languages.filter((l) => l.code !== 'dg-DG');
+		}
+
+		notificationEnabled = $settings.notificationEnabled ?? false;
+		system = $settings.system ?? '';
+
+		params = { ...params, ...$settings.params };
+		params.stop = $settings?.params?.stop ? ($settings?.params?.stop ?? []).join(',') : null;
+	});
+
+	const themeChangeHandler = (nextTheme: ThemePreference) => {
+		const normalizedTheme = normalizeThemePreference(nextTheme);
+		selectedTheme = normalizedTheme;
+		theme.set(normalizedTheme);
+		localStorage.setItem('theme', normalizedTheme);
+		window.applyTheme?.(normalizedTheme, {
+			animate: true,
+			persist: false
+		});
+	};
+</script>
+
+<div class="flex flex-col h-full justify-between text-sm" id="tab-general">
+	<div class="  overflow-y-scroll max-h-[28rem] md:max-h-full">
+		<div class="">
+			<div class=" mb-1 text-sm font-medium">{$i18n.t('WebUI Settings')}</div>
+
+			<div class="flex w-full items-center justify-between gap-4 rounded-2xl border border-[var(--app-border)] bg-[var(--app-surface)] px-4 py-3 shadow-sm">
+				<div class="min-w-0">
+					<div class="text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--app-muted)]">
+						{$i18n.t('Theme')}
+					</div>
+					<div class="mt-1 text-xs leading-5 text-[var(--app-muted-strong)]">
+						{$i18n.t('Select a theme')}
+					</div>
+				</div>
+
+				<div
+					class="inline-flex flex-wrap justify-end rounded-full border border-[var(--app-border)] bg-[var(--app-background-elevated)] p-1 shadow-inner"
+					role="radiogroup"
+					aria-label={$i18n.t('Select a theme')}
+				>
+					{#each themeOptions as option}
+						<button
+							type="button"
+							class="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--app-focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--app-background)] {selectedTheme === option.value
+								? 'bg-[var(--app-surface-elevated)] text-[var(--app-foreground)] shadow-sm'
+								: 'text-[var(--app-muted)] hover:bg-[var(--app-surface)] hover:text-[var(--app-foreground)]'}"
+							role="radio"
+							aria-checked={selectedTheme === option.value}
+							on:click={() => themeChangeHandler(option.value)}
+						>
+							<span aria-hidden="true">{option.icon}</span>
+							<span>{option.label}</span>
+						</button>
+					{/each}
+				</div>
+			</div>
+
+			<div class=" flex w-full justify-between">
+				<div class=" self-center text-xs font-medium">{$i18n.t('Language')}</div>
+				<div class="flex items-center relative">
+					<select
+						class="w-fit pr-8 rounded-sm py-2 px-2 text-xs bg-transparent text-right {$settings.highContrastMode
+							? ''
+							: 'outline-hidden'}"
+						bind:value={lang}
+						placeholder={$i18n.t('Select a language')}
+						on:change={(e) => {
+							changeLanguage(lang);
+						}}
+					>
+						{#each languages as language}
+							<option value={language['code']}>{language['title']}</option>
+						{/each}
+					</select>
+				</div>
+			</div>
+			{#if $i18n.language === 'en-US' && !($config?.license_metadata ?? false)}
+				<div
+					class="mb-2 text-xs {($settings?.highContrastMode ?? false)
+						? 'text-gray-800 dark:text-gray-100'
+						: 'text-gray-400 dark:text-gray-500'}"
+				>
+					Couldn't find your language?
+					<a
+						class="font-medium underline {($settings?.highContrastMode ?? false)
+							? 'text-gray-700 dark:text-gray-200'
+							: 'text-gray-300'}"
+						href="https://github.com/open-webui/open-webui/blob/main/docs/CONTRIBUTING.md#-translations-and-internationalization"
+						target="_blank"
+					>
+						Help us translate Open WebUI!
+					</a>
+				</div>
+			{/if}
+
+			<div>
+				<div class=" py-0.5 flex w-full justify-between">
+					<div class=" self-center text-xs font-medium">{$i18n.t('Notifications')}</div>
+
+					<button
+						class="p-1 px-3 text-xs flex rounded-sm transition"
+						on:click={() => {
+							toggleNotification();
+						}}
+						type="button"
+						role="switch"
+						aria-checked={notificationEnabled}
+					>
+						{#if notificationEnabled === true}
+							<span class="ml-2 self-center">{$i18n.t('On')}</span>
+						{:else}
+							<span class="ml-2 self-center">{$i18n.t('Off')}</span>
+						{/if}
+					</button>
+				</div>
+			</div>
+		</div>
+
+		{#if $user?.role === 'admin' || (($user?.permissions.chat?.controls ?? true) && ($user?.permissions.chat?.system_prompt ?? true))}
+			<hr class="border-gray-100/30 dark:border-gray-850/30 my-3" />
+
+			<div>
+				<div class=" my-2.5 text-sm font-medium">{$i18n.t('System Prompt')}</div>
+				<Textarea
+					bind:value={system}
+					className={'w-full text-sm outline-hidden resize-vertical' +
+						($settings.highContrastMode
+							? ' p-2.5 border-2 border-gray-300 dark:border-gray-700 rounded-lg bg-transparent text-gray-900 dark:text-gray-100 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 overflow-y-hidden'
+							: '  dark:text-gray-300 ')}
+					rows="4"
+					placeholder={$i18n.t('Enter system prompt here')}
+				/>
+			</div>
+		{/if}
+
+		{#if $user?.role === 'admin' || (($user?.permissions.chat?.controls ?? true) && ($user?.permissions.chat?.params ?? true))}
+			<div class="mt-2 space-y-3 pr-1.5">
+				<div class="flex justify-between items-center text-sm">
+					<div class="  font-medium">{$i18n.t('Advanced Parameters')}</div>
+					<button
+						class=" text-xs font-medium {($settings?.highContrastMode ?? false)
+							? 'text-gray-800 dark:text-gray-100'
+							: 'text-gray-400 dark:text-gray-500'}"
+						type="button"
+						aria-expanded={showAdvanced}
+						on:click={() => {
+							showAdvanced = !showAdvanced;
+						}}>{showAdvanced ? $i18n.t('Hide') : $i18n.t('Show')}</button
+					>
+				</div>
+
+				{#if showAdvanced}
+					<AdvancedParams admin={$user?.role === 'admin'} custom={true} bind:params />
+				{/if}
+			</div>
+		{/if}
+	</div>
+
+	<div class="flex justify-end pt-3 text-sm font-medium">
+		<button
+			class="px-3.5 py-1.5 text-sm font-medium bg-black hover:bg-gray-900 text-white dark:bg-white dark:text-black dark:hover:bg-gray-100 transition rounded-full"
+			on:click={() => {
+				saveHandler();
+			}}
+		>
+			{$i18n.t('Save')}
+		</button>
+	</div>
+</div>

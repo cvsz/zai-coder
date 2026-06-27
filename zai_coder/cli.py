@@ -344,7 +344,8 @@ def cmd_eval(args) -> int:
     
     loader = CaseLoader(Path.cwd())
     if args.eval_cmd == "list":
-        for suite in ["safety", "agents", "rag", "tool-runtime", "model-router", "server"]:
+        suites = loader.available_suites()
+        for suite in suites:
             cases = loader.load_suite(suite)
             print(f"Suite: {suite} ({len(cases)} cases)")
         return 0

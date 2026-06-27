@@ -7,6 +7,8 @@ def test_make_targets_exist():
         "secret-scan",
         "stage-manifest-check",
         "package-check",
+        "web-check",
+        "web-migration-report",
         "self-doctor",
         "self-list",
         "self-plan",
