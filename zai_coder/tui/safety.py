@@ -5,13 +5,21 @@ import re
 ALLOWED_TUI_COMMANDS = {
     ("./run.sh", "doctor"),
     ("make", "safety-check"),
+    ("make", "repo-check"),
+    ("make", "secret-scan"),
     ("make", "final-release-status"),
     ("make", "install-dry-run"),
+    ("python3", "-m", "pytest", "-q"),
+    ("python3", "-m", "compileall", "-q", "zai_coder"),
     ("./run.sh", "tui", "--print-config"),
 }
 
 FORBIDDEN_PATTERNS = [
+    r"\bgit\s+add\s+(\.|-A)(\s|$)",
+    r"\bgit\s+commit\b.*\s--no-verify\b",
     r"\bgit\s+push\b",
+    r"\bgit\s+push\b.*\s--force\b",
+    r"\brm\s+-rf\b",
     r"\bgh\s+release\b",
     r"\bterraform\s+apply\b",
     r"\bkubectl\s+apply\b",
@@ -20,16 +28,17 @@ FORBIDDEN_PATTERNS = [
     r"\bstripe\b",
     r"(^|\s)APPLY=1(\s|$)",
     r"\b(curl|wget)\b.*\b(https?://|ftp://)",
+    r"\b(curl|wget)\b.*\|\s*bash\b",
 ]
 
 SECRET_COMMAND_PATTERNS = [
-    r"api[_-]?key",
-    r"access[_-]?token",
-    r"auth[_-]?token",
-    r"secret",
-    r"credential",
-    r"password",
-    r"private[_-]?key",
+    r"\bapi[_-]?key\s*[:=]",
+    r"\baccess[_-]?token\s*[:=]",
+    r"\bauth[_-]?token\s*[:=]",
+    r"\bsecret\s*[:=]",
+    r"\bcredential\s*[:=]",
+    r"\bpassword\s*[:=]",
+    r"\bprivate[_-]?key\s*[:=]",
     r"-----BEGIN\s+(RSA\s+|OPENSSH\s+|EC\s+)?PRIVATE\s+KEY-----",
 ]
 

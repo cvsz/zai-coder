@@ -43,6 +43,8 @@ class TuiState:
     dry_run_mode: bool = True
     last_command: str = ""
     last_result: str = ""
+    command_history: list[str] = field(default_factory=list)
+    output_buffer: list[str] = field(default_factory=list)
     log_buffer: list[str] = field(default_factory=list)
     workspace: str = "."
     current_session: str = "local"
@@ -80,6 +82,21 @@ class TuiState:
     def add_log(self, message: str) -> None:
         self.log_buffer.append(redact_secret_text(message))
         self.log_buffer = self.log_buffer[-200:]
+        self.refresh_timestamp = time.time()
+
+    def record_command(self, command: str) -> None:
+        redacted_command = redact_secret_text(command.strip())
+        self.last_command = redacted_command
+        if redacted_command:
+            self.command_history.append(redacted_command)
+            self.command_history = self.command_history[-200:]
+        self.refresh_timestamp = time.time()
+
+    def add_output(self, message: str) -> None:
+        redacted_message = redact_secret_text(message)
+        self.last_result = redacted_message
+        self.output_buffer.append(redacted_message)
+        self.output_buffer = self.output_buffer[-200:]
         self.refresh_timestamp = time.time()
 
     def to_dict(self) -> dict[str, Any]:
@@ -160,6 +177,8 @@ def state_to_dict(state: TuiState) -> dict[str, Any]:
     data = state.to_dict()
     data["last_command"] = redact_secret_text(data.get("last_command", ""))
     data["last_result"] = redact_secret_text(data.get("last_result", ""))
+    data["command_history"] = [redact_secret_text(item) for item in data.get("command_history", [])][-200:]
+    data["output_buffer"] = [redact_secret_text(item) for item in data.get("output_buffer", [])][-200:]
     data["log_buffer"] = [redact_secret_text(item) for item in data.get("log_buffer", [])][-200:]
     return data
 
