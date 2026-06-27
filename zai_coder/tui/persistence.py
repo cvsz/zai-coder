@@ -18,3 +18,8 @@ def load_persisted_state(root: str | Path, configured_path: str) -> TuiState:
 
 def save_persisted_state(root: str | Path, configured_path: str, state: TuiState) -> bool:
     return save_state(resolve_state_path(root, configured_path), state)
+
+
+def persist_template_selection(root: str | Path, configured_path: str, state: TuiState, template_name: str) -> bool:
+    state.active_template = template_name
+    return save_persisted_state(root, configured_path, state)
