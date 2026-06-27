@@ -46,19 +46,40 @@ class ActionResult:
 
 COMMAND_REGISTRY: dict[str, ActionSpec] = {
     "doctor": ActionSpec("Doctor", ("./run.sh", "doctor"), "Run local doctor checks."),
+    "safety": ActionSpec("Safety", ("make", "safety-check"), "Run dry-run safety policy checks."),
     "safety-check": ActionSpec("Safety Check", ("make", "safety-check"), "Run dry-run safety policy checks."),
+    "repo-check": ActionSpec("Repo Check", ("make", "repo-check"), "Run repository hygiene checks."),
+    "secret-scan": ActionSpec("Secret Scan", ("make", "secret-scan"), "Run local secret scanning."),
     "final-release-status": ActionSpec(
         "Final Release Status",
         ("make", "final-release-status"),
         "Preview final release status without publishing.",
     ),
     "install-dry-run": ActionSpec("Install Dry Run", ("make", "install-dry-run"), "Preview local installer actions."),
+    "test": ActionSpec("Test", ("python3", "-m", "pytest", "-q"), "Run the local pytest suite."),
+    "compile": ActionSpec("Compile", ("python3", "-m", "compileall", "-q", "zai_coder"), "Compile Python sources."),
     "tui-config": ActionSpec("TUI Config", ("./run.sh", "tui", "--print-config"), "Print resolved TUI config."),
 }
 
 PALETTE_COMMANDS = [
+    "help",
+    "refresh",
+    "palette",
+    "config",
+    "about",
+    "dry-run",
+    "doctor",
+    "safety",
+    "repo-check",
+    "secret-scan",
+    "install-dry-run",
+    "test",
+    "compile",
+    "templates",
     "Doctor",
     "Safety Check",
+    "Repo Check",
+    "Secret Scan",
     "Final Release Status",
     "Install Dry Run",
     "TUI Config",
@@ -86,9 +107,15 @@ def resolve_action(action: str | Iterable[str]) -> ActionSpec:
         key = action.strip().lower().replace(" ", "-")
         aliases = {
             "doctor": "doctor",
+            "safety": "safety",
             "safety-check": "safety-check",
+            "repo-check": "repo-check",
+            "secret-scan": "secret-scan",
             "final-release-status": "final-release-status",
             "install-dry-run": "install-dry-run",
+            "test": "test",
+            "compile": "compile",
+            "config": "tui-config",
             "tui-config": "tui-config",
         }
         registry_key = aliases.get(key)
