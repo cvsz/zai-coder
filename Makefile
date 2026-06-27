@@ -12,7 +12,7 @@ PATCH ?=
 PACKAGE_NAME ?= zai-coder-clean-release
 SAFETY := ./scripts/safety-dry-run.sh --apply $(APPLY) --
 
-.PHONY: help dry-run doctor install install-dry-run uninstall post-install-check test compile safety-check repo-check secret-scan stage-manifest-check verify-source-package release-build release-checksums release-sbom github-stage-manifest github-create-repo github-push github-release scan ask chat serve run-command patch-check patch-apply package package-check clean-preview clean-safe models status final-release-status tui tui-dry-run tui-check tui-command-center tui-agent-hub tui-flow-stream tui-architect-tree tui-creative-canvas tui-operation-gate web-check web-migration-report gpg-commit gpg-push gpg-tag gpg-doctor gpg-list-keys gpg-loopback
+.PHONY: help dry-run doctor install install-dry-run uninstall post-install-check test compile safety-check repo-check secret-scan stage-manifest-check verify-source-package release-build release-checksums release-sbom github-stage-manifest github-create-repo github-push github-release scan ask chat serve run-command patch-check patch-apply package package-check clean-preview clean-safe models status final-release-status tui tui-dry-run tui-check tui-command-center tui-agent-hub tui-flow-stream tui-architect-tree tui-creative-canvas tui-operation-gate web-check web-migration-report gpg-commit gpg-push gpg-tag gpg-doctor gpg-list-keys gpg-loopback production-runtime-check
 
 help:
 	@printf '%s\n' 'ZAI Coder Makefile targets:'
@@ -46,6 +46,7 @@ help:
 	@printf '%s\n' '  make gpg-doctor             GPG setup doctor'
 	@printf '%s\n' '  make gpg-list-keys          List GPG keys'
 	@printf '%s\n' '  make gpg-loopback           GPG loopback check'
+	@printf '%s\n' '  make production-runtime-check  v51 Production Runtime Gate'
 	@printf '%s\n' ''
 	@printf '%s\n' 'Safety: APPLY defaults to 0. Commands are printed, not executed, until APPLY=1.'
 	@printf '%s\n' 'Blocked: git add ., git add -A, --no-verify, force push, broad rm -rf, apps/zlms/**, secrets/generated artifacts.'
@@ -245,3 +246,6 @@ gpg-list-keys:
 
 gpg-loopback:
 	$(SAFETY) ./scripts/git/gpg-loopback.sh
+
+production-runtime-check:
+	$(SAFETY) bash ./scripts/production/production-runtime-check.sh

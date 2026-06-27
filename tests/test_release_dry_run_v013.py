@@ -38,16 +38,30 @@ def test_release_dry_run_refuses_to_mutate(tmp_path: Path):
     
     stage = tmp_path / "stage"
     shutil.copytree(root, stage, ignore=shutil.ignore_patterns(".git", ".venv", "dist", ".pytest_cache", "data/*.db"))
-    
+
+    # Capture pre-test state of real dist/ so we can detect NEW mutations only
+    real_zip = root / "dist" / "zai-coder-standalone-0.1.4.zip"
+    zip_existed_before = real_zip.exists()
+    pre_mtime = real_zip.stat().st_mtime if zip_existed_before else None
+
     # Try running package script
     result = run_cmd(["bash", "scripts/package.sh"], cwd=stage)
-    
+
     assert result.returncode == 0
     assert (stage / "dist").exists()
     assert (stage / "dist" / "zai-coder-standalone-0.1.4.zip").exists()
-    
-    # Verify no mutation in original root/dist
-    assert not (root / "dist" / "zai-coder-standalone-0.1.4.zip").exists()
+
+    # Verify no NEW mutation in original root/dist.
+    # If the zip already existed before this test (e.g. from a prior release build),
+    # we only check that its mtime was not updated by this staged run.
+    if zip_existed_before:
+        assert real_zip.stat().st_mtime == pre_mtime, (
+            "scripts/package.sh mutated the real dist/ during a staged run"
+        )
+    else:
+        assert not real_zip.exists(), (
+            "scripts/package.sh created a zip in the real dist/ during a staged run"
+        )
 
 def test_package_check_validates_isolated_artifacts(tmp_path: Path):
     root = Path.cwd()
