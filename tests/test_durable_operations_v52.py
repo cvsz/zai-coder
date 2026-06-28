@@ -84,7 +84,10 @@ def test_backup_restore_safe_extraction(tmp_path):
     with tarfile.open(backup_path, "r:gz") as tar:
         for member in tar.getmembers():
             if not member.name.startswith("/") and not ".." in member.name:
-                tar.extract(member, path=extract_path)
+                try:
+                    tar.extract(member, path=extract_path, filter='data')
+                except TypeError:
+                    tar.extract(member, path=extract_path)
             
     assert (extract_path / "safe.json").exists()
     
