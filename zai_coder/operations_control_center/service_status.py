@@ -24,15 +24,17 @@ def default_service_statuses(execute: bool = False) -> list[ServiceStatus]:
                     res = subprocess.run(["systemctl", "is-active", s.name], capture_output=True, text=True)
                     live_status = "running" if res.returncode == 0 else "stopped"
                     detail = res.stdout.strip() or "systemd status checked"
-                except Exception:
+                except Exception as e:
                     live_status = "unknown"
+                    detail = f"Failed to check systemd: {str(e)}"
             elif s.target == "docker":
                 try:
                     res = subprocess.run(["docker", "ps", "-q", "-f", f"name={s.name}"], capture_output=True, text=True)
                     live_status = "running" if res.stdout.strip() else "stopped"
                     detail = "docker status checked"
-                except Exception:
+                except Exception as e:
                     live_status = "unknown"
+                    detail = f"Failed to check docker: {str(e)}"
             
             live_statuses.append(ServiceStatus(s.name, s.target, live_status, detail))
         return live_statuses

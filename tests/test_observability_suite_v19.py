@@ -1,4 +1,5 @@
 from pathlib import Path
+from unittest.mock import patch
 
 from zai_coder.observability_suite.models import MetricSample, StructuredEvent, AlertRule
 from zai_coder.observability_suite.metrics import MetricsRegistry, render_prometheus_metrics, default_metrics_registry
@@ -135,3 +136,11 @@ def test_docs_scripts_assets_exist():
         "assets/observability/observability_suite_features.json",
     ]:
         assert (root / rel).exists(), rel
+
+
+def test_health_trend_store_execute_exception():
+    with patch("psutil.cpu_percent", side_effect=ImportError("mocked import error")):
+        store = default_health_trend_store(execute=True)
+    summary = store.summary()
+    assert summary["ok"] is False
+    assert summary["latest"]["status"] == "degraded"

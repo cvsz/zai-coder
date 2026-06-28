@@ -40,7 +40,8 @@ def test_service_status_execute_systemd_exception():
     for s in statuses:
         # systemd targets should degrade to unknown rather than raising
         if s.target == "systemd":
-            assert s.status in ("unknown", "planned", "running", "stopped")
+            assert s.status == "unknown"
+            assert "Failed to check systemd: systemctl not found" in s.detail
 
 
 def test_service_status_execute_docker_exception():
@@ -53,7 +54,8 @@ def test_service_status_execute_docker_exception():
 
     for s in statuses:
         if s.target == "docker":
-            assert s.status in ("unknown", "planned", "running", "stopped")
+            assert s.status == "unknown"
+            assert "Failed to check docker: docker not found" in s.detail
 
 
 def test_service_status_execute_success_systemd():
