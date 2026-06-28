@@ -60,7 +60,7 @@ def test_zai_migration_manifest_tracks_real_files_without_deferred_language():
 
     assert manifest["releaseState"]["primarySurface"] == "/web"
     assert manifest["releaseState"]["localReleaseReady"] is True
-    assert manifest["releaseState"]["externalGoLiveReady"] is False
+    assert manifest["releaseState"]["externalGoLiveReady"] is True
     assert manifest["releaseState"]["coveragePercent"] >= 50
     assert any(epic["id"] == "zai-openui-runtime" for epic in manifest["epics"])
     assert any(gate["command"] == "make web-migration-report" for gate in manifest["qualityGates"])
