@@ -158,10 +158,10 @@
 	"overrides": {
 		"esbuild": "^0.25.0",
 		"ws": "^8.20.2",
-		"qs": "^6.16.0",
+		"qs": "^6.15.3",
 		"linkify-it": "^5.0.1",
 		"markdown-it": "^14.1.2",
-		"protobufjs": "^7.7.0",
+		"protobufjs": "^7.6.4",
 		"tar": "^7.5.16",
 		"cookie": "^0.7.2",
 		"form-data": "^4.0.1",
