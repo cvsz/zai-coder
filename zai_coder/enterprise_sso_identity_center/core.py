@@ -30,10 +30,45 @@ ACCESS_REVIEWS = [
     AccessReviewItem("ar_auditor", "usr_auditor", "audit-reports", "auditor", "pending", "normal"),
 ]
 
+def get_real_system_users():
+    import pwd
+    users = []
+    try:
+        all_users = pwd.getpwall()
+        for idx, u in enumerate(all_users):
+            # Only track a subset so it doesn't overwhelm the queue, filter by UID >= 1000 for humans, < 1000 for system
+            uid = u.pw_uid
+            risk = "normal"
+            if uid == 0:
+                risk = "critical"
+            elif uid < 1000:
+                risk = "high"
+                
+            users.append({
+                "id": f"ar_sys_{uid}_{idx}",
+                "subject_ref": f"usr_{u.pw_name}",
+                "resource": "local_system_access",
+                "role": "root" if uid == 0 else "service" if uid < 1000 else "user",
+                "decision": "pending",
+                "risk": risk
+            })
+            if len(users) >= 20:  # limit payload
+                break
+    except Exception:
+        pass
+    return users
+
 def identity_provider_plans(): return [p.to_dict() for p in PROVIDERS]
 def scim_mapping_drafts(): return [m.to_dict() for m in SCIM_MAPPINGS]
 def org_policy_registry(): return [p.to_dict() for p in ORG_POLICIES]
-def access_review_queue(): return [r.to_dict() for r in ACCESS_REVIEWS]
+
+def access_review_queue(execute: bool = False):
+    reviews = [r.to_dict() for r in ACCESS_REVIEWS]
+    if execute:
+        sys_users = get_real_system_users()
+        if sys_users:
+            reviews.extend(sys_users)
+    return reviews
 
 def validation_report() -> dict:
     rows = [*PROVIDERS, *SCIM_MAPPINGS, *ORG_POLICIES, *ACCESS_REVIEWS]
@@ -56,56 +91,56 @@ def scim_mapping_plan() -> dict:
     blocked = [m.to_dict() for m in SCIM_MAPPINGS if m.status == "blocked"]
     return {"dry_run": True, "mappings": scim_mapping_drafts(), "blocked": blocked, "write_to_idp": False, "requires_review": True}
 
-def access_review_summary() -> dict:
-    queue = access_review_queue()
+def access_review_summary(execute: bool = False) -> dict:
+    queue = access_review_queue(execute)
     pending = [r for r in queue if r["decision"] == "pending"]
     high_risk = [r for r in queue if r["risk"] in {"high", "critical"}]
     return {"total": len(queue), "pending": len(pending), "high_risk": len(high_risk), "queue": queue, "apply_changes": False, "requires_review": True}
 
 def role_assignment_review(subject_ref="usr_admin", new_role="reviewer") -> dict:
-    valid_roles = {"owner","admin","operator","reviewer","viewer","auditor"}
+    valid_roles = {"owner","admin","operator","reviewer","viewer","auditor","root","service","user"}
     blocked = []
     if new_role not in valid_roles: blocked.append("invalid requested role")
     if subject_ref == "usr_owner" and new_role != "owner": blocked.append("owner downgrade requires explicit manual approval")
     return {"dry_run": True, "subject_ref": subject_ref, "requested_role": new_role, "allowed": not blocked, "blocked": blocked, "apply_role_change": False}
 
-def identity_evidence_bundle() -> dict:
+def identity_evidence_bundle(execute: bool = False) -> dict:
     return {
         "kind": "zai-enterprise-sso-identity-evidence",
         "version": "1.0",
         "providers": identity_provider_plans(),
         "scim_mappings": scim_mapping_drafts(),
         "org_policies": org_policy_registry(),
-        "access_reviews": access_review_queue(),
+        "access_reviews": access_review_queue(execute),
         "sso_plan": sso_config_plan(),
         "scim_plan": scim_mapping_plan(),
-        "access_summary": access_review_summary(),
+        "access_summary": access_review_summary(execute),
         "validation": validation_report(),
         "external_mutation": False,
         "requires_review": True,
     }
 
-def write_identity_evidence(root=".", out="identity/evidence/identity-evidence.json") -> str:
+def write_identity_evidence(root=".", out="identity/evidence/identity-evidence.json", execute: bool = False) -> str:
     path = Path(root) / out
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(identity_evidence_bundle(), indent=2, sort_keys=True), encoding="utf-8")
+    path.write_text(json.dumps(identity_evidence_bundle(execute), indent=2, sort_keys=True), encoding="utf-8")
     return str(path)
 
-def write_identity_report(root=".", out="identity/reports/identity-center-report.md") -> str:
+def write_identity_report(root=".", out="identity/reports/identity-center-report.md", execute: bool = False) -> str:
     path = Path(root) / out
     path.parent.mkdir(parents=True, exist_ok=True)
     providers = "\n".join(f"- {p.name} [{p.provider_type} / {p.protocol} / {p.status}]" for p in PROVIDERS)
-    reviews = "\n".join(f"- {r.subject_ref} on {r.resource}: {r.role} [{r.risk} / {r.decision}]" for r in ACCESS_REVIEWS)
+    reviews = "\n".join(f"- {r.get('subject_ref')} on {r.get('resource')}: {r.get('role')} [{r.get('risk')} / {r.get('decision')}]" for r in access_review_queue(execute))
     path.write_text(f"# Enterprise SSO and Identity Center Report\n\n## Providers\n\n{providers}\n\n## Access Reviews\n\n{reviews}\n\n## Safety\n\n- Config examples only.\n- No real IdP secrets.\n- No live identity provider mutation.\n", encoding="utf-8")
     return str(path)
 
 def identity_status():
     return {"ok": True, "systems": ["identity_dashboard","sso_config_planner","scim_mapping_drafts","org_policy_registry","access_review_queue","role_assignment_review","identity_evidence","dashboard_routes"]}
 
-def identity_overview():
-    return {"status": identity_status(), "providers": identity_provider_plans(), "scim": scim_mapping_drafts(), "policies": org_policy_registry(), "access": access_review_summary(), "validation": validation_report()}
+def identity_overview(execute: bool = False):
+    return {"status": identity_status(), "providers": identity_provider_plans(), "scim": scim_mapping_drafts(), "policies": org_policy_registry(), "access": access_review_summary(execute), "validation": validation_report()}
 
-def identity_demo(root="."):
-    evidence_path = write_identity_evidence(root)
-    report_path = write_identity_report(root)
-    return {"evidence_path": evidence_path, "report_path": report_path, "sso_plan": sso_config_plan(), "role_review": role_assignment_review(), "bundle": identity_evidence_bundle()}
+def identity_demo(root=".", execute: bool = False):
+    evidence_path = write_identity_evidence(root, execute=execute)
+    report_path = write_identity_report(root, execute=execute)
+    return {"evidence_path": evidence_path, "report_path": report_path, "sso_plan": sso_config_plan(), "role_review": role_assignment_review(), "bundle": identity_evidence_bundle(execute)}

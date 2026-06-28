@@ -15,6 +15,12 @@ dist/
 build/
 *.egg-info/
 
+# Virtual environments and local Python envs
+.venv/
+venv/
+env/
+ENV/
+
 # System files and IDE
 .DS_Store
 .vscode/
@@ -71,3 +77,13 @@ dist/
 .zai-coder/
 .pytest_cache/
 status.txt
+/release/
+
+# Local self-dev automation kit artifacts.
+zai-coder-self-dev-kit.zip
+zai-coder-self-dev-kit/
+
+# Local backups and testing evals/skills
+backups/
+evals/
+skills/zai-coder/

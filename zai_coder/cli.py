@@ -344,7 +344,8 @@ def cmd_eval(args) -> int:
     
     loader = CaseLoader(Path.cwd())
     if args.eval_cmd == "list":
-        for suite in ["safety", "agents", "rag", "tool-runtime", "model-router", "server"]:
+        suites = loader.available_suites()
+        for suite in suites:
             cases = loader.load_suite(suite)
             print(f"Suite: {suite} ({len(cases)} cases)")
         return 0
@@ -421,6 +422,74 @@ def cmd_deploy(args) -> int:
             
     return 0
 
+
+def cmd_project_config_generator(args) -> int:
+    from zai_coder.deploy_installer_core.project_config_generator import ProjectConfigGenerator
+
+    generator = ProjectConfigGenerator(args.out)
+    if args.preset:
+        try:
+            overrides = {}
+            if args.model:
+                overrides["model"] = args.model
+            if args.base_url:
+                overrides["base_url"] = args.base_url
+            generator.generate_from_preset(args.preset, overrides)
+            print(f"Generated configuration from preset '{args.preset}' to {generator.output_path}")
+            return 0
+        except Exception as exc:
+            print(f"Error generating config from preset: {exc}")
+            return 1
+    else:
+        # Custom config
+        if not args.provider or not args.base_url or not args.model:
+            print("Error: --provider, --base-url, and --model are required for custom config generation.")
+            return 1
+        try:
+            fallback = [m.strip() for m in (args.fallback_models or "").split(",") if m.strip()]
+            generator.generate_custom(
+                provider=args.provider,
+                base_url=args.base_url,
+                model=args.model,
+                fallback_models=fallback,
+                workspace=args.workspace,
+                max_tokens=args.max_tokens,
+                temperature=args.temperature,
+                safe_mode=not args.unsafe,
+                allow_apps_zlms=args.allow_apps_zlms,
+                tool_timeout_seconds=args.tool_timeout,
+            )
+            print(f"Generated custom configuration to {generator.output_path}")
+            return 0
+        except Exception as exc:
+            print(f"Error generating custom config: {exc}")
+            return 1
+
+
+def cmd_env_exporter(args) -> int:
+    from zai_coder.deploy_installer_core.env_exporter import export_env, import_env
+
+    if args.env_exporter_cmd == "export":
+        try:
+            export_env(args.env, args.password, args.out)
+            print(f"Successfully exported and encrypted {args.env} to {args.out}")
+            return 0
+        except Exception as exc:
+            print(f"Error during export: {exc}")
+            return 1
+    elif args.env_exporter_cmd == "import":
+        try:
+            import_env(args.enc, args.password, args.out)
+            print(f"Successfully decrypted and imported {args.enc} to {args.out}")
+            return 0
+        except Exception as exc:
+            print(f"Error during import: {exc}")
+            return 1
+    else:
+        print(f"Unknown env-exporter command: {args.env_exporter_cmd}")
+        return 1
+
+
 def cmd_media(args) -> int:
     if args.kind == "image":
         out = generate_svg_image(args.prompt, args.out)
@@ -436,6 +505,37 @@ def cmd_media(args) -> int:
         raise SystemExit(f"Unknown media kind: {args.kind}")
     print(out)
     return 0
+
+def cmd_artifact(args) -> int:
+    from .config import load_config
+    from .core.artifacts import ArtifactStore
+    import json
+
+    cfg = load_config(args.config)
+    store = ArtifactStore(cfg.workspace)
+    if args.artifact_cmd == "add":
+        tags = tuple(tag.strip() for tag in (args.tags or "").split(",") if tag.strip())
+        try:
+            item = store.add(args.path, label=args.label, kind=args.kind, description=args.description, tags=tags)
+        except (FileNotFoundError, ValueError) as exc:
+            print(f"Error: {exc}")
+            return 1
+        print(json.dumps(item, indent=2, sort_keys=True))
+        return 0
+    if args.artifact_cmd == "list":
+        print(json.dumps(store.list(kind=args.kind), indent=2, sort_keys=True))
+        return 0
+    if args.artifact_cmd == "show":
+        item = store.get(args.artifact_id)
+        if item is None:
+            print("Artifact not found.")
+            return 1
+        print(json.dumps(item, indent=2, sort_keys=True))
+        return 0
+    if args.artifact_cmd == "export":
+        print(json.dumps(store.export_json(), indent=2, sort_keys=True))
+        return 0
+    raise SystemExit(f"Unknown artifact command: {args.artifact_cmd}")
 
 def cmd_index(args) -> int:
     from .core.indexer import ProjectIndexer
@@ -499,7 +599,7 @@ def cmd_rag(args) -> int:
     return 0
 
 def cmd_task(args) -> int:
-    from .core.task_store import TaskStore
+    from .core.task_queue import TaskQueue
     from .core.task_runner import TaskRunner
     from .core.approvals import ActionApprover
     from .config import load_config
@@ -507,45 +607,81 @@ def cmd_task(args) -> int:
     from pathlib import Path
     
     cfg = load_config(args.config)
-    store = TaskStore(Path(cfg.workspace) / ".zai-coder" / "tasks" / "tasks.db")
+    queue = TaskQueue(Path(cfg.workspace) / ".zai-coder" / "tasks" / "tasks.db")
+    store = queue.store
     
     if args.task_cmd == "create":
-        task_id = store.create_task(args.title, args.agent, args.prompt)
-        print(f"Task {task_id} created.")
+        task = queue.create(args.title, args.agent, args.prompt, priority=args.priority, max_attempts=args.max_attempts)
+        print(json.dumps(task, indent=2, sort_keys=True))
         
     elif args.task_cmd == "list":
-        for t in store.list_tasks():
-            print(f"[{t['id']}] {t['state'].upper()}: {t['title']} (agent: {t['agent']})")
+        for t in queue.list_tasks():
+            print(f"[{t['id']}] {t['state'].upper()}: {t['title']} (agent: {t['agent']}, priority: {t['priority']})")
             
     elif args.task_cmd == "show":
-        t = store.get_task(args.task_id)
+        t = queue.show(args.task_id)
         if not t:
             print("Task not found.")
             return 1
         print(json.dumps(t, indent=2))
-        
-    elif args.task_cmd == "cancel":
-        t = store.get_task(args.task_id)
-        if not t:
+
+    elif args.task_cmd == "update":
+        try:
+            task = queue.update(args.task_id, args.state)
+        except ValueError as exc:
+            print(f"Error: {exc}")
+            return 1
+        if task is None:
             print("Task not found.")
             return 1
-        store.update_task_state(args.task_id, "cancelled")
-        store.add_event(args.task_id, "cancel", "Task cancelled via CLI.")
-        print("Task cancelled.")
+        print(json.dumps(task, indent=2, sort_keys=True))
+        
+    elif args.task_cmd == "cancel":
+        task = queue.cancel(args.task_id)
+        if not task:
+            print("Task not found.")
+            return 1
+        print(json.dumps(task, indent=2, sort_keys=True))
+
+    elif args.task_cmd == "retry":
+        try:
+            task = queue.retry(args.task_id)
+        except ValueError as exc:
+            print(f"Error: {exc}")
+            return 1
+        if not task:
+            print("Task not found.")
+            return 1
+        print(json.dumps(task, indent=2, sort_keys=True))
         
     elif args.task_cmd == "run":
         apply_mode = getattr(args, "apply", False)
         approver = ActionApprover(apply_mode=apply_mode)
-        runner = TaskRunner(store, approver)
-        runner.run(args.task_id)
+        runner = TaskRunner(store, approver, worker_id="cli")
+        from contextlib import redirect_stdout
+        from io import StringIO
+
+        buffer = StringIO()
+        with redirect_stdout(buffer):
+            result = runner.run(args.task_id, apply=apply_mode)
+        if result is None:
+            return 1
+        print(json.dumps(result, indent=2, sort_keys=True))
         
     elif args.task_cmd == "logs":
-        events = store.get_events(args.task_id)
+        events = queue.logs(args.task_id)
         if not events:
             print("No events found.")
         else:
             for ev in events:
                 print(f"[{ev['created_at']}] {ev['event_type'].upper()}: {ev['message']}")
+
+    elif args.task_cmd == "export":
+        payload = queue.export_json()
+        if args.json:
+            print(json.dumps(payload, indent=2, sort_keys=True))
+        else:
+            print(json.dumps(payload, indent=2, sort_keys=True))
                 
     return 0
 
@@ -832,12 +968,61 @@ def build_parser() -> argparse.ArgumentParser:
     repair_apply.add_argument("--apply", action="store_true")
     repair_apply.set_defaults(func=cmd_repair)
 
+    cfg_gen_cmd = sub.add_parser("config-generator", help="Generate project configuration files from presets or custom fields")
+    cfg_gen_cmd.add_argument("--preset", choices=["ollama", "openai", "openrouter"], help="Generate from a pre-defined profile")
+    cfg_gen_cmd.add_argument("--provider", help="Custom LLM provider (e.g., openai, ollama)")
+    cfg_gen_cmd.add_argument("--base-url", help="Custom provider base URL")
+    cfg_gen_cmd.add_argument("--model", help="Custom LLM model name")
+    cfg_gen_cmd.add_argument("--fallback-models", help="Comma-separated list of fallback models")
+    cfg_gen_cmd.add_argument("--workspace", default=".", help="Workspace path")
+    cfg_gen_cmd.add_argument("--max-tokens", type=int, default=2048, help="Max tokens limit")
+    cfg_gen_cmd.add_argument("--temperature", type=float, default=0.05, help="Sampling temperature")
+    cfg_gen_cmd.add_argument("--unsafe", action="store_true", help="Disable safety mode")
+    cfg_gen_cmd.add_argument("--allow-apps-zlms", action="store_true", help="Allow apps/zlms/ path access")
+    cfg_gen_cmd.add_argument("--tool-timeout", type=int, default=180, help="Tool timeout in seconds")
+    cfg_gen_cmd.add_argument("--out", help="Output path (defaults to ~/.zai-coder/config.json)")
+    cfg_gen_cmd.set_defaults(func=cmd_project_config_generator)
+
+    env_exp_cmd = sub.add_parser("env-exporter", help="Export and encrypt/decrypt environment files")
+    env_exp_sub = env_exp_cmd.add_subparsers(dest="env_exporter_cmd", required=True)
+    
+    env_exp_export = env_exp_sub.add_parser("export", help="Encrypt and export a .env file")
+    env_exp_export.add_argument("--env", default=".env", help="Path to plaintext .env file")
+    env_exp_export.add_argument("--password", required=True, help="Source password for encryption")
+    env_exp_export.add_argument("--out", default=".env.enc", help="Output path for encrypted file")
+    env_exp_export.set_defaults(func=cmd_env_exporter)
+    
+    env_exp_import = env_exp_sub.add_parser("import", help="Decrypt and import an encrypted env file")
+    env_exp_import.add_argument("--enc", default=".env.enc", help="Path to encrypted env file")
+    env_exp_import.add_argument("--password", required=True, help="Source password for decryption")
+    env_exp_import.add_argument("--out", default=".env", help="Output path for decrypted plaintext file")
+    env_exp_import.set_defaults(func=cmd_env_exporter)
+
     media = sub.add_parser("media", help="Generate or transform media assets (image, animation, etc.)")
     media.add_argument("kind", choices=["image", "voice", "music", "animation", "video"])
     media.add_argument("--prompt", default="ZAI Coder")
     media.add_argument("--text", default="")
     media.add_argument("--out", default="out/artifact")
     media.set_defaults(func=cmd_media)
+
+    artifact = sub.add_parser("artifact", help="Register and inspect local artifacts")
+    artifact_sub = artifact.add_subparsers(dest="artifact_cmd", required=True)
+    artifact_add = artifact_sub.add_parser("add", help="Register an existing local artifact")
+    artifact_add.add_argument("--path", required=True)
+    artifact_add.add_argument("--label", default="")
+    artifact_add.add_argument("--kind", default="other")
+    artifact_add.add_argument("--description", default="")
+    artifact_add.add_argument("--tags", default="")
+    artifact_add.set_defaults(func=cmd_artifact)
+    artifact_list = artifact_sub.add_parser("list", help="List registered artifacts")
+    artifact_list.add_argument("--kind", default=None)
+    artifact_list.set_defaults(func=cmd_artifact)
+    artifact_show = artifact_sub.add_parser("show", help="Show one registered artifact")
+    artifact_show.add_argument("artifact_id", type=int)
+    artifact_show.set_defaults(func=cmd_artifact)
+    artifact_export = artifact_sub.add_parser("export", help="Export artifact registry as JSON")
+    artifact_export.add_argument("--json", action="store_true")
+    artifact_export.set_defaults(func=cmd_artifact)
 
     tui = sub.add_parser("tui", help="Launch the local Text User Interface dashboard")
     tui.add_argument("--template", help="Template name")
@@ -874,23 +1059,35 @@ def build_parser() -> argparse.ArgumentParser:
     task_create.add_argument("--title", required=True)
     task_create.add_argument("--agent", required=True)
     task_create.add_argument("--prompt", required=True)
+    task_create.add_argument("--priority", type=int, default=100)
+    task_create.add_argument("--max-attempts", type=int, default=3)
     task_create.set_defaults(func=cmd_task)
     task_list = task_sub.add_parser("list", help="List background agent tasks")
     task_list.set_defaults(func=cmd_task)
     task_show = task_sub.add_parser("show", help="Show detailed state of a task")
     task_show.add_argument("task_id", type=int)
     task_show.set_defaults(func=cmd_task)
+    task_update = task_sub.add_parser("update", help="Update task state")
+    task_update.add_argument("task_id", type=int)
+    task_update.add_argument("--state", required=True)
+    task_update.set_defaults(func=cmd_task)
     task_run = task_sub.add_parser("run", help="Run/execute a task")
     task_run.add_argument("task_id", type=int)
-    task_run.add_argument("--dry-run", action="store_false", dest="apply", default=False)
+    task_run.add_argument("--dry-run", action="store_true")
     task_run.add_argument("--apply", action="store_true")
     task_run.set_defaults(func=cmd_task)
+    task_retry = task_sub.add_parser("retry", help="Retry a failed or cancelled task")
+    task_retry.add_argument("task_id", type=int)
+    task_retry.set_defaults(func=cmd_task)
     task_logs = task_sub.add_parser("logs", help="Get execution logs of a task")
     task_logs.add_argument("task_id", type=int)
     task_logs.set_defaults(func=cmd_task)
     task_cancel = task_sub.add_parser("cancel", help="Cancel a pending or running task")
     task_cancel.add_argument("task_id", type=int)
     task_cancel.set_defaults(func=cmd_task)
+    task_export = task_sub.add_parser("export", help="Export tasks, events, and outputs as JSON")
+    task_export.add_argument("--json", action="store_true")
+    task_export.set_defaults(func=cmd_task)
 
     policy = sub.add_parser("policy", help="Check or list safety policy rules and configurations")
     policy_sub = policy.add_subparsers(dest="policy_cmd", required=True)

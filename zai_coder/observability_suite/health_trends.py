@@ -43,8 +43,22 @@ class HealthTrendStore:
         return {"ok": latest.status == "ok", "snapshots": len(self._snapshots), "latest": latest.to_dict()}
 
 
-def default_health_trend_store() -> HealthTrendStore:
+def default_health_trend_store(execute: bool = False) -> HealthTrendStore:
     store = HealthTrendStore()
-    store.add(HealthSnapshot("ok", 5, 5, 12.5))
-    store.add(HealthSnapshot("ok", 5, 5, 13.2))
+    if execute:
+        try:
+            import psutil
+            cpu = psutil.cpu_percent(interval=0.1)
+            mem = psutil.virtual_memory().percent
+            ok_checks = 5
+            status = "ok"
+            if cpu > 90 or mem > 90:
+                ok_checks = 3
+                status = "degraded"
+            store.add(HealthSnapshot(status, 5, ok_checks, cpu))
+        except Exception as e:
+            store.add(HealthSnapshot("degraded", 5, 0, 0.0))
+    else:
+        store.add(HealthSnapshot("ok", 5, 5, 12.5))
+        store.add(HealthSnapshot("ok", 5, 5, 13.2))
     return store

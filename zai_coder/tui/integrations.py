@@ -1,17 +1,16 @@
-import json
-import sqlite3
 from pathlib import Path
+
+from .task_panel import TaskPanelAdapter
 
 class TuiIntegrations:
     def __init__(self, workspace: str | Path):
         self.workspace = Path(workspace).resolve()
         
     def get_task_queue_list(self) -> str:
-        from zai_coder.tui.task_panel import TaskPanelAdapter
-        adapter = TaskPanelAdapter(self.workspace)
-        if not adapter.exists():
-            return "Task DB not initialized."
-        return adapter.chip()
+        try:
+            return TaskPanelAdapter(self.workspace).chip()
+        except Exception as exc:
+            return f"Task DB error: {exc}"
 
     def get_local_server_status(self) -> str:
         import socket

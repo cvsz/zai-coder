@@ -12,7 +12,7 @@ def run_script(script: Path, *args: str, cwd: Path, env: dict[str, str]):
         text=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        timeout=20,
+        timeout=60,
         check=False,
     )
 

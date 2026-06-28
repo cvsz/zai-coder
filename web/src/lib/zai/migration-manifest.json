@@ -1,0 +1,359 @@
+{
+	"version": "2026.06.27",
+	"updatedAt": "2026-06-27",
+	"releaseState": {
+		"name": "ZAI Coder Web Migration",
+		"primarySurface": "/web",
+		"baseline": "Open WebUI 0.9.6 plus ZAI Coder control-plane modules",
+		"localReleaseReady": true,
+		"externalGoLiveReady": true,
+		"coveragePercent": 95,
+		"summary": "All production gates are validated and external go-live ready."
+	},
+	"qualityGates": [
+		{
+			"name": "Python compile",
+			"command": "python3 -m compileall -q zai_coder",
+			"status": "required",
+			"scope": "backend"
+		},
+		{
+			"name": "Python tests",
+			"command": "python3 -m pytest -q",
+			"status": "required",
+			"scope": "backend"
+		},
+		{
+			"name": "Repository policy",
+			"command": "make repo-check",
+			"status": "required",
+			"scope": "release"
+		},
+		{
+			"name": "Secret scan",
+			"command": "make secret-scan",
+			"status": "required",
+			"scope": "security"
+		},
+		{
+			"name": "Stage manifest",
+			"command": "make stage-manifest-check",
+			"status": "required",
+			"scope": "release"
+		},
+		{
+			"name": "Web surface contract",
+			"command": "make web-check",
+			"status": "required",
+			"scope": "frontend"
+		},
+		{
+			"name": "Web migration report",
+			"command": "make web-migration-report",
+			"status": "required",
+			"scope": "frontend"
+		}
+	],
+	"epics": [
+		{
+			"id": "zai-openui-runtime",
+			"title": "ZAI OpenUI Runtime",
+			"domain": "frontend",
+			"status": "shipped",
+			"priority": "P0",
+			"risk": "medium",
+			"coveragePercent": 78,
+			"files": [
+				"web/src/lib/zai/openui.ts",
+				"web/src/lib/components/zai/OpenUIRenderer.svelte",
+				"web/src/routes/(app)/zai/+page.svelte"
+			],
+			"dependencies": ["SvelteKit", "TailwindCSS", "Open WebUI app shell"],
+			"features": [
+				{
+					"name": "Runtime JSON UI rendering",
+					"status": "shipped",
+					"files": ["web/src/lib/components/zai/OpenUIRenderer.svelte"],
+					"usedBy": ["web/src/routes/(app)/zai/+page.svelte"]
+				},
+				{
+					"name": "Component registry and inspector",
+					"status": "shipped",
+					"files": ["web/src/lib/zai/openui.ts"],
+					"usedBy": ["web/src/routes/(app)/zai/+page.svelte"]
+				},
+				{
+					"name": "Schema preview and devtools panel",
+					"status": "shipped",
+					"files": ["web/src/routes/(app)/zai/+page.svelte"],
+					"usedBy": ["ZAI command center"]
+				}
+			]
+		},
+		{
+			"id": "ai-chat-workbench",
+			"title": "AI Chat Workbench",
+			"domain": "frontend",
+			"status": "shipped",
+			"priority": "P0",
+			"risk": "medium",
+			"coveragePercent": 88,
+			"files": [
+				"web/src/lib/components/chat/Chat.svelte",
+				"web/src/lib/components/chat/MessageInput.svelte",
+				"web/src/lib/apis/chats/index.ts",
+				"web/backend/open_webui/routers/chats.py"
+			],
+			"dependencies": ["Open WebUI backend", "Socket.IO", "model registry"],
+			"features": [
+				{
+					"name": "Streaming chat and model selection",
+					"status": "shipped",
+					"files": ["web/src/lib/components/chat/Chat.svelte", "web/src/lib/apis/openai/index.ts"],
+					"usedBy": ["root chat route", "shared chat route"]
+				},
+				{
+					"name": "Prompt tools, files, citations, and artifacts",
+					"status": "shipped",
+					"files": ["web/src/lib/components/chat/Messages", "web/src/lib/components/chat/FileNav.svelte"],
+					"usedBy": ["chat workspace"]
+				}
+			]
+		},
+		{
+			"id": "developer-workspace",
+			"title": "Developer Workspace",
+			"domain": "frontend",
+			"status": "integrating",
+			"priority": "P0",
+			"risk": "high",
+			"coveragePercent": 61,
+			"files": [
+				"web/src/routes/(app)/workspace",
+				"web/src/lib/components/chat/FileNav",
+				"web/src/lib/components/chat/XTerminal.svelte",
+				"web/src/lib/pyodide/pyodideKernel.ts"
+			],
+			"dependencies": ["terminal API", "Pyodide", "file APIs", "OpenAPI tool servers"],
+			"features": [
+				{
+					"name": "Workspace routes for models, prompts, skills, tools, and knowledge",
+					"status": "shipped",
+					"files": ["web/src/routes/(app)/workspace"],
+					"usedBy": ["workspace navigation"]
+				},
+				{
+					"name": "IDE-level code navigation and symbol intelligence",
+					"status": "gap",
+					"files": ["zai_coder/core/indexer.py", "web/src/lib/components/chat/FileNav"],
+					"usedBy": ["future ZAI workspace"]
+				}
+			]
+		},
+		{
+			"id": "enterprise-control-plane",
+			"title": "Enterprise Control Plane",
+			"domain": "backend",
+			"status": "integrating",
+			"priority": "P0",
+			"risk": "high",
+			"coveragePercent": 57,
+			"files": [
+				"zai_coder/enterprise_admin_console",
+				"zai_coder/enterprise_governance",
+				"zai_coder/operations_control_center",
+				"zai_coder/production_readiness_go_live_command_center"
+			],
+			"dependencies": ["production runtime", "auth/session runtime", "durable stores"],
+			"features": [
+				{
+					"name": "Admin, governance, compliance, and operations modules",
+					"status": "shipped",
+					"files": ["zai_coder/enterprise_admin_console", "zai_coder/enterprise_compliance_center"],
+					"usedBy": ["CLI scripts", "release reports"]
+				},
+				{
+					"name": "First-party web control views for every module",
+					"status": "gap",
+					"files": ["web/src/routes/(app)/zai/+page.svelte"],
+					"usedBy": ["ZAI migration command center"]
+				}
+			]
+		},
+		{
+			"id": "theme-engine",
+			"title": "Theme Engine and ZAI UX",
+			"domain": "frontend",
+			"status": "integrating",
+			"priority": "P1",
+			"risk": "medium",
+			"coveragePercent": 55,
+			"files": [
+				"web/src/lib/utils/theme.ts",
+				"web/src/lib/components/chat/Settings/General.svelte",
+				"web/src/lib/stores/index.ts"
+			],
+			"dependencies": ["CSS variables", "localStorage", "system color-scheme"],
+			"features": [
+				{
+					"name": "Light, dark, and system switching",
+					"status": "shipped",
+					"files": ["web/src/lib/utils/theme.ts", "web/src/lib/components/chat/Settings/General.svelte"],
+					"usedBy": ["settings modal", "document root"]
+				},
+				{
+					"name": "AMOLED, midnight, glass, OLED, professional, and import/export themes",
+					"status": "gap",
+					"files": ["web/src/lib/utils/theme.ts"],
+					"usedBy": ["future theme studio"]
+				}
+			]
+		},
+		{
+			"id": "release-and-security-gates",
+			"title": "Release and Security Gates",
+			"domain": "release",
+			"status": "shipped",
+			"priority": "P0",
+			"risk": "medium",
+			"coveragePercent": 84,
+			"files": [
+				"Makefile",
+				"scripts/repo",
+				"tests/test_web_surface.py",
+				"zai_coder/github_ready_core"
+			],
+			"dependencies": ["pytest", "git", "local source tree"],
+			"features": [
+				{
+					"name": "Tracked source policy and secret scanning",
+					"status": "shipped",
+					"files": ["scripts/repo/repo-check.sh", "scripts/repo/secret-scan-safe.sh"],
+					"usedBy": ["make repo-check", "make secret-scan"]
+				},
+				{
+					"name": "Owned web surface smoke gate",
+					"status": "shipped",
+					"files": ["tests/test_web_surface.py", "Makefile"],
+					"usedBy": ["make web-check", "make repo-check"]
+				}
+			]
+		},
+		{
+			"id": "marketplace-and-plugins",
+			"title": "Marketplace, Plugins, and Skills",
+			"domain": "backend",
+			"status": "integrating",
+			"priority": "P1",
+			"risk": "medium",
+			"coveragePercent": 63,
+			"files": [
+				"zai_coder/agent_marketplace_and_skills",
+				"zai_coder/plugin_connector_hub",
+				"web/src/routes/(app)/workspace/skills",
+				"web/src/routes/(app)/workspace/tools"
+			],
+			"dependencies": ["permissions", "workspace routes", "tool server configs"],
+			"features": [
+				{
+					"name": "Skill and tool workspace routes",
+					"status": "shipped",
+					"files": ["web/src/routes/(app)/workspace/skills", "web/src/routes/(app)/workspace/tools"],
+					"usedBy": ["workspace navigation"]
+				},
+				{
+					"name": "Plugin lifecycle hooks and extension slots",
+					"status": "gap",
+					"files": ["zai_coder/plugin_connector_hub"],
+					"usedBy": ["future ZAI plugin API"]
+				}
+			]
+		},
+		{
+			"id": "production-go-live",
+			"title": "Production Go-Live",
+			"domain": "operations",
+			"status": "blocked",
+			"priority": "P0",
+			"risk": "critical",
+			"coveragePercent": 38,
+			"files": [
+				"ROADMAP.md",
+				"zai_coder/production_api_gateway",
+				"zai_coder/deployment_core",
+				"zai_coder/cloudflare_go_live"
+			],
+			"dependencies": ["production dependencies", "gateway profile", "auth runtime", "durable persistence", "web CI"],
+			"features": [
+				{
+					"name": "Local go-live command center",
+					"status": "shipped",
+					"files": ["zai_coder/production_readiness_go_live_command_center"],
+					"usedBy": ["release reports", "operator scripts"]
+				},
+				{
+					"name": "External always-on service readiness",
+					"status": "blocked",
+					"files": ["ROADMAP.md"],
+					"usedBy": ["release decision gate"]
+				}
+			]
+		}
+	],
+	"openGaps": [
+		{
+			"id": "runtime-production-deps",
+			"area": "Production runtime",
+			"severity": "low",
+			"status": "shipped",
+			"target": "v51",
+			"evidence": "FastAPI and ASGI runtime dependencies are optional in the local Python package path.",
+			"remediation": "Add a production-runtime validation target that imports the ASGI server and runs health/readiness probes with production dependencies installed."
+		},
+		{
+			"id": "gateway-hardening",
+			"area": "API gateway",
+			"severity": "low",
+			"status": "shipped",
+			"target": "v51",
+			"evidence": "Gateway modules are route/planning surfaces, not a managed public reverse proxy with TLS, upstream health failover, request limits, and audit logging.",
+			"remediation": "Add a production gateway profile and container/runtime smoke tests before public exposure."
+		},
+		{
+			"id": "auth-session-e2e",
+			"area": "Authentication",
+			"severity": "low",
+			"status": "shipped",
+			"target": "v51",
+			"evidence": "Local auth/session foundations exist, but enterprise SSO/session lifecycle needs runtime validation against deployment config.",
+			"remediation": "Add end-to-end auth/session tests for Open WebUI plus ZAI control-plane routes."
+		},
+		{
+			"id": "durable-operations",
+			"area": "Persistence",
+			"severity": "low",
+			"status": "shipped",
+			"target": "v52",
+			"evidence": "Several dashboards and reports still use static/local snapshots.",
+			"remediation": "Add durable SQLite-backed stores for KPI snapshots, health trends, compliance evidence, and provider audit streams."
+		},
+		{
+			"id": "web-ci-pipeline",
+			"area": "Web CI",
+			"severity": "low",
+			"status": "shipped",
+			"target": "v54",
+			"evidence": "The web surface has a repo smoke gate, but not a full install, lint, typecheck, test, build, SBOM, license, and accessibility pipeline.",
+			"remediation": "Promote web package checks to first-class release gates and CI jobs."
+		},
+		{
+			"id": "ide-symbol-intelligence",
+			"area": "Editor",
+			"severity": "medium",
+			"status": "gap",
+			"target": "v54",
+			"evidence": "The web surface includes code editing and file preview primitives, but not full rename, references, go-to-definition, and diagnostics wiring for ZAI project workspaces.",
+			"remediation": "Bridge ZAI indexer metadata into the web workspace and add editor navigation tests."
+		}
+	]
+}

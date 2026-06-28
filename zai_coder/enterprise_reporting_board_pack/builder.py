@@ -12,13 +12,13 @@ from .kpis import kpi_snapshot
 from .decisions import decision_register, risk_register
 
 
-def build_board_pack(period: str = "Q1", title: str = "ZAI Coder Enterprise Board Pack") -> BoardPack:
+def build_board_pack(period: str = "Q1", title: str = "ZAI Coder Enterprise Board Pack", execute: bool = False) -> BoardPack:
     pack = BoardPack(
         id=f"board_{uuid.uuid4().hex[:12]}",
         period=period,
         title=title,
         sections=tuple(board_sections(period)),
-        kpis=tuple(kpi_snapshot()),
+        kpis=tuple(kpi_snapshot(execute=execute)),
         decisions=tuple(decision_register()),
         risks=tuple(risk_register()),
     )

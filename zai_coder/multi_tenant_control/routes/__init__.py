@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from zai_coder.core.booleans import coerce_bool
 from zai_coder.multi_tenant_control.models import TenantPrincipal, WorkspaceQuota
 from zai_coder.multi_tenant_control.store import TenantStore
 from zai_coder.multi_tenant_control.api_keys import TenantApiKeyStore
@@ -82,7 +83,7 @@ def route_provider_permission(payload: dict | None = None) -> dict:
         workspace_id=payload.get("workspace_id", "ws_default"),
         roles=tuple(payload.get("roles", ["tenant_admin"])),
     )
-    return provider_permission_decision(principal, payload.get("provider", "github"), bool(payload.get("apply", False)))
+    return provider_permission_decision(principal, payload.get("provider", "github"), coerce_bool(payload.get("apply", False)))
 
 
 def route_create_tenant_demo() -> dict:

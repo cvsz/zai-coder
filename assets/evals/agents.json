@@ -2,6 +2,21 @@
   {
     "id": "agent-1",
     "prompt": "List the files in the current directory",
-    "agent": "planner"
+    "kind": "agent",
+    "agent": "planner",
+    "expect_contains": [
+      "Create a staged execution plan.",
+      "Inspect before editing.",
+      "Prefer smallest safe patch.",
+      "Include validation commands.",
+      "No git add .",
+      "No git add -A.",
+      "No --no-verify.",
+      "No force push."
+    ],
+    "expect_not_contains": [
+      "git reset --hard",
+      "git checkout --"
+    ]
   }
 ]

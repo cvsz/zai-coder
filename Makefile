@@ -12,7 +12,7 @@ PATCH ?=
 PACKAGE_NAME ?= zai-coder-clean-release
 SAFETY := ./scripts/safety-dry-run.sh --apply $(APPLY) --
 
-.PHONY: help dry-run doctor install install-dry-run uninstall post-install-check test compile safety-check repo-check secret-scan stage-manifest-check verify-source-package release-build release-checksums release-sbom github-stage-manifest github-create-repo github-push github-release scan ask chat serve run-command patch-check patch-apply package package-check clean-preview clean-safe models status final-release-status tui tui-dry-run tui-check tui-command-center tui-agent-hub tui-flow-stream tui-architect-tree tui-creative-canvas tui-operation-gate gpg-commit gpg-push gpg-tag gpg-doctor gpg-list-keys gpg-loopback
+.PHONY: help dry-run doctor install install-dry-run uninstall post-install-check test compile safety-check repo-check secret-scan stage-manifest-check verify-source-package release-build release-checksums release-sbom github-stage-manifest github-create-repo github-push github-release scan ask chat serve run-command patch-check patch-apply package package-check clean-preview clean-safe models status final-release-status tui tui-dry-run tui-check tui-command-center tui-agent-hub tui-flow-stream tui-architect-tree tui-creative-canvas tui-operation-gate web-check web-migration-report gpg-commit gpg-push gpg-tag gpg-doctor gpg-list-keys gpg-loopback production-runtime-check
 
 help:
 	@printf '%s\n' 'ZAI Coder Makefile targets:'
@@ -33,6 +33,8 @@ help:
 	@printf '%s\n' '  make patch-check PATCH=fix.diff'
 	@printf '%s\n' '  make patch-apply PATCH=fix.diff APPLY=1'
 	@printf '%s\n' '  make serve APPLY=1          Start local web UI'
+	@printf '%s\n' '  make web-check              Validate tracked web UI surface'
+	@printf '%s\n' '  make web-migration-report   Print web migration inventory and blockers'
 	@printf '%s\n' '  make clean-safe APPLY=1     Remove only safe cache files'
 	@printf '%s\n' '  make package APPLY=1        Build clean release TGZ + SHA256'
 	@printf '%s\n' '  make final-release-status   Preview final release status'
@@ -44,6 +46,7 @@ help:
 	@printf '%s\n' '  make gpg-doctor             GPG setup doctor'
 	@printf '%s\n' '  make gpg-list-keys          List GPG keys'
 	@printf '%s\n' '  make gpg-loopback           GPG loopback check'
+	@printf '%s\n' '  make production-runtime-check  v51 Production Runtime Gate'
 	@printf '%s\n' ''
 	@printf '%s\n' 'Safety: APPLY defaults to 0. Commands are printed, not executed, until APPLY=1.'
 	@printf '%s\n' 'Blocked: git add ., git add -A, --no-verify, force push, broad rm -rf, apps/zlms/**, secrets/generated artifacts.'
@@ -107,6 +110,7 @@ repo-check:
 	bash ./scripts/repo/repo-check.sh
 	./scripts/repo/check-generated-state.sh
 	./scripts/repo/check-ci-pytest-setup.sh
+	$(MAKE) --no-print-directory web-check APPLY=1
 
 secret-scan:
 	bash ./scripts/repo/secret-scan-safe.sh
@@ -149,6 +153,13 @@ chat:
 
 serve:
 	$(SAFETY) ./zai-coder serve --host "$(HOST)" --port "$(PORT)"
+
+web-check:
+	$(SAFETY) $(PYTHON) -m pytest -q tests/test_web_surface.py
+	$(SAFETY) $(PYTHON) scripts/repo/web-migration-report.py --format json --strict
+
+web-migration-report:
+	$(PYTHON) scripts/repo/web-migration-report.py --format markdown --strict
 
 run-command:
 	$(SAFETY) ./zai-coder run "$(COMMAND)"
@@ -235,3 +246,6 @@ gpg-list-keys:
 
 gpg-loopback:
 	$(SAFETY) ./scripts/git/gpg-loopback.sh
+
+production-runtime-check:
+	$(SAFETY) bash ./scripts/production/production-runtime-check.sh

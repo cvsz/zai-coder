@@ -26,6 +26,7 @@ rsync -a --exclude '.git' \
     --exclude '__pycache__' \
     --exclude '*.pyc' \
     --exclude '.pytest_cache' \
+    --exclude 'node_modules' \
     --exclude '.env' \
     --exclude 'data/*.db' \
     --exclude 'data/tasks.db' \

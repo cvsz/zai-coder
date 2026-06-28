@@ -33,3 +33,14 @@ def sla_template() -> dict:
         "response_targets": {"sev1": "4h", "sev2": "1 business day", "sev3": "3 business days"},
         "exclusions": ["internet provider outage", "Cloudflare account misconfiguration", "host resource exhaustion"],
     }
+
+def export_slo_dashboard() -> dict:
+    import datetime
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    return {
+        "dashboard_name": "SLO/SLA Dashboard",
+        "generated_at": now,
+        "slos": slo_templates(),
+        "slas": [sla_template()],
+        "status": "active"
+    }

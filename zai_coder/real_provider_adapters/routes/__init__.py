@@ -1,4 +1,5 @@
 from __future__ import annotations
+from zai_coder.core.booleans import coerce_bool
 from zai_coder.real_provider_adapters.models import ProviderContext
 from zai_coder.real_provider_adapters.executor import ProviderExecutor
 from zai_coder.real_provider_adapters.audit import ProviderAuditLog
@@ -15,11 +16,11 @@ def route_providers_status() -> dict:
 
 def _ctx(payload: dict | None = None) -> ProviderContext:
     payload = payload or {}
-    return ProviderContext(provider=payload.get('provider', 'github'), actor=payload.get('actor', 'local-operator'), roles=tuple(payload.get('roles', ['admin'])), scopes=tuple(payload.get('scopes', ['providers:plan'])), apply=bool(payload.get('apply', False)), approval_id=payload.get('approval_id', ''), env=dict(payload.get('env', {})))
+    return ProviderContext(provider=payload.get('provider', 'github'), actor=payload.get('actor', 'local-operator'), roles=tuple(payload.get('roles', ['admin'])), scopes=tuple(payload.get('scopes', ['providers:plan'])), apply=coerce_bool(payload.get('apply', False)), approval_id=payload.get('approval_id', ''), env=dict(payload.get('env', {})))
 
 def route_provider_actions() -> dict: return {'actions': list_provider_actions()}
 def route_provider_env_check(payload: dict | None = None) -> dict:
-    payload = payload or {}; return validate_provider_env(payload.get('provider', 'github'), dict(payload.get('env', {})), bool(payload.get('apply', False)))
+    payload = payload or {}; return validate_provider_env(payload.get('provider', 'github'), dict(payload.get('env', {})), coerce_bool(payload.get('apply', False)))
 def route_github_create_repo_plan(payload: dict | None = None) -> dict:
     payload = payload or {}; ctx = _ctx({**payload, 'provider': 'github'}); op = github_create_repo_operation(payload.get('repo_name', 'zai-coder-control-plane'), payload.get('visibility', 'public')); return ProviderExecutor().execute(ctx, op).to_dict()
 def route_github_release_plan(payload: dict | None = None) -> dict:

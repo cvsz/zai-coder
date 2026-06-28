@@ -1,8 +1,9 @@
 from pathlib import Path
+import subprocess
 
 from zai_coder.github_ready_core.repo_policy import is_safe_stage_path, find_forbidden_command_text
 from zai_coder.github_ready_core.stage_manifest import load_stage_manifest, validate_stage_manifest, render_git_add_commands
-from zai_coder.github_ready_core.secret_scan import scan_text
+from zai_coder.github_ready_core.secret_scan import scan_repo, scan_text
 from zai_coder.github_ready_core.repo_check import check_required_files, repo_ready_report
 from zai_coder.github_ready_core.release_notes import render_release_notes
 
@@ -49,6 +50,20 @@ def test_secret_scan_ignores_placeholders_and_runtime_tokens():
     assert scan_text("SESSION_SECRET=CHANGE_ME_GENERATE_WITH_OPENSSL") == []
     assert scan_text("token = extract_auth_token(request)") == []
     assert scan_text("API_KEY=livevalue123456789") != []
+
+
+def test_secret_scan_scans_tracked_release_files_not_untracked_vendor_drops(tmp_path):
+    subprocess.run(["git", "init"], cwd=tmp_path, check=True, stdout=subprocess.DEVNULL)
+    tracked = tmp_path / "tracked.py"
+    tracked.write_text("TOKEN = extract_auth_token(request)\n", encoding="utf-8")
+    subprocess.run(["git", "add", "tracked.py"], cwd=tmp_path, check=True, stdout=subprocess.DEVNULL)
+    vendor = tmp_path / "web" / "open-webui"
+    vendor.mkdir(parents=True)
+    (vendor / "main.py").write_text("API_KEY=livevalue123456789\n", encoding="utf-8")
+
+    report = scan_repo(tmp_path)
+
+    assert report == {"ok": True, "findings": []}
 
 
 def test_makefile_wires_ci_targets():

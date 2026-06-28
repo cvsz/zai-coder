@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from zai_coder.core.booleans import coerce_bool
 from .models import ConnectorManifest
 
 
@@ -17,8 +18,8 @@ def validate_connector_manifest_payload(payload: dict) -> dict:
             required_env=tuple(payload.get("required_env", [])),
             required_permissions=tuple(payload.get("required_permissions", ["connector:view"])),
             supported_actions=tuple(payload.get("supported_actions", ["status"])),
-            webhook_supported=bool(payload.get("webhook_supported", False)),
-            sync_supported=bool(payload.get("sync_supported", True)),
+            webhook_supported=coerce_bool(payload.get("webhook_supported", False)),
+            sync_supported=coerce_bool(payload.get("sync_supported", True)),
         )
     except Exception as exc:
         return {"ok": False, "issues": [str(exc)]}

@@ -27,7 +27,7 @@ fi
 
 # Check version
 VERSION=$("${LAUNCHER}" --version 2>&1)
-if [[ "${VERSION}" != *"0.1.3"* ]]; then
+if [[ "${VERSION}" != *"0.1.4"* ]]; then
   echo "Check: FAILED - version mismatch (got: ${VERSION})"
   exit 1
 fi

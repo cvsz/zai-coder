@@ -1,11 +1,12 @@
 # Evaluation and Benchmark System
 
-ZAI Coder is packaged with an internalized regression and evaluation benchmarking tool suite (`evals`). This system tests the safety, redaction, task workflows, and index capabilities deterministically against pre-defined prompt payloads.
+ZAI Coder ships a deterministic local evaluation suite for the real agent, command-safety, and retrieval paths.
 
 ## Features
-- **Offline Evaluation**: Relies on a local `Echo` simulated model mapping assertions, allowing regressions to be discovered without needing OpenAI/Ollama limits.
-- **Suite Segmentation**: Separates tests cleanly into `safety`, `agents`, `rag`, `tool-runtime`, `model-router`, and `server`.
-- **JSON Benchmarks**: Dumps full results into `.json` logs, designed for CI/CD tracking thresholds.
+- **Planner contract evals**: The standalone `evals/run_local.py` harness executes the real `planner` agent prompt path and grades the output against exact contract rules.
+- **Safety evals**: The package runner executes `ToolRuntime` with real safety and redaction checks.
+- **Retrieval evals**: The package runner executes `LocalRAG` against the workspace index.
+- **JSON reports**: Results are written as structured JSON for CI/CD tracking and regression diffs.
 
 ## CLI Usage
 
@@ -14,13 +15,22 @@ ZAI Coder is packaged with an internalized regression and evaluation benchmarkin
 ./zai-coder eval list
 
 # Run a suite
-./zai-coder eval run --suite safety
+./zai-coder eval run --suite agents
 
 # Run benchmarking directly to JSON stdout
-./zai-coder bench models
+./zai-coder bench agents
 ./zai-coder bench safety
 ```
 
+## Standalone Harness
+
+```bash
+python3 evals/run_local.py --suite planner-contract
+```
+
+The harness writes `evals/results/latest.json` and exits non-zero if any case fails.
+
 ## Structure
-- `assets/evals/*.json` : JSON-serialized cases representing a single test input/output mapping limit.
-- `zai_coder/evals/runner.py` : Invokes localized logic or dry-runs API layers simulating the inputs to ensure safety boundaries block malicious paths.
+- `assets/evals/*.json` : Workspace-managed suites for command safety, agent prompt contracts, and retrieval checks.
+- `evals/cases.jsonl` : Standalone planner-contract cases for the local harness.
+- `zai_coder/evals/runner.py` : Executes the real local path for each suite kind and grades the result.

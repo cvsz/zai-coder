@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from zai_coder.core.booleans import coerce_bool
 from .models import GovernancePolicy, GovernanceDecision
 
 
@@ -44,15 +45,16 @@ def policy_manifest() -> list[dict]:
 def evaluate_operation(payload: dict, policies: list[GovernancePolicy] | None = None) -> list[GovernanceDecision]:
     policies = policies or DEFAULT_POLICIES
     decisions: list[GovernanceDecision] = []
-    mutating = bool(payload.get("mutating", False))
-    apply = bool(payload.get("apply", False))
+    mutating = coerce_bool(payload.get("mutating", False))
+    apply = coerce_bool(payload.get("apply", False))
     approval_id = payload.get("approval_id", "")
-    public_exposure = bool(payload.get("public_exposure", False))
-    access_enabled = bool(payload.get("cloudflare_access_enabled", False))
-    secret_scan_ok = payload.get("secret_scan_ok", True)
+    public_exposure = coerce_bool(payload.get("public_exposure", False))
+    access_enabled = coerce_bool(payload.get("cloudflare_access_enabled", False))
+    dry_run_completed = coerce_bool(payload.get("dry_run_completed", False))
+    secret_scan_ok = coerce_bool(payload.get("secret_scan_ok", True), default=True)
 
     for policy in policies:
-        if policy.id == "gov-001" and mutating and apply and not payload.get("dry_run_completed", False):
+        if policy.id == "gov-001" and mutating and apply and not dry_run_completed:
             decisions.append(GovernanceDecision(False, policy.id, "mutating apply requires prior dry-run", policy.severity, True))
         elif policy.id == "gov-002" and apply and not str(approval_id).startswith("approved_"):
             decisions.append(GovernanceDecision(False, policy.id, "apply requires approval id", policy.severity, True))

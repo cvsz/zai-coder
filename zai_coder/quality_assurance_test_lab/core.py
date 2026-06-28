@@ -1,5 +1,6 @@
 from __future__ import annotations
 import json
+import shlex
 from pathlib import Path
 from .models import TestCase, FixtureSpec, QualityGate
 
@@ -24,17 +25,44 @@ def get_test_matrix(): return [t.to_dict() for t in TESTS]
 def fixture_catalog(): return [f.to_dict() for f in FIXTURES]
 def quality_gates(): return [g.to_dict() for g in GATES]
 
+def run_pytest(command: str) -> dict:
+    import subprocess
+    try:
+        result = subprocess.run(shlex.split(command), capture_output=True, text=True, timeout=60)
+        passed = result.returncode == 0
+        return {"passed": passed, "stdout": result.stdout, "stderr": result.stderr}
+    except Exception as e:
+        return {"passed": False, "stdout": "", "stderr": str(e)}
+
 def validation_report() -> dict:
     rows = [*TESTS, *FIXTURES, *GATES]
     reports = [{"id": x.id, "issues": x.validate()} for x in rows]
     return {"ok": all(not r["issues"] for r in reports), "reports": reports}
 
-def smoke_plan() -> dict:
-    smoke = [t.to_dict() for t in TESTS if t.test_type == "smoke"]
-    return {"dry_run": True, "suite": "smoke", "tests": smoke, "command": "python -m pytest -q", "execute": False}
+def smoke_plan(execute: bool = False) -> dict:
+    smoke = [t for t in TESTS if t.test_type == "smoke"]
+    results = []
+    if execute:
+        for t in smoke:
+            res = run_pytest(t.command)
+            results.append({"test": t.id, "passed": res["passed"], "stdout": res["stdout"]})
+    
+    return {
+        "dry_run": not execute,
+        "suite": "smoke",
+        "tests": [t.to_dict() for t in smoke],
+        "execute": execute,
+        "results": results
+    }
 
-def regression_report() -> dict:
+def regression_report(execute: bool = False) -> dict:
     matrix = get_test_matrix()
+    results = []
+    if execute:
+        for t in TESTS:
+            res = run_pytest(t.command)
+            results.append({"test": t.id, "passed": res["passed"], "stdout": res["stdout"]})
+            
     return {
         "kind": "zai-qa-regression-report",
         "total": len(matrix),
@@ -42,6 +70,8 @@ def regression_report() -> dict:
         "critical": len([t for t in matrix if t["priority"] == "critical"]),
         "blocked": 0,
         "status": "ready",
+        "execute": execute,
+        "results": results,
         "external_publish": False,
     }
 
@@ -57,23 +87,23 @@ def quality_gate_evaluation(metrics: dict | None = None) -> dict:
         results.append({"gate": gate.to_dict(), "value": value, "passed": passed})
     return {"ok": all(r["passed"] or not r["gate"]["required"] for r in results), "metrics": metrics, "results": results, "dry_run": True}
 
-def evidence_bundle() -> dict:
+def evidence_bundle(execute: bool = False) -> dict:
     return {
         "kind": "zai-qa-evidence-bundle",
         "version": "1.0",
         "test_matrix": get_test_matrix(),
         "fixtures": fixture_catalog(),
-        "regression": regression_report(),
+        "regression": regression_report(execute=execute),
         "quality_gates": quality_gate_evaluation(),
         "validation": validation_report(),
         "external_publish": False,
         "requires_review": True,
     }
 
-def write_qa_evidence(root=".", out="qa/evidence/qa-evidence.json") -> str:
+def write_qa_evidence(root=".", out="qa/evidence/qa-evidence.json", execute: bool = False) -> str:
     path = Path(root) / out
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(evidence_bundle(), indent=2, sort_keys=True), encoding="utf-8")
+    path.write_text(json.dumps(evidence_bundle(execute=execute), indent=2, sort_keys=True), encoding="utf-8")
     return str(path)
 
 def write_qa_report(root=".", out="qa/reports/qa-test-lab-report.md") -> str:
@@ -89,7 +119,7 @@ def qa_status():
 def qa_overview():
     return {"status": qa_status(), "matrix": get_test_matrix(), "fixtures": fixture_catalog(), "gates": quality_gates(), "validation": validation_report(), "regression": regression_report()}
 
-def qa_demo(root="."):
-    evidence = write_qa_evidence(root)
+def qa_demo(root=".", execute: bool = False):
+    evidence = write_qa_evidence(root, execute=execute)
     report = write_qa_report(root)
-    return {"evidence_path": evidence, "report_path": report, "bundle": evidence_bundle()}
+    return {"evidence_path": evidence, "report_path": report, "bundle": evidence_bundle(execute=execute)}

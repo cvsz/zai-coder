@@ -1,0 +1,111 @@
+version: 1
+organization: ZeazDev
+environment: ${ENVIRONMENT}
+account_id: ${CLOUDFLARE_ACCOUNT_ID}
+applications:
+  - key: auth
+    name: zeazdev-${ENVIRONMENT}-auth
+    domain: auth.${PRIMARY_DOMAIN}
+    type: self_hosted
+    session_duration: 24h
+    app_launcher_visible: false
+    auto_redirect_to_identity: true
+    allowed_idps: [zeazdev-ai-saml, zeazdev-finance-saml]
+    service_tokens_enabled: true
+    audit:
+      event_bus: access_app_events
+      severity: high
+    security:
+      mfa: required
+      webauthn: recommended
+  - key: zveo
+    name: zeazdev-${ENVIRONMENT}-zveo
+    domain: zveo.${PRIMARY_DOMAIN}
+    type: self_hosted
+    session_duration: 8h
+    allowed_idps: [zeazdev-ai-saml]
+    service_tokens_enabled: true
+    security: {mfa: required, webauthn: recommended}
+  - key: studio
+    name: zeazdev-${ENVIRONMENT}-studio
+    domain: studio.${PRIMARY_DOMAIN}
+    type: self_hosted
+    session_duration: 8h
+    allowed_idps: [zeazdev-ai-saml]
+    service_tokens_enabled: true
+    security: {mfa: required, webauthn: recommended}
+  - key: analytics
+    name: zeazdev-${ENVIRONMENT}-analytics
+    domain: analytics.${PRIMARY_DOMAIN}
+    type: self_hosted
+    session_duration: 8h
+    allowed_idps: [zeazdev-ai-saml]
+    service_tokens_enabled: true
+    security: {mfa: required, webauthn: recommended}
+  - key: app
+    name: zeazdev-${ENVIRONMENT}-wallet-app
+    domain: app.${PRIMARY_DOMAIN}
+    type: self_hosted
+    session_duration: 4h
+    allowed_idps: [zeazdev-finance-saml]
+    service_tokens_enabled: true
+    security: {mfa: required, webauthn: required, step_up_auth: true}
+  - key: pay
+    name: zeazdev-${ENVIRONMENT}-zpay
+    domain: pay.${PRIMARY_DOMAIN}
+    type: self_hosted
+    session_duration: 4h
+    allowed_idps: [zeazdev-finance-saml]
+    service_tokens_enabled: true
+    security: {mfa: required, webauthn: required, step_up_auth: true}
+  - key: treasury
+    name: zeazdev-${ENVIRONMENT}-treasury
+    domain: treasury.${PRIMARY_DOMAIN}
+    type: self_hosted
+    session_duration: 2h
+    allowed_idps: [zeazdev-finance-saml]
+    service_tokens_enabled: true
+    security: {mfa: required, webauthn: required, step_up_auth: true}
+  - key: admin-wallet
+    name: zeazdev-${ENVIRONMENT}-admin-wallet
+    domain: admin-wallet.${PRIMARY_DOMAIN}
+    type: self_hosted
+    session_duration: 1h
+    allowed_idps: [zeazdev-finance-saml]
+    service_tokens_enabled: true
+    security: {mfa: required, webauthn: required, step_up_auth: true}
+  - key: ztrader
+    name: zeazdev-${ENVIRONMENT}-ztrader
+    domain: ztrader.${PRIMARY_DOMAIN}
+    type: self_hosted
+    session_duration: 4h
+    allowed_idps: [zeazdev-finance-saml]
+    service_tokens_enabled: true
+    security: {mfa: required, webauthn: required, step_up_auth: true}
+  - key: ztrader-api
+    name: zeazdev-${ENVIRONMENT}-ztrader-api
+    domain: api-ztrader.${PRIMARY_DOMAIN}
+    type: self_hosted
+    session_duration: 4h
+    allowed_idps: [zeazdev-finance-saml]
+    service_tokens_enabled: true
+    security: {mfa: required, webauthn: required}
+
+  # ── Internal Tooling ───────────────────────────────────────────────────────
+  - key: zfbauto
+    name: zeazdev-${ENVIRONMENT}-zfbauto
+    domain: zfbauto.${PRIMARY_DOMAIN}
+    type: self_hosted
+    session_duration: 12h
+    app_launcher_visible: true
+    auto_redirect_to_identity: false
+    allowed_idps: [zeazdev-ai-saml]
+    service_tokens_enabled: true
+    security:
+      mfa: required
+      webauthn: recommended
+    tags: [internal-tools, facebook-automation, ai-content]
+    notes: >
+      Facebook Auto-Post bot with AI content generation dashboard.
+      Internal-only tool for social media management team.
+      Accessible at zfbauto.zeaz.dev via Cloudflare Zero Trust.

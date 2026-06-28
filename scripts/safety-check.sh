@@ -15,7 +15,7 @@ check_secret_pattern() {
   local label="$1"
   local pattern="$2"
   local hits
-  hits=$(grep -RInE --exclude-dir=.git --exclude-dir=.venv --exclude-dir=__pycache__ --exclude='*.pyc' "$pattern" . 2>/dev/null || true)
+  hits=$(grep -RInE --exclude-dir=.git --exclude-dir=.venv --exclude-dir=__pycache__ --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.pytest_cache --exclude='*.pyc' "$pattern" . 2>/dev/null || true)
   if [[ -n "$hits" ]]; then
     echo ""
     echo "SECRET CHECK FAILED: $label"

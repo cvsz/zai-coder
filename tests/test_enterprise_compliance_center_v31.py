@@ -57,6 +57,10 @@ def test_frameworks_controls_evidence(tmp_path):
     assert control_validation_report()["ok"] is True
     assert evidence_path_allowed("docs/a.md") is True
     assert evidence_path_allowed(".env") is False
+    assert evidence_path_allowed("docs/../secrets.txt") is False
+    assert evidence_path_allowed("/docs/a.md") is False
+    assert evidence_path_allowed("docs/credentials/api.md") is False
+    assert evidence_path_allowed("reports/BUILD_REPORT.txt") is True
     item = map_evidence("cc-access-001", "role_matrix", "docs/roles.md")
     assert item.control_id == "cc-access-001"
     report = evidence_gap_report([find_control("cc-access-001").to_dict()], [item.to_dict()])

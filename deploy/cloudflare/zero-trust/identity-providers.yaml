@@ -1,0 +1,20 @@
+version: 1
+identity_provider_type: ${IDENTITY_PROVIDER_TYPE}
+providers:
+  - key: zeazdev-ai-saml
+    type: saml
+    metadata_url: ${IDENTITY_PROVIDER_METADATA_URL}
+    attributes: [email, name, username, groups, role, ai_access, publishing_access]
+    headers: [CF-ZVEO-User, CF-ZVEO-Role, CF-ZVEO-Groups]
+    key_storage: external_only
+  - key: zeazdev-finance-saml
+    type: saml
+    metadata_url: ${IDENTITY_PROVIDER_METADATA_URL}
+    attributes: [email, name, username, groups, role, wallet_access, crypto_access]
+    headers: [CF-ZPAY-User, CF-ZPAY-Role, CF-ZPAY-Groups]
+    key_storage: external_only
+oidc_alternative:
+  enabled_when: IDENTITY_PROVIDER_TYPE=oidc
+  issuer_url: ${OIDC_ISSUER_URL}
+  client_id_env: OIDC_CLIENT_ID
+  client_secret_env: OIDC_CLIENT_SECRET

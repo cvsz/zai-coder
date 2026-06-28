@@ -1,6 +1,6 @@
 from pathlib import Path
 from zai_coder.quality_assurance_test_lab.models import TestCase as QATestCase, FixtureSpec, QualityGate
-from zai_coder.quality_assurance_test_lab.core import get_test_matrix, fixture_catalog, quality_gates, validation_report, smoke_plan, regression_report, quality_gate_evaluation, evidence_bundle, write_qa_evidence, write_qa_report, qa_demo
+from zai_coder.quality_assurance_test_lab.core import get_test_matrix, fixture_catalog, quality_gates, validation_report, smoke_plan, regression_report, quality_gate_evaluation, evidence_bundle, write_qa_evidence, write_qa_report, qa_demo, run_pytest
 from zai_coder.quality_assurance_test_lab.routes import *
 
 def test_models_validation():
@@ -20,6 +20,25 @@ def test_core_qa():
     assert regression_report()["external_publish"] is False
     assert quality_gate_evaluation()["ok"] is True
     assert evidence_bundle()["requires_review"] is True
+
+def test_run_pytest_preserves_quoted_arguments(monkeypatch):
+    calls = []
+
+    class Result:
+        returncode = 0
+        stdout = "ok"
+        stderr = ""
+
+    def fake_run(args, **kwargs):
+        calls.append((args, kwargs))
+        return Result()
+
+    monkeypatch.setattr("subprocess.run", fake_run)
+
+    result = run_pytest('python -m pytest "tests/path with spaces.py" -q')
+
+    assert result["passed"] is True
+    assert calls[0][0] == ["python", "-m", "pytest", "tests/path with spaces.py", "-q"]
 
 def test_exports(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)

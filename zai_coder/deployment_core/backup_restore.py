@@ -52,14 +52,28 @@ def create_backup(project_root: str | Path, output_dir: str | Path = "backups", 
     return BackupPlan(str(archive), rels, dry_run=False)
 
 
+def _unsafe_archive_entries(members: Iterable[tarfile.TarInfo]) -> list[str]:
+    unsafe = []
+    for member in members:
+        normalized = member.name.replace("\\", "/")
+        parts = Path(normalized).parts
+        if normalized.startswith("/") or ".." in parts or normalized.startswith("apps/zlms/"):
+            unsafe.append(member.name)
+            continue
+        if not (member.isfile() or member.isdir()):
+            unsafe.append(member.name)
+    return unsafe
+
+
 def restore_backup(archive_path: str | Path, project_root: str | Path, apply: bool = False) -> dict:
     archive = Path(archive_path)
     root = Path(project_root)
     if not archive.exists():
         raise FileNotFoundError(str(archive))
     with tarfile.open(archive, "r:gz") as tar:
-        names = tar.getnames()
-        unsafe = [name for name in names if name.startswith("/") or ".." in Path(name).parts or name.startswith("apps/zlms/")]
+        members = tar.getmembers()
+        names = [member.name for member in members]
+        unsafe = _unsafe_archive_entries(members)
         if unsafe:
             raise ValueError(f"unsafe archive entries: {unsafe[:5]}")
         if not apply:
