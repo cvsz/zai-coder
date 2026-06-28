@@ -1,0 +1,79 @@
+version: 1
+rbac_groups:
+  ai: [zveo-admin, zveo-creator, zveo-publisher, zveo-analytics]
+  finance: [wallet-admin, wallet-operator, treasury, compliance, wallet-auditor]
+policies:
+  - app_key: auth
+    decision: allow
+    precedence: 1
+    include:
+      - emails_ending_in: [zeaz.dev]
+    require:
+      - mfa
+  - app_key: zveo
+    decision: allow
+    precedence: 1
+    include: [{groups: [zveo-admin, zveo-creator, zveo-publisher, zveo-analytics]}]
+    require: [mfa]
+  - app_key: studio
+    decision: allow
+    precedence: 1
+    include: [{groups: [zveo-admin, zveo-creator]}]
+    require: [mfa]
+  - app_key: analytics
+    decision: allow
+    precedence: 1
+    include: [{groups: [zveo-admin, zveo-analytics]}]
+    require: [mfa]
+  - app_key: app
+    decision: allow
+    precedence: 1
+    include: [{groups: [wallet-admin, wallet-operator, treasury, compliance]}]
+    require: [mfa, webauthn, valid_service_token]
+    session_ttl: 4h
+  - app_key: pay
+    decision: allow
+    precedence: 1
+    include: [{groups: [wallet-admin, wallet-operator, treasury]}]
+    require: [mfa, webauthn, valid_service_token]
+    session_ttl: 4h
+  - app_key: treasury
+    decision: allow
+    precedence: 1
+    include: [{groups: [wallet-admin, treasury, compliance, wallet-auditor]}]
+    require: [mfa, webauthn, valid_service_token, step_up_auth]
+    session_ttl: 4h
+  - app_key: admin-wallet
+    decision: allow
+    precedence: 1
+    include: [{groups: [wallet-admin, compliance]}]
+    require: [mfa, webauthn, valid_service_token, step_up_auth]
+    session_ttl: 4h
+  - app_key: ztrader
+    decision: allow
+    precedence: 1
+    include: [{groups: [wallet-admin, wallet-operator, treasury, compliance]}]
+    require: [mfa, webauthn, valid_service_token]
+    session_ttl: 4h
+  - app_key: ztrader-api
+    decision: allow
+    precedence: 1
+    include: [{groups: [wallet-admin, wallet-operator, treasury, compliance]}]
+    require: [mfa, webauthn, valid_service_token]
+    session_ttl: 4h
+
+  # ── Internal Tools ──────────────────────────────────────────────────────────
+  - app_key: zfbauto
+    decision: allow
+    precedence: 1
+    include:
+      - emails_ending_in: [zeaz.dev]
+    require: [mfa]
+    session_ttl: 12h
+    notes: Internal social media automation dashboard — accessible by any @zeaz.dev team member
+
+audit_hooks:
+  - destination: cloudflare-logpush
+    dataset: access_requests
+  - destination: siem
+    required_fields: [application, user_email, decision, country, service_token_id]
