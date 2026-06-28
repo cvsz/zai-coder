@@ -1,6 +1,6 @@
 # ZAI Coder Roadmap
 
-Last updated: 2026-06-27
+Last updated: 2026-06-28
 
 This is the canonical tracked roadmap for the ZAI Coder Control Plane. It is evidence-backed by the current repository tree and separates local release readiness from external, always-on production service readiness.
 

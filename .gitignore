@@ -82,3 +82,8 @@ status.txt
 # Local self-dev automation kit artifacts.
 zai-coder-self-dev-kit.zip
 zai-coder-self-dev-kit/
+
+# Local backups and testing evals/skills
+backups/
+evals/
+skills/zai-coder/
