@@ -13,4 +13,10 @@ if [ "$APPLY" != "1" ]; then
 fi
 
 mkdir -p backups
-tar --exclude=release --exclude=node_modules --exclude=.git --exclude=apps/zlms -czf "backups/zai-coder-control-plane-backup-$(date +%Y%m%d-%H%M%S).tar.gz" data logs storage
+BACKUP_ITEMS=()
+for item in data logs storage; do
+  if [ -d "$item" ]; then
+    BACKUP_ITEMS+=("$item")
+  fi
+done
+tar --exclude=release --exclude=node_modules --exclude=.git --exclude=apps/zlms -czf "backups/zai-coder-control-plane-backup-$(date +%Y%m%d-%H%M%S).tar.gz" "${BACKUP_ITEMS[@]}"
