@@ -423,6 +423,49 @@ def cmd_deploy(args) -> int:
     return 0
 
 
+def cmd_project_config_generator(args) -> int:
+    from zai_coder.deploy_installer_core.project_config_generator import ProjectConfigGenerator
+
+    generator = ProjectConfigGenerator(args.out)
+    if args.preset:
+        try:
+            overrides = {}
+            if args.model:
+                overrides["model"] = args.model
+            if args.base_url:
+                overrides["base_url"] = args.base_url
+            generator.generate_from_preset(args.preset, overrides)
+            print(f"Generated configuration from preset '{args.preset}' to {generator.output_path}")
+            return 0
+        except Exception as exc:
+            print(f"Error generating config from preset: {exc}")
+            return 1
+    else:
+        # Custom config
+        if not args.provider or not args.base_url or not args.model:
+            print("Error: --provider, --base-url, and --model are required for custom config generation.")
+            return 1
+        try:
+            fallback = [m.strip() for m in (args.fallback_models or "").split(",") if m.strip()]
+            generator.generate_custom(
+                provider=args.provider,
+                base_url=args.base_url,
+                model=args.model,
+                fallback_models=fallback,
+                workspace=args.workspace,
+                max_tokens=args.max_tokens,
+                temperature=args.temperature,
+                safe_mode=not args.unsafe,
+                allow_apps_zlms=args.allow_apps_zlms,
+                tool_timeout_seconds=args.tool_timeout,
+            )
+            print(f"Generated custom configuration to {generator.output_path}")
+            return 0
+        except Exception as exc:
+            print(f"Error generating custom config: {exc}")
+            return 1
+
+
 def cmd_env_exporter(args) -> int:
     from zai_coder.deploy_installer_core.env_exporter import export_env, import_env
 
@@ -891,6 +934,21 @@ def build_parser() -> argparse.ArgumentParser:
     repair_apply.add_argument("patch_file")
     repair_apply.add_argument("--apply", action="store_true")
     repair_apply.set_defaults(func=cmd_repair)
+
+    cfg_gen_cmd = sub.add_parser("config-generator", help="Generate project configuration files from presets or custom fields")
+    cfg_gen_cmd.add_argument("--preset", choices=["ollama", "openai", "openrouter"], help="Generate from a pre-defined profile")
+    cfg_gen_cmd.add_argument("--provider", help="Custom LLM provider (e.g., openai, ollama)")
+    cfg_gen_cmd.add_argument("--base-url", help="Custom provider base URL")
+    cfg_gen_cmd.add_argument("--model", help="Custom LLM model name")
+    cfg_gen_cmd.add_argument("--fallback-models", help="Comma-separated list of fallback models")
+    cfg_gen_cmd.add_argument("--workspace", default=".", help="Workspace path")
+    cfg_gen_cmd.add_argument("--max-tokens", type=int, default=2048, help="Max tokens limit")
+    cfg_gen_cmd.add_argument("--temperature", type=float, default=0.05, help="Sampling temperature")
+    cfg_gen_cmd.add_argument("--unsafe", action="store_true", help="Disable safety mode")
+    cfg_gen_cmd.add_argument("--allow-apps-zlms", action="store_true", help="Allow apps/zlms/ path access")
+    cfg_gen_cmd.add_argument("--tool-timeout", type=int, default=180, help="Tool timeout in seconds")
+    cfg_gen_cmd.add_argument("--out", help="Output path (defaults to ~/.zai-coder/config.json)")
+    cfg_gen_cmd.set_defaults(func=cmd_project_config_generator)
 
     env_exp_cmd = sub.add_parser("env-exporter", help="Export and encrypt/decrypt environment files")
     env_exp_sub = env_exp_cmd.add_subparsers(dest="env_exporter_cmd", required=True)
