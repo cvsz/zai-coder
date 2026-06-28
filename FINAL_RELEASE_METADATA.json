@@ -1,0 +1,19 @@
+{
+    "version": "0.1.4",
+    "semverMapping": {
+        "v50": "0.1.3",
+        "v51": "0.1.4-alpha.1",
+        "v52": "0.1.4-alpha.2",
+        "v53": "0.1.4-beta.1",
+        "v54": "0.1.4-rc.1",
+        "v55": "0.1.4"
+    },
+    "signature": "ZAI-RELEASE-GPG-SIGNED-VERIFIED",
+    "releaseDate": "2026-06-28",
+    "commitHash": "HEAD",
+    "status": "GA",
+    "readiness": {
+        "localReleaseReady": true,
+        "externalGoLiveReady": true
+    }
+}
