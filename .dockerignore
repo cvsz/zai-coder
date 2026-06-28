@@ -1,0 +1,70 @@
+# ─── Version control ─────────────────────────────────────────────────────────
+.git
+.gitignore
+.gitattributes
+.github
+
+# ─── Heavy directories not needed at runtime ─────────────────────────────────
+web/
+reports/
+docs/
+examples/
+developer/
+final-release/
+scalability/
+go-live/
+dr/
+qa/
+backups/
+evidence/
+migration/
+marketplace/
+out/
+dist/
+release/
+evals/
+assets/
+deploy/
+
+# ─── Dev environments ─────────────────────────────────────────────────────────
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+*.egg-info/
+.eggs/
+
+# ─── CI/IDE/Config tools ─────────────────────────────────────────────────────
+.agents/
+.claude/
+.codex/
+.zai-coder/
+.vscode/
+.idea/
+*.md
+!README.md
+
+# ─── Secrets and local config ────────────────────────────────────────────────
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.crt
+
+# ─── Release artifacts ───────────────────────────────────────────────────────
+*.tgz
+*.zip
+*.tar.gz
+*.sha256
+*.txt
+!requirements*.txt
+
+# ─── Test and lint configs ───────────────────────────────────────────────────
+pytest.ini
+.editorconfig
+.golangci.yml
+Makefile
