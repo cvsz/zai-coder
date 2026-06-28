@@ -138,6 +138,30 @@
 			</div>
 		</section>
 
+		<section class="rounded-[2rem] border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900" aria-label="Module Control Views">
+			<h2 class="text-lg font-semibold">Module Control Views</h2>
+			<div class="mt-4 grid gap-3 lg:grid-cols-4 sm:grid-cols-2">
+				{#each [
+					{ name: 'Operations', path: '/zai/operations' },
+					{ name: 'Governance', path: '/zai/governance' },
+					{ name: 'Compliance', path: '/zai/compliance' },
+					{ name: 'Provider Routing', path: '/zai/providers' },
+					{ name: 'Marketplace', path: '/zai/marketplace' },
+					{ name: 'Go-Live', path: '/zai/go-live' },
+					{ name: 'Release', path: '/zai/release' },
+					{ name: 'Evals', path: '/zai/evals' }
+				] as view}
+					<a
+						href={view.path}
+						class="flex items-center justify-between rounded-2xl border border-gray-200 bg-gray-50 p-3 hover:bg-gray-100 transition dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-900"
+					>
+						<span class="text-sm font-semibold">{view.name}</span>
+						<span class="text-gray-400">&rarr;</span>
+					</a>
+				{/each}
+			</div>
+		</section>
+
 		<div class="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(420px,0.8fr)]">
 			<section class="space-y-5">
 				<div class="rounded-[2rem] border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
