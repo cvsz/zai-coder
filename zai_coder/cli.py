@@ -422,6 +422,31 @@ def cmd_deploy(args) -> int:
             
     return 0
 
+
+def cmd_env_exporter(args) -> int:
+    from zai_coder.deploy_installer_core.env_exporter import export_env, import_env
+
+    if args.env_exporter_cmd == "export":
+        try:
+            export_env(args.env, args.password, args.out)
+            print(f"Successfully exported and encrypted {args.env} to {args.out}")
+            return 0
+        except Exception as exc:
+            print(f"Error during export: {exc}")
+            return 1
+    elif args.env_exporter_cmd == "import":
+        try:
+            import_env(args.enc, args.password, args.out)
+            print(f"Successfully decrypted and imported {args.enc} to {args.out}")
+            return 0
+        except Exception as exc:
+            print(f"Error during import: {exc}")
+            return 1
+    else:
+        print(f"Unknown env-exporter command: {args.env_exporter_cmd}")
+        return 1
+
+
 def cmd_media(args) -> int:
     if args.kind == "image":
         out = generate_svg_image(args.prompt, args.out)
@@ -866,6 +891,21 @@ def build_parser() -> argparse.ArgumentParser:
     repair_apply.add_argument("patch_file")
     repair_apply.add_argument("--apply", action="store_true")
     repair_apply.set_defaults(func=cmd_repair)
+
+    env_exp_cmd = sub.add_parser("env-exporter", help="Export and encrypt/decrypt environment files")
+    env_exp_sub = env_exp_cmd.add_subparsers(dest="env_exporter_cmd", required=True)
+    
+    env_exp_export = env_exp_sub.add_parser("export", help="Encrypt and export a .env file")
+    env_exp_export.add_argument("--env", default=".env", help="Path to plaintext .env file")
+    env_exp_export.add_argument("--password", required=True, help="Source password for encryption")
+    env_exp_export.add_argument("--out", default=".env.enc", help="Output path for encrypted file")
+    env_exp_export.set_defaults(func=cmd_env_exporter)
+    
+    env_exp_import = env_exp_sub.add_parser("import", help="Decrypt and import an encrypted env file")
+    env_exp_import.add_argument("--enc", default=".env.enc", help="Path to encrypted env file")
+    env_exp_import.add_argument("--password", required=True, help="Source password for decryption")
+    env_exp_import.add_argument("--out", default=".env", help="Output path for decrypted plaintext file")
+    env_exp_import.set_defaults(func=cmd_env_exporter)
 
     media = sub.add_parser("media", help="Generate or transform media assets (image, animation, etc.)")
     media.add_argument("kind", choices=["image", "voice", "music", "animation", "video"])
