@@ -22,7 +22,7 @@ locals {
     # Agent UI
     "zagents",
     # Root
-    "www", "api",
+    "www", "api", "zai",
   ]
 }
 

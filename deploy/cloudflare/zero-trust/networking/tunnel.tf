@@ -15,11 +15,11 @@ resource "cloudflare_tunnel_config" "zeaz_tunnel_config" {
 
   config {
     origin_request {
-      http2_origin        = true
-      no_tls_verify       = false
-      connect_timeout     = "10s"
-      tls_timeout         = "10s"
-      keep_alive_timeout  = "1m30s"
+      http2_origin       = true
+      no_tls_verify      = false
+      connect_timeout    = "10s"
+      tls_timeout        = "10s"
+      keep_alive_timeout = "1m30s"
     }
 
     # ─── Identity ──────────────────────────────────────────────────────────────
@@ -136,6 +136,12 @@ resource "cloudflare_tunnel_config" "zeaz_tunnel_config" {
     ingress_rule {
       hostname = "zagents.zeaz.dev"
       service  = "http://172.18.0.1:3009"
+    }
+
+    # ─── ZAI Coder UI (direct bypass traefik) ──────────────────────────────────
+    ingress_rule {
+      hostname = "zai.zeaz.dev"
+      service  = "http://172.18.0.1:5173"
     }
 
     # ─── Root & API ────────────────────────────────────────────────────────────
