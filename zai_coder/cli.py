@@ -1122,25 +1122,6 @@ def build_parser() -> argparse.ArgumentParser:
     update_plan = update_sub.add_parser("plan", help="Generate update execution plan")
     update_plan.add_argument("--local-manifest", required=True)
     update_plan.set_defaults(func=cmd_update)
-    # artifact subcommand
-    artifact_cmd = sub.add_parser("artifact", help="Manage build/run artifacts (add, list, export)")
-    artifact_sub = artifact_cmd.add_subparsers(dest="artifact_cmd", required=True)
-
-    artifact_add = artifact_sub.add_parser("add", help="Register an artifact path")
-    artifact_add.add_argument("--path", required=True)
-    artifact_add.add_argument("--label", default="")
-    artifact_add.add_argument("--kind", default="other")
-    artifact_add.add_argument("--description", default="")
-    artifact_add.add_argument("--tags", default="")
-    artifact_add.set_defaults(func=cmd_artifact)
-
-    artifact_list = artifact_sub.add_parser("list", help="List registered artifacts")
-    artifact_list.add_argument("--kind", default=None)
-    artifact_list.set_defaults(func=cmd_artifact)
-
-    artifact_export = artifact_sub.add_parser("export", help="Export artifact registry")
-    artifact_export.add_argument("--json", dest="as_json", action="store_true")
-    artifact_export.set_defaults(func=cmd_artifact)
 
     return p
 
